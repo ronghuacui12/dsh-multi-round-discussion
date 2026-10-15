@@ -1,0 +1,45 @@
+# ── 多模型研讨 preset（mmd-discussion）──────────────────────────────────────
+# 工具行放在 host 平面：执行模型按当前作用域枚举工具，host 平面注册的
+# read/write/edit/glob/grep/pwsh 对引擎可见，而 preset 只需提供 persona 与技能。
+# 插件本身（客户端 UI / HTTP 接口 / 设置页）也留在 host 平面，否则客户端 bundle
+# 不会进 boot graph。
+- insert:
+    - id: mmd-tool-fs
+      name: '@deepseek-ai/dsh-tool-fs'
+
+    - id: mmd-tool-fs-search
+      name: '@deepseek-ai/dsh-tool-fs-search'
+      config:
+        sampleOverCapGlobResults: false
+
+    - id: mmd-tool-pwsh
+      name: '@deepseek-ai/dsh-tool-pwsh'
+      disabled: !!js process.platform !== 'win32'
+
+    - id: mmd-tool-bash
+      name: '@deepseek-ai/dsh-tool-bash'
+      disabled: !!js process.platform === 'win32'
+
+- insert:
+    - id: preset-mmd-discussion
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: mmd-discussion
+        name: 研讨模式
+        description: 多模型研讨：多个模型并行独立提案 → 互相评议 → 主导模型决策并生成计划 → 计划经你过目同意后，才由执行模型落地。
+        order: 11
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              suffix: Your working directory is {{cwd}}.
+              prefix: !!js "process.getBuiltinModule('node:fs').readFileSync(process.getBuiltinModule('node:path').join(process.getBuiltinModule('node:os').homedir(), '.dsh', 'mmd', 'persona.md'), 'utf8')"
+
+          - id: skill-filesystem
+            name: '@deepseek-ai/dsh-skill-filesystem'
+            config:
+              customSkillDirs:
+                - !!js "process.getBuiltinModule('node:path').join(process.getBuiltinModule('node:os').homedir(), '.dsh', 'mmd', 'skills')"
+
+          - id: tool-skill
+            name: '@deepseek-ai/dsh-tool-skill'

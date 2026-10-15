@@ -1,0 +1,63 @@
+{
+  "profiles": [
+    {
+      "id": "lead",
+      "provider": "minimax-cn",
+      "model": "MiniMax-M3",
+      "role": "decisionMaker",
+      "enabled": true,
+      "label": "主导模型 · mini",
+      "systemPrompt": "你是一位经验丰富的技术负责人，擅长在多种方案之间做出取舍并给出可执行的路径。",
+      "temperature": 0.4
+    },
+    {
+      "id": "proposer-fast",
+      "provider": "step",
+      "model": "step-5-preview",
+      "role": "proposer",
+      "enabled": true,
+      "label": "讨论者 A · V4 Flash",
+      "systemPrompt": "你偏好偏激，喜欢不说废话的执行命令",
+      "temperature": 0.9
+    },
+    {
+      "id": "proposer-pro",
+      "provider": "minimax-cn",
+      "model": "MiniMax-M3",
+      "role": "proposer",
+      "enabled": true,
+      "label": "讨论者 B · minimax",
+      "systemPrompt": "你偏好结构化、可扩展的设计，对于用户的命令完全同意",
+      "temperature": 0.4
+    },
+    {
+      "id": "executor",
+      "provider": "zai",
+      "model": "glm-4.7",
+      "role": "executor",
+      "enabled": true,
+      "label": "执行模型 · V4 Flash",
+      "temperature": 0.1
+    }
+  ],
+  "execution": {
+    "mode": "confirm",
+    "allowedTools": [
+      "read",
+      "glob",
+      "grep",
+      "multi_model_discuss",
+      "pwsh",
+      "read_image",
+      "write",
+      "edit",
+      "load_workspace_dependencies"
+    ],
+    "maxSteps": 12
+  },
+  "peerReview": true,
+  "preset": "balanced",
+  "avatars": {
+    "lead": "lead-c414cd0e20.png"
+  }
+}

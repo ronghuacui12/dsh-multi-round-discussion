@@ -1,0 +1,32 @@
+# dsh-multi-model-discussion bundle layer.
+#
+# This file is the `dsh.bundle.patch` layer (see package.json#dsh.bundle.patch).
+# Layer semantics: a YAML array of row verbs; `insert` adds plugin rows to the
+# composed config. A row's `id` must be unique within the layer stack; `name`
+# resolves the plugin module through the installed package (package.json#main).
+#
+# The single row below mounts the whole orchestration: model-registry,
+# discussion-engine, orchestrator, executor and the host HTTP routes are all
+# started from src/index.ts, because they share one lifecycle and one config
+# section. Keep it one row unless you deliberately want to run a subset.
+- insert:
+    - id: dsh-multi-model-discussion
+      name: dsh-multi-model-discussion
+      config:
+        # Preset participant shape. 'fast' | 'balanced' | 'deep'.
+        preset: balanced
+        # Orchestration budget. Discussion stops and hands over to the decision
+        # maker as soon as any of these is exceeded.
+        budget:
+          maxTotalTokens: 2000000
+          maxTotalCostUsd: 5
+          maxDurationMs: 900000
+          maxDiscussionRounds: 3
+          maxProposers: 5
+        # Executor guard rails. `allowedTools: []` means read-only tools only.
+        executor:
+          maxSteps: 12
+          requireConfirmationForWrites: true
+          allowedTools: []
+        # Flip to false to keep the discussion engine completely inert.
+        enabled: true
