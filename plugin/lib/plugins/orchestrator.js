@@ -486,7 +486,9 @@ export class Orchestrator {
         if (this.aborted(context))
             return undefined;
         // A plan that changes nothing runs unattended. One that does asks first.
-        const needsApproval = plan.mutatesState && this.config.executor.requireConfirmationForWrites;
+        // The plan gate is the one approval that can actually reach the user; the
+        // per-tool switch is separate and defaults off.
+        const needsApproval = plan.mutatesState && this.config.executor?.planApproval !== false;
         if (!needsApproval)
             return plan;
         this.store.patch(context.runId, {

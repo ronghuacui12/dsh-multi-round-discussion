@@ -137,6 +137,7 @@ export function normalizeProfiles(raw) {
 export function normalizeExecution(raw, fallback) {
     const base = {
         mode: fallback?.mode ?? 'confirm',
+        toolConfirmation: fallback?.toolConfirmation ?? false,
         permissions: fallback?.permissions ?? 'full',
         allowedTools: Array.isArray(fallback?.allowedTools) ? [...fallback.allowedTools] : [],
         maxSteps: typeof fallback?.maxSteps === 'number' ? fallback.maxSteps : 12,
@@ -149,6 +150,11 @@ export function normalizeExecution(raw, fallback) {
         if (!EXECUTION_MODES.includes(raw.mode))
             throw new Error(`execution.mode 必须是 ${EXECUTION_MODES.join(' 或 ')}。`);
         base.mode = raw.mode;
+    }
+    if (raw.toolConfirmation !== undefined) {
+        if (typeof raw.toolConfirmation !== 'boolean')
+            throw new Error('execution.toolConfirmation 必须是布尔值。');
+        base.toolConfirmation = raw.toolConfirmation;
     }
     if (raw.permissions !== undefined) {
         if (!PERMISSION_MODES.includes(raw.permissions))
@@ -193,7 +199,8 @@ export class UserSettings {
         return {
             profiles: this.registry.listProfiles(),
             execution: {
-                mode: this.orchestratorConfig.executor?.requireConfirmationForWrites === false ? 'auto' : 'confirm',
+                mode: this.orchestratorConfig.executor?.planApproval === false ? 'auto' : 'confirm',
+                toolConfirmation: this.orchestratorConfig.executor?.requireConfirmationForWrites === true,
                 permissions: this.orchestratorConfig.executor?.permissions ?? 'full',
                 allowedTools: [...(this.orchestratorConfig.executor?.allowedTools ?? [])],
                 maxSteps: this.orchestratorConfig.executor?.maxSteps ?? 12,
@@ -230,7 +237,11 @@ export class UserSettings {
                 permissions: execution.permissions,
                 allowedTools: execution.allowedTools,
                 maxSteps: execution.maxSteps,
-                requireConfirmationForWrites: execution.mode === 'confirm',
+                // `mode` parks the run before executing a state-changing plan.
+                planApproval: execution.mode === 'confirm',
+                // Per-tool confirmation is a separate switch, and it is the one that
+                // silently skips work when there is no channel to ask through.
+                requireConfirmationForWrites: execution.toolConfirmation === true,
             };
             next.execution = execution;
         }

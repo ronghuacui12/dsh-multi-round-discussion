@@ -21,16 +21,16 @@ window.__ModuleLoader__.load({
     };
     var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-    // ../plugin/client-src/index.tsx
-    var client_src_exports = {};
-    __export(client_src_exports, {
+    // ../dsh-multi-round-discussion/plugin/client-src/index.tsx
+    var index_exports = {};
+    __export(index_exports, {
       apply: () => apply,
       inject: () => inject,
       name: () => name
     });
-    module.exports = __toCommonJS(client_src_exports);
+    module.exports = __toCommonJS(index_exports);
 
-    // ../plugin/client-src/roundtable/styles.ts
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/styles.ts
     var ROUNDTABLE_CSS = `
     .mmd-discussion { container: mmd-discussion / inline-size; }
     .mmd-discussion-content { display:flex; flex-direction:column; flex:1 1 0; min-height:0; overflow:hidden; position:relative; isolation:isolate; }
@@ -149,7 +149,7 @@ window.__ModuleLoader__.load({
     @media (prefers-reduced-motion:reduce) { .mmd-discussion *,.mmd-discussion *::before,.mmd-discussion *::after { animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
     `;
 
-    // ../plugin/client-src/styles.ts
+    // ../dsh-multi-round-discussion/plugin/client-src/styles.ts
     var STYLE_ID = "dsh-mmd-styles";
     var CSS = `
     /* ================================================================ tokens */
@@ -437,10 +437,10 @@ window.__ModuleLoader__.load({
       document.head.appendChild(el);
     }
 
-    // ../plugin/client-src/settings.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/settings.tsx
     var import_react2 = require("react");
 
-    // ../plugin/client-src/api.ts
+    // ../dsh-multi-round-discussion/plugin/client-src/api.ts
     var PREFIX = "/dsh-mmd";
     async function request(path, init) {
       const response = await fetch(PREFIX + path, {
@@ -489,7 +489,7 @@ window.__ModuleLoader__.load({
       return () => source.close();
     }
 
-    // ../plugin/client-src/avatar.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/avatar.tsx
     var import_react = require("react");
     var import_jsx_runtime = require("react/jsx-runtime");
     var PALETTE = ["#2563eb", "#16a34a", "#d97706", "#dc2626", "#7c3aed", "#0891b2", "#db2777", "#65a30d"];
@@ -507,7 +507,7 @@ window.__ModuleLoader__.load({
       return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mmd-avatar", style: { width: size, height: size, background: hueFor(seatKey), fontSize: Math.round(size * 0.42) }, children: broken ? initial : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { src, alt: label, onError: () => setBroken(true) }) });
     }
 
-    // ../plugin/client-src/settings.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/settings.tsx
     var import_jsx_runtime2 = require("react/jsx-runtime");
     var GROUPS = [
       { role: "decisionMaker", title: "主导模型", icon: "★", color: "#16a34a", hint: "读完全部提案与互评，拍板选出最终方向，并写出最终答复。", min: 1, max: 1, seat: "lead" },
@@ -581,6 +581,7 @@ window.__ModuleLoader__.load({
       const [peerReview, setPeerReview] = (0, import_react2.useState)(true);
       const [mode, setMode] = (0, import_react2.useState)("confirm");
       const [permissions, setPermissions] = (0, import_react2.useState)("full");
+      const [toolConfirmation, setToolConfirmation] = (0, import_react2.useState)(false);
       const [allowedTools, setAllowedTools] = (0, import_react2.useState)([]);
       const [maxSteps, setMaxSteps] = (0, import_react2.useState)(12);
       const [avatars, setAvatars] = (0, import_react2.useState)({});
@@ -601,6 +602,7 @@ window.__ModuleLoader__.load({
           setPeerReview(data.peerReview !== false);
           setMode(data.execution?.mode ?? "confirm");
           setPermissions(data.execution?.permissions ?? "full");
+          setToolConfirmation(data.execution?.toolConfirmation === true);
           setAllowedTools(data.execution?.allowedTools ?? []);
           setMaxSteps(data.execution?.maxSteps ?? 12);
           setAvatars(data.avatars ?? {});
@@ -665,7 +667,7 @@ window.__ModuleLoader__.load({
             profiles,
             preset,
             peerReview,
-            execution: { mode, permissions, allowedTools, maxSteps }
+            execution: { mode, permissions, toolConfirmation, allowedTools, maxSteps }
           });
           setSeats(toSeats(result.profiles));
           setAvatars(result.avatars ?? {});
@@ -942,6 +944,30 @@ window.__ModuleLoader__.load({
               ] })
             ] })
           ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("label", { style: { display: "flex", gap: 8, alignItems: "flex-start", marginTop: 10, cursor: "pointer" }, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+              "input",
+              {
+                type: "checkbox",
+                checked: toolConfirmation,
+                onChange: (event) => {
+                  setToolConfirmation(event.target.checked);
+                  setDirty(true);
+                },
+                style: { marginTop: 3 }
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("b", { children: "工具级二次确认（默认关）" }),
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { style: { display: "block", color: "var(--mmd-muted, #6b7280)", fontSize: 12 }, children: [
+                "开着时每一个会改动系统的工具都要单独确认一次。插件目前**没有**交互式确认通道， 所以开着等于把 ",
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("code", { children: "pwsh" }),
+                " / ",
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("code", { children: "write" }),
+                " 这类调用直接跳过、并如实记为 skipped。 上面的「执行前先问我」已经能拦住整份计划，这一项一般不需要开。"
+              ] })
+            ] })
+          ] }),
           /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("p", { className: "mmd-hint", style: { marginTop: 12 }, children: [
             "执行模型默认没有任何工具，只能给步骤说明。下面的目录来自宿主当前可用的工具；勾得越多它能做的事越多，",
             /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("b", { children: "写文件 / 跑命令这类会改动机器的工具请谨慎勾选" }),
@@ -1037,13 +1063,13 @@ window.__ModuleLoader__.load({
     }
     var FALLBACK_TOOLS = ["read", "write", "edit", "read_image", "glob", "grep", "pwsh", "bash", "todo_write", "web_search", "web_fetch", "job_list", "present"];
 
-    // ../plugin/client-src/chat.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/chat.tsx
     var import_react7 = require("react");
 
-    // ../plugin/client-src/roundtable/index.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/index.tsx
     var import_react6 = require("react");
 
-    // ../plugin/client-src/roundtable/state.ts
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/state.ts
     var VISUAL = {
       idle: { label: "等待派发", icon: "", animation: "breath" },
       ready: { label: "准备开始", icon: "⌛", animation: "breath" },
@@ -1098,7 +1124,7 @@ window.__ModuleLoader__.load({
       return VISUAL[state].label;
     }
 
-    // ../plugin/client-src/roundtable/bubble.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/bubble.tsx
     var import_jsx_runtime3 = require("react/jsx-runtime");
     function ActivityBubble({ seat, participant, run, baseWidth, now }) {
       return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "mmd-rt-activity", style: {
@@ -1107,7 +1133,7 @@ window.__ModuleLoader__.load({
       }, title: participant.label + " · " + activityText(participant, run, now), children: activityText(participant, run, now) });
     }
 
-    // ../plugin/client-src/roundtable/layout.ts
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/layout.ts
     var ROLE_TEXT = {
       decisionMaker: "主导",
       proposer: "讨论",
@@ -1204,10 +1230,10 @@ window.__ModuleLoader__.load({
       };
     }
 
-    // ../plugin/client-src/roundtable/art.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/art.tsx
     var import_react3 = require("react");
 
-    // ../plugin/client-src/roundtable/catalog.ts
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/catalog.ts
     var MODEL_ART = [
       { id: "chatgpt", name: "ChatGPT", hint: "银白龙娘", match: /chatgpt|openai|\bgpt(?:[-\d\s]|$)|\bo[134](?:[-\s]|$)/i },
       { id: "claude", name: "Claude", hint: "橙发花饰", match: /claude|anthropic|opus|sonnet|haiku/i },
@@ -1250,7 +1276,7 @@ window.__ModuleLoader__.load({
       return void 0;
     }
 
-    // ../plugin/client-src/roundtable/palette.ts
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/palette.ts
     function lookOf(id) {
       let hash = 2166136261;
       for (let i = 0; i < id.length; i++) hash = Math.imul(hash ^ id.charCodeAt(i), 16777619) >>> 0;
@@ -1262,7 +1288,7 @@ window.__ModuleLoader__.load({
       };
     }
 
-    // ../plugin/client-src/roundtable/chibi.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/chibi.tsx
     var import_jsx_runtime4 = require("react/jsx-runtime");
     function Hair({ style, color }) {
       const paths = [
@@ -1362,7 +1388,7 @@ window.__ModuleLoader__.load({
       ] });
     }
 
-    // ../plugin/client-src/roundtable/art.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/art.tsx
     var import_jsx_runtime5 = require("react/jsx-runtime");
     function ModelArt({ identity, participant, width, state = "idle", seated = false }) {
       const [failed, setFailed] = (0, import_react3.useState)(false);
@@ -1382,7 +1408,7 @@ window.__ModuleLoader__.load({
       );
     }
 
-    // ../plugin/client-src/roundtable/seat.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/seat.tsx
     var import_jsx_runtime6 = require("react/jsx-runtime");
     function Seat({ seat, participant, identity, run, baseWidth, stageHeight, now, selected, hot, editable, gallery, onClick, onMenu, onHover, onPointer, onKey }) {
       const width = baseWidth * seat.scale, height = width;
@@ -1436,10 +1462,10 @@ window.__ModuleLoader__.load({
       );
     }
 
-    // ../plugin/client-src/roundtable/edit-drawer.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/edit-drawer.tsx
     var import_react5 = require("react");
 
-    // ../plugin/client-src/roundtable/dialog.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/dialog.tsx
     var import_react4 = require("react");
     var import_jsx_runtime7 = require("react/jsx-runtime");
     function TableDialog({ title, onClose, children }) {
@@ -1493,7 +1519,7 @@ window.__ModuleLoader__.load({
       ) });
     }
 
-    // ../plugin/client-src/roundtable/edit-drawer.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/edit-drawer.tsx
     var import_jsx_runtime8 = require("react/jsx-runtime");
     function EditDrawer({ profile, providers, appearance, saving, error, onSave, onClose }) {
       const [draft, setDraft] = (0, import_react5.useState)(profile);
@@ -1563,7 +1589,7 @@ window.__ModuleLoader__.load({
       ] }) });
     }
 
-    // ../plugin/client-src/roundtable/seat-picker.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/seat-picker.tsx
     var import_jsx_runtime9 = require("react/jsx-runtime");
     function SeatPicker({ seat, profiles, artwork, busy, error, onChoose, onNew, onClose }) {
       return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(TableDialog, { title: "选择入座 · " + seat.name, onClose, children: /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", { className: "mmd-table-picker", children: [
@@ -1591,7 +1617,7 @@ window.__ModuleLoader__.load({
       ] }) });
     }
 
-    // ../plugin/client-src/roundtable/roster.ts
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/roster.ts
     var ROLE_LIMITS = { decisionMaker: 1, proposer: 5, reviewer: 3, executor: 1, verifier: 2 };
     var REQUIRED = ["decisionMaker", "proposer", "executor"];
     var isRunning = (run) => !!run && !["completed", "failed", "stopped", "idle"].includes(run.phase || "idle");
@@ -1644,7 +1670,7 @@ window.__ModuleLoader__.load({
       }
     }
 
-    // ../plugin/client-src/roundtable/speech.ts
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/speech.ts
     function latestSpeech(p, run) {
       if (!run) return "";
       const bb = run.blackboard;
@@ -1659,7 +1685,7 @@ window.__ModuleLoader__.load({
       return parts.filter(Boolean).at(-1) || "";
     }
 
-    // ../plugin/client-src/roundtable/index.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/roundtable/index.tsx
     var import_jsx_runtime10 = require("react/jsx-runtime");
     var HEIGHT_KEY = "dsh-mmd.roundtable.height";
     var MODE_KEY = "dsh-mmd.roundtable.mode";
@@ -2120,7 +2146,7 @@ window.__ModuleLoader__.load({
       ] });
     }
 
-    // ../plugin/client-src/chat.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/chat.tsx
     var import_jsx_runtime11 = require("react/jsx-runtime");
     var PHASE_TEXT = {
       idle: "空闲",
@@ -2786,7 +2812,7 @@ window.__ModuleLoader__.load({
       ] });
     }
 
-    // ../plugin/client-src/index.tsx
+    // ../dsh-multi-round-discussion/plugin/client-src/index.tsx
     var name = "multi-model-discussion/client";
     var inject = ["slots"];
     function apply(ctx) {

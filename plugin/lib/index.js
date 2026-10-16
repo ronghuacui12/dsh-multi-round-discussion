@@ -127,6 +127,9 @@ export const Config = Schema.object({
         // cannot touch anything. Operators opt in explicitly.
         allowedTools: Schema.array(Schema.string()).default(DEFAULT_SANDBOX.allowedTools),
         requireConfirmationForWrites: Schema.boolean().default(DEFAULT_SANDBOX.requireConfirmationForWrites),
+        // Park before executing a state-changing plan. This is the approval that
+        // reaches the user; it is independent of per-tool confirmation.
+        planApproval: Schema.boolean().default(true),
         maxSteps: Schema.natural().default(DEFAULT_SANDBOX.maxSteps),
     }),
     overrides: Schema.object({

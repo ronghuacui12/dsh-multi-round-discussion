@@ -26,10 +26,17 @@ export const READ_ONLY_TOOL_PATTERNS = [
     'todo_read',
     'get_todo',
 ];
-/** Defaults: read-only tools only, no exceptions, twelve turns. */
+/**
+ * Defaults: read-only tools only, no exceptions, twelve turns.
+ *
+ * `requireConfirmationForWrites` is off because this plugin has no interactive
+ * approval channel for individual tool calls: leaving it on does not ask the
+ * user, it silently skips every mutating tool and reports the step as skipped.
+ * The gate that does reach the user is the plan approval in the orchestrator.
+ */
 export const DEFAULT_SANDBOX = {
     allowedTools: [],
-    requireConfirmationForWrites: true,
+    requireConfirmationForWrites: false,
     maxSteps: 12,
 };
 /** Heuristic: is this tool name one of the well-known observers? */

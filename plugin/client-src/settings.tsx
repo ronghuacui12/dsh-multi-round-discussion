@@ -82,6 +82,7 @@ export function SettingsSection() {
   const [peerReview, setPeerReview] = useState(true);
   const [mode, setMode] = useState('confirm');
   const [permissions, setPermissions] = useState('full');
+  const [toolConfirmation, setToolConfirmation] = useState(false);
   const [allowedTools, setAllowedTools] = useState<string[]>([]);
   const [maxSteps, setMaxSteps] = useState(12);
   const [avatars, setAvatars] = useState<Record<string, string>>({});
@@ -103,6 +104,7 @@ export function SettingsSection() {
       setPeerReview(data.peerReview !== false);
       setMode(data.execution?.mode ?? 'confirm');
       setPermissions(data.execution?.permissions ?? 'full');
+      setToolConfirmation(data.execution?.toolConfirmation === true);
       setAllowedTools(data.execution?.allowedTools ?? []);
       setMaxSteps(data.execution?.maxSteps ?? 12);
       setAvatars(data.avatars ?? {});
@@ -173,7 +175,7 @@ export function SettingsSection() {
         profiles,
         preset,
         peerReview,
-        execution: { mode, permissions, allowedTools, maxSteps },
+        execution: { mode, permissions, toolConfirmation, allowedTools, maxSteps },
       });
       setSeats(toSeats(result.profiles));
       setAvatars(result.avatars ?? {});
@@ -422,6 +424,23 @@ export function SettingsSection() {
             </span>
           </div>
         </div>
+
+        <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 10, cursor: 'pointer' }}>
+          <input
+            type="checkbox"
+            checked={toolConfirmation}
+            onChange={(event) => { setToolConfirmation(event.target.checked); setDirty(true); }}
+            style={{ marginTop: 3 }}
+          />
+          <span>
+            <b>工具级二次确认（默认关）</b>
+            <span style={{ display: 'block', color: 'var(--mmd-muted, #6b7280)', fontSize: 12 }}>
+              开着时每一个会改动系统的工具都要单独确认一次。插件目前**没有**交互式确认通道，
+              所以开着等于把 <code>pwsh</code> / <code>write</code> 这类调用直接跳过、并如实记为 skipped。
+              上面的「执行前先问我」已经能拦住整份计划，这一项一般不需要开。
+            </span>
+          </span>
+        </label>
 
         <p className="mmd-hint" style={{ marginTop: 12 }}>
           执行模型默认没有任何工具，只能给步骤说明。下面的目录来自宿主当前可用的工具；勾得越多它能做的事越多，
