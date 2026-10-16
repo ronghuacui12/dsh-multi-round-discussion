@@ -262,7 +262,10 @@ export function DiscussionView() {
     setBusy(true);
     setError('');
     try {
-      const created = await api.start({ request });
+      // A finished run stays in the thread: the next question continues it and the
+      // host folds the earlier question/conclusion/plan into the prompt.
+      const continueFrom = run && settled ? run.runId : undefined;
+      const created = await api.start({ request, ...(continueFrom ? { parentRunId: continueFrom } : {}) });
       setDraft('');
       setStick(true);
       await loadRuns(created.run?.runId);
@@ -322,12 +325,22 @@ export function DiscussionView() {
           <span className="mmd-title"><span className="mmd-title-dot" />多模型研讨</span>
           {run ? <span className={chipClass(run.phase)}>{PHASE_TEXT[run.phase] ?? run.phase}</span> : null}
           {thinking.length > 0 ? <span className="mmd-sub">· {thinking.length} 个模型在思考</span> : null}
+          {run?.parentRunId ? (
+            <button
+              type="button"
+              className="mmd-btn mmd-btn-sm"
+              title="这条研讨续接自上一轮，点一下回看"
+              onClick={() => setActiveId(run.parentRunId as string)}
+            >
+              {'↳ 续接：' + ((runs.find((item) => item.runId === run.parentRunId)?.request ?? run.parentRunId) as string).slice(0, 16)}
+            </button>
+          ) : null}
           <span className="mmd-spacer" />
           <select className="mmd-select" value={activeId} onChange={(event) => setActiveId(event.target.value)}>
             {runs.length === 0 ? <option value="">（暂无研讨）</option> : null}
             {runs.map((item) => (
               <option key={item.runId} value={item.runId}>
-                {stamp(item.startedAt) + ' · ' + (item.request ?? '').slice(0, 20) + ' · ' + (PHASE_TEXT[item.phase] ?? item.phase)}
+                {(item.restored ? '🕘 ' : '') + stamp(item.startedAt) + ' · ' + (item.request ?? '').slice(0, 20) + ' · ' + (PHASE_TEXT[item.phase] ?? item.phase)}
               </option>
             ))}
           </select>
@@ -609,12 +622,12 @@ export function DiscussionView() {
             <input
               className="mmd-input"
               value={draft}
-              placeholder="提出一个问题，让多个模型分别出方案、再互相评议…"
+              placeholder={settled ? '继续追问这条研讨（会自动带上上一轮结论）…' : '提出一个问题，让多个模型分别出方案、再互相评议…'}
               onChange={(event) => setDraft(event.target.value)}
               onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); void start(); } }}
             />
             <button type="button" className="mmd-btn mmd-btn-primary" disabled={busy || !draft.trim()} onClick={() => void start()}>
-              {busy ? '发起中…' : '发起研讨'}
+              {busy ? '发起中…' : settled ? '继续追问' : '发起研讨'}
             </button>
           </div>
         </div>

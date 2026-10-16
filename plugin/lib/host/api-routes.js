@@ -151,7 +151,15 @@ async function dispatch(req, res, options) {
         return;
     }
     if (method === 'GET' && path === '/runs') {
-        sendJson(res, 200, { runs: store.list() });
+        // A restored run is a read-only record; the client needs to be able to
+        // tell it apart from a live one, and `restored` lives on the context
+        // rather than in the transported state.
+        sendJson(res, 200, {
+            runs: store.all().map((context) => ({
+                ...context.state,
+                restored: context.restored === true,
+            })),
+        });
         return;
     }
     if (method === 'GET' && path === '/events') {
@@ -179,12 +187,33 @@ async function dispatch(req, res, options) {
             sendJson(res, 400, { error: 'Field "request" must be a non-empty string.' });
             return;
         }
+        // A follow-up run names the run it continues. The parent may be live or
+        // restored from history; either way only its public artefacts are read.
+        let parent;
+        if (body.parentRunId !== undefined) {
+            if (typeof body.parentRunId !== 'string' || body.parentRunId.trim() === '') {
+                sendJson(res, 400, { error: 'Field "parentRunId" must be a non-empty string.' });
+                return;
+            }
+            parent = store.get(body.parentRunId.trim());
+            if (!parent) {
+                sendJson(res, 404, { error: '找不到要续接的研讨记录。' });
+                return;
+            }
+            if (!TERMINAL_PHASES.has(parent.state.phase)) {
+                sendJson(res, 409, { error: '上一轮研讨还没结束，先等它结束或叫停，再继续追问。' });
+                return;
+            }
+        }
         try {
             const state = orchestrator.start({
                 request: body.request,
                 ...(typeof body.preset === 'string' ? { preset: body.preset } : {}),
                 ...(body.overrides && typeof body.overrides === 'object'
                     ? { overrides: body.overrides }
+                    : {}),
+                ...(parent
+                    ? { parentRunId: parent.state.runId, context: buildContinuationContext(parent.state) }
                     : {}),
             });
             sendJson(res, 201, { run: state });
@@ -232,6 +261,44 @@ async function dispatch(req, res, options) {
         return;
     }
     sendJson(res, 404, { error: `No route for ${method} ${path}.` });
+}
+/** Phases after which a run never changes again. */
+const TERMINAL_PHASES = new Set(['completed', 'failed', 'stopped']);
+/** How much of each earlier artefact a follow-up run inherits. */
+const CONTINUATION_LIMITS = { question: 300, direction: 400, answer: 800 };
+/** Clip a piece of inherited text so one long answer cannot flood the next run. */
+function clipText(value, max) {
+    const text = typeof value === 'string' ? value.trim() : '';
+    return text.length > max ? `${text.slice(0, max)}…` : text;
+}
+/**
+ * Fold a finished run's public artefacts into the context block a follow-up run
+ * starts with.
+ *
+ * Only blackboard content is used -- never hidden reasoning -- and every field
+ * is clipped. The last requirement line is what keeps a follow-up from redoing
+ * work the earlier run already finished and verified.
+ */
+export function buildContinuationContext(state) {
+    const board = state.blackboard ?? {};
+    const decision = board.decision ?? (Array.isArray(board.decisions) ? board.decisions[board.decisions.length - 1] : undefined);
+    const lines = [
+        '【这是一条续接的研讨】下面是上一轮已经完成的结论，本轮是同一话题的追问，不是新话题。',
+        `上一轮的问题：${clipText(state.request, CONTINUATION_LIMITS.question)}`,
+    ];
+    if (decision?.finalDirection)
+        lines.push(`上一轮的结论方向：${clipText(decision.finalDirection, CONTINUATION_LIMITS.direction)}`);
+    if (board.finalAnswer)
+        lines.push(`上一轮的最终答复：${clipText(board.finalAnswer, CONTINUATION_LIMITS.answer)}`);
+    if (board.plan?.steps?.length) {
+        const steps = board.plan.steps.slice(0, 6).map((step) => step.description).filter(Boolean).join('；');
+        if (steps !== '')
+            lines.push(`上一轮的计划：${clipText(steps, CONTINUATION_LIMITS.direction)}`);
+    }
+    if (board.execution)
+        lines.push(`上一轮的执行：${board.execution.status ?? '未知'}（${Array.isArray(board.execution.outputs) ? board.execution.outputs.length : 0} 步）`);
+    lines.push('本轮要求：直接回答追问；上一轮已经完成并通过验证的步骤不要重复执行；若要改动，给出新的计划并说明与上一轮的差异。');
+    return lines.join('\n');
 }
 /** Validate and narrow an untrusted control payload. */
 function parseControl(raw) {

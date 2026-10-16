@@ -152,6 +152,13 @@ export interface RunState {
     notices: RunNotice[];
     /** Set while the run is parked awaiting a user answer. */
     pendingQuestion?: string;
+    /**
+     * Set when this run was started as a follow-up to an earlier one
+     * (`POST /runs` with `parentRunId`). The UI uses it to link the thread.
+     */
+    parentRunId?: string;
+    /** True only on a run restored from the on-disk history. */
+    restored?: boolean;
 }
 /** A notice surfaced in the discussion view. */
 export interface RunNotice {

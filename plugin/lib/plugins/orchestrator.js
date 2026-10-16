@@ -67,7 +67,13 @@ export class Orchestrator {
             maxDiscussionRounds: Math.min(this.config.budget.maxDiscussionRounds, preset.maxRounds),
         });
         const runId = RunStore.newRunId();
-        const blackboard = new SharedBlackboard(runId, options.request);
+        // A follow-up run carries the earlier discussion in. The prompt request is
+        // the context block plus the new question, while `state.request` stays the
+        // user's own words so the UI bubble shows exactly what the user typed.
+        const promptRequest = typeof options.context === 'string' && options.context.trim() !== ''
+            ? `${options.context.trim()}\n\n${options.request}`
+            : options.request;
+        const blackboard = new SharedBlackboard(runId, promptRequest);
         const abort = new AbortController();
         const participants = [
             initialParticipant(roster.lead),
@@ -94,6 +100,9 @@ export class Orchestrator {
             startedAt: now,
             updatedAt: now,
             request: options.request,
+            ...(typeof options.parentRunId === 'string' && options.parentRunId !== ''
+                ? { parentRunId: options.parentRunId }
+                : {}),
             participants: uniqueParticipants,
             blackboard: blackboard.snapshot(),
             cost: computeCostSummary(budget, now),
@@ -103,6 +112,8 @@ export class Orchestrator {
             runId,
             state,
             blackboard,
+            // What the engines are asked about: context block + new question.
+            promptRequest,
             budget,
             machine,
             roster,
@@ -228,7 +239,7 @@ export class Orchestrator {
         try {
             // ---------------------------------------------------------- clarification
             this.goto(context, 'clarifying');
-            const verdict = await parts.lead.clarify(roster.lead, context.state.request, undefined, signal);
+            const verdict = await parts.lead.clarify(roster.lead, context.promptRequest, undefined, signal);
             this.store.refreshCost(context.runId);
             if (this.aborted(context)) {
                 this.finish(context, 'stopped');
@@ -469,7 +480,7 @@ export class Orchestrator {
         const availableTools = typeof parts.executor.availableToolNames === 'function'
             ? parts.executor.availableToolNames()
             : [];
-        let plan = await parts.lead.buildPlan(roster.lead, context.state.request, decision, adopted, signal, availableTools);
+        let plan = await parts.lead.buildPlan(roster.lead, context.promptRequest, decision, adopted, signal, availableTools);
         blackboard.setPlan(plan);
         this.store.refreshCost(context.runId);
         if (this.aborted(context))
