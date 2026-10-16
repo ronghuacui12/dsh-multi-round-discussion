@@ -1,0 +1,25 @@
+{
+  "name": "dsh-multi-round-discussion-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.19.0" },
+  "scripts": {
+    "build": "node build/build-mmd.mjs",
+    "typecheck": "node build/check-p0-types.mjs",
+    "test": "node build/ui-smoke.mjs && node build/table-smoke.mjs && node build/art-smoke.mjs",
+    "test:art": "node art/production-v6/verify-assets.mjs",
+    "preview": "node build/preview-v5.mjs",
+    "art:export": "node art/production-v6/export-assets.mjs",
+    "art:review": "node art/production-v6/make-review-boards.mjs && node art/quantity-review-v6/make-count-previews.mjs"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.31",
+    "esbuild": "0.24.0",
+    "jsdom": "30.1.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "sharp": "0.34.5",
+    "typescript": "5.9.3"
+  }
+}

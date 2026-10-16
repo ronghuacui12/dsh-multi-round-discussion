@@ -1,0 +1,142 @@
+{
+  "version": 5,
+  "characters": {
+    "chatgpt": {
+      "file": "seated-chatgpt.webp",
+      "width": 400,
+      "height": 400,
+      "sourceBounds": {
+        "left": 23,
+        "top": 64,
+        "width": 312,
+        "height": 295
+      }
+    },
+    "claude": {
+      "file": "seated-claude.webp",
+      "width": 400,
+      "height": 400,
+      "sourceBounds": {
+        "left": 416,
+        "top": 78,
+        "width": 281,
+        "height": 280
+      }
+    },
+    "gemini": {
+      "file": "seated-gemini.webp",
+      "width": 400,
+      "height": 400,
+      "sourceBounds": {
+        "left": 765,
+        "top": 70,
+        "width": 286,
+        "height": 294
+      }
+    },
+    "grok": {
+      "file": "seated-grok.webp",
+      "width": 400,
+      "height": 400,
+      "sourceBounds": {
+        "left": 1115,
+        "top": 66,
+        "width": 309,
+        "height": 292
+      }
+    },
+    "deepseek": {
+      "file": "seated-deepseek.webp",
+      "width": 400,
+      "height": 400,
+      "sourceBounds": {
+        "left": 21,
+        "top": 414,
+        "width": 322,
+        "height": 286
+      }
+    },
+    "glm": {
+      "file": "seated-glm.webp",
+      "width": 400,
+      "height": 400,
+      "sourceBounds": {
+        "left": 408,
+        "top": 417,
+        "width": 317,
+        "height": 283
+      }
+    },
+    "minimax": {
+      "file": "seated-minimax.webp",
+      "width": 400,
+      "height": 400,
+      "sourceBounds": {
+        "left": 786,
+        "top": 408,
+        "width": 264,
+        "height": 292
+      }
+    },
+    "kimi": {
+      "file": "seated-kimi.webp",
+      "width": 400,
+      "height": 400,
+      "sourceBounds": {
+        "left": 1118,
+        "top": 412,
+        "width": 307,
+        "height": 288
+      }
+    },
+    "step": {
+      "file": "seated-step.webp",
+      "width": 400,
+      "height": 400,
+      "sourceBounds": {
+        "left": 44,
+        "top": 744,
+        "width": 301,
+        "height": 292
+      }
+    },
+    "mimo": {
+      "file": "seated-mimo.webp",
+      "width": 400,
+      "height": 400,
+      "sourceBounds": {
+        "left": 409,
+        "top": 728,
+        "width": 320,
+        "height": 306
+      }
+    },
+    "qwen": {
+      "file": "seated-qwen.webp",
+      "width": 400,
+      "height": 400,
+      "sourceBounds": {
+        "left": 785,
+        "top": 738,
+        "width": 310,
+        "height": 296
+      }
+    },
+    "doubao": {
+      "file": "seated-doubao.webp",
+      "width": 400,
+      "height": 400,
+      "sourceBounds": {
+        "left": 1161,
+        "top": 750,
+        "width": 259,
+        "height": 284
+      }
+    }
+  },
+  "background": "room.webp",
+  "tables": [
+    "wood-short.webp",
+    "wood-long.webp"
+  ]
+}

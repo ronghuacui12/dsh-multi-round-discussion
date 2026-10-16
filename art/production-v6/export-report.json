@@ -1,0 +1,1612 @@
+{
+  "logicalAssets": 152,
+  "exportedFiles": 304,
+  "characters": [
+    {
+      "id": "chatgpt",
+      "states": 11,
+      "portrait": 1,
+      "commonScale": 1.2258064516129032,
+      "minVisiblePixels": 75132
+    },
+    {
+      "id": "claude",
+      "states": 11,
+      "portrait": 1,
+      "commonScale": 1.2527472527472527,
+      "minVisiblePixels": 84557
+    },
+    {
+      "id": "gemini",
+      "states": 11,
+      "portrait": 1,
+      "commonScale": 1.256198347107438,
+      "minVisiblePixels": 80902
+    },
+    {
+      "id": "grok",
+      "states": 11,
+      "portrait": 1,
+      "commonScale": 1.2666666666666666,
+      "minVisiblePixels": 81490
+    },
+    {
+      "id": "deepseek",
+      "states": 11,
+      "portrait": 1,
+      "commonScale": 1.2324324324324325,
+      "minVisiblePixels": 74461
+    },
+    {
+      "id": "glm",
+      "states": 11,
+      "portrait": 1,
+      "commonScale": 1.2425068119891007,
+      "minVisiblePixels": 78947
+    },
+    {
+      "id": "minimax",
+      "states": 11,
+      "portrait": 1,
+      "commonScale": 1.2425068119891007,
+      "minVisiblePixels": 66903
+    },
+    {
+      "id": "kimi",
+      "states": 11,
+      "portrait": 1,
+      "commonScale": 1.2808988764044944,
+      "minVisiblePixels": 84120
+    },
+    {
+      "id": "step",
+      "states": 11,
+      "portrait": 1,
+      "commonScale": 1.2192513368983957,
+      "minVisiblePixels": 73843
+    },
+    {
+      "id": "mimo",
+      "states": 11,
+      "portrait": 1,
+      "commonScale": 1.2031662269129288,
+      "minVisiblePixels": 75455
+    },
+    {
+      "id": "qwen",
+      "states": 11,
+      "portrait": 1,
+      "commonScale": 1.2773109243697478,
+      "minVisiblePixels": 77057
+    },
+    {
+      "id": "doubao",
+      "states": 11,
+      "portrait": 1,
+      "commonScale": 1.2031662269129288,
+      "minVisiblePixels": 62295
+    }
+  ],
+  "files": [
+    {
+      "file": "png/characters/chatgpt/aborted.png",
+      "bytes": 328167,
+      "sha256": "d9916cda5e9ed607baf6c72e697330ce9d4ac4fa8d86bc43d0951b7b5219b8b7"
+    },
+    {
+      "file": "png/characters/chatgpt/approval.png",
+      "bytes": 351353,
+      "sha256": "14ab1c746bc66c1ab69d35f18ef96237031ef77d7d0c7eca5e47c24a6eb15aaa"
+    },
+    {
+      "file": "png/characters/chatgpt/celebrate.png",
+      "bytes": 363485,
+      "sha256": "8381ba9d2eaeb44714b67a54ac3e9022d8a182313183e283d607ff5d69b0ec19"
+    },
+    {
+      "file": "png/characters/chatgpt/done.png",
+      "bytes": 348466,
+      "sha256": "832c02e99d7d1edf963c7cde8e0661f3a768b514bd7459eb83304f109d9b2549"
+    },
+    {
+      "file": "png/characters/chatgpt/error.png",
+      "bytes": 341203,
+      "sha256": "98e930289e152819cd24f67ae51f49af684ccd10993643f21f63e357694eea23"
+    },
+    {
+      "file": "png/characters/chatgpt/executing.png",
+      "bytes": 347466,
+      "sha256": "53ef4730cc4cdb9976672eae9443306445a7ace3968002e1fcf6c2e47a553018"
+    },
+    {
+      "file": "png/characters/chatgpt/idle.png",
+      "bytes": 358437,
+      "sha256": "3dd786d1b0ec4f87f3715427449b7ab029c6c73dfad335abfbb2f0c72f5eab92"
+    },
+    {
+      "file": "png/characters/chatgpt/ready.png",
+      "bytes": 360849,
+      "sha256": "95d3e9cf7f8e180c3b54609f6f6a78b877f9045065ce4bcb5ea59c8b9426176a"
+    },
+    {
+      "file": "png/characters/chatgpt/speaking.png",
+      "bytes": 340231,
+      "sha256": "40a41b17997de4564a38938d705bfcbdb19a759ef7a49ef5e7769d4d1da16881"
+    },
+    {
+      "file": "png/characters/chatgpt/thinking.png",
+      "bytes": 357797,
+      "sha256": "9d67c8c25e04423d7ab318a65f9473d20b4bb68ee7555d02626ea7855a1da975"
+    },
+    {
+      "file": "png/characters/chatgpt/waiting.png",
+      "bytes": 333442,
+      "sha256": "33fca2e37efd55170dbbca340c038e7775542c83c370a19087cef0676357bf5f"
+    },
+    {
+      "file": "png/characters/claude/aborted.png",
+      "bytes": 440174,
+      "sha256": "f1ddcac899c19b7da8874720450295e06e73a02e0087ac145b963ed56e3b5a92"
+    },
+    {
+      "file": "png/characters/claude/approval.png",
+      "bytes": 475153,
+      "sha256": "bea5ed82e3298f65e9fcc43ffc9d7636767582ec252ec817cf2a949c171ca739"
+    },
+    {
+      "file": "png/characters/claude/celebrate.png",
+      "bytes": 474543,
+      "sha256": "3cfdcaab50418b88a86cea422e29d028eb6f72451d93f781d1aea8d6bf85c78f"
+    },
+    {
+      "file": "png/characters/claude/done.png",
+      "bytes": 471444,
+      "sha256": "2aa63569cbcccc508990866a7dbf424abf631eaec1725ad5433e41555dd7cc55"
+    },
+    {
+      "file": "png/characters/claude/error.png",
+      "bytes": 465387,
+      "sha256": "f3e534002b1eaca2b252a0e7b9fc382fee52032ea1c3020f48334fb3e147e0ca"
+    },
+    {
+      "file": "png/characters/claude/executing.png",
+      "bytes": 459436,
+      "sha256": "dc94c42caabd0c4ff893ff4761f6ba182ecee73ace52ab204c353a554954b446"
+    },
+    {
+      "file": "png/characters/claude/idle.png",
+      "bytes": 451261,
+      "sha256": "109511b75b841457dc34f68ee539368a4ccc7137884fcbbbc00d581858963f7c"
+    },
+    {
+      "file": "png/characters/claude/ready.png",
+      "bytes": 468152,
+      "sha256": "3841c32e7de89e001145c36d09f971c3e3deef470ee7014516fc89eb5701ac6b"
+    },
+    {
+      "file": "png/characters/claude/speaking.png",
+      "bytes": 457269,
+      "sha256": "5bbfcf4ef06cba3571dc8209ce53f06fbaa8d13bbf3d54465b496c4ab31ab239"
+    },
+    {
+      "file": "png/characters/claude/thinking.png",
+      "bytes": 470715,
+      "sha256": "628c2ab13befcaa21a03b72d843bd2203d18f95ff9783bd849de1fe22588dfc9"
+    },
+    {
+      "file": "png/characters/claude/waiting.png",
+      "bytes": 466411,
+      "sha256": "fc582b7255fb3289892e4ad71f672e6f43cf774cbf7169f2e0304b6ba35b010f"
+    },
+    {
+      "file": "png/characters/deepseek/aborted.png",
+      "bytes": 361392,
+      "sha256": "e5f398b47e108657df0ef2027cc4b1e64f90408681a449a545e0db8324eafb22"
+    },
+    {
+      "file": "png/characters/deepseek/approval.png",
+      "bytes": 393072,
+      "sha256": "b89d78cc120261fb3c7a4295cc0ef0134d704420e42e2714c7726ab945549f10"
+    },
+    {
+      "file": "png/characters/deepseek/celebrate.png",
+      "bytes": 378022,
+      "sha256": "97a992c67754cbb79cd9076463f5ce28481bea5c74f2b82ab186c4725895d72a"
+    },
+    {
+      "file": "png/characters/deepseek/done.png",
+      "bytes": 397175,
+      "sha256": "f86bd412bd6d6e0858bfc88a8ecad84f0adf90f636e8703ec7a73e073ee800c2"
+    },
+    {
+      "file": "png/characters/deepseek/error.png",
+      "bytes": 382448,
+      "sha256": "7c1231b5d2da17382300eeb459f9505754b68c8d6b3a5729399047e4b216622c"
+    },
+    {
+      "file": "png/characters/deepseek/executing.png",
+      "bytes": 384290,
+      "sha256": "f3220b0d7125554356d0a0aa9264e34f7cd3f09e4d3cc77ff829a135e614e877"
+    },
+    {
+      "file": "png/characters/deepseek/idle.png",
+      "bytes": 389245,
+      "sha256": "f323ad7206d2ce89d0bd1ee2ca9a4579639734da97738eb96ba2cffa1d1f00a9"
+    },
+    {
+      "file": "png/characters/deepseek/ready.png",
+      "bytes": 408049,
+      "sha256": "8908616a24bac0a22355d836571d0e21709b34aa3ac5be47c3580d3c01b3c477"
+    },
+    {
+      "file": "png/characters/deepseek/speaking.png",
+      "bytes": 385501,
+      "sha256": "f775f17a3083e41a3313b3dca92226ce3cb1610c5963a7dc8c7154a172265b88"
+    },
+    {
+      "file": "png/characters/deepseek/thinking.png",
+      "bytes": 400551,
+      "sha256": "139c4c8b1bf9a8158e148b3babfa6ca1e6432e155511439d2e60bf90656324e3"
+    },
+    {
+      "file": "png/characters/deepseek/waiting.png",
+      "bytes": 384897,
+      "sha256": "e3089270971326389727eb134be6083d00e3702c8188e2e19cb7399e2ce956fa"
+    },
+    {
+      "file": "png/characters/doubao/aborted.png",
+      "bytes": 296814,
+      "sha256": "b56dbd6e0d37bb4a85a1d697ac68ef25d1d8e294d8ad7fa0d51a4de8e20f07b9"
+    },
+    {
+      "file": "png/characters/doubao/approval.png",
+      "bytes": 329684,
+      "sha256": "a9c3d4560af6107a304a5a319e04dedb023ef34cc582fb7a26c6bf5e5e746364"
+    },
+    {
+      "file": "png/characters/doubao/celebrate.png",
+      "bytes": 328601,
+      "sha256": "b8be659b45309d2220b07ad459521ffb28ea5d297a9aa18f7f84f2f8571b5d14"
+    },
+    {
+      "file": "png/characters/doubao/done.png",
+      "bytes": 333229,
+      "sha256": "8798a702d9789cdc8718f9b8a4beeceb7e349e54dfbe62ee49933d7ce43d1aad"
+    },
+    {
+      "file": "png/characters/doubao/error.png",
+      "bytes": 332854,
+      "sha256": "56d8e24dac655d445c91166aa92c55bd84f57bfa666f76e42f0cea971407227f"
+    },
+    {
+      "file": "png/characters/doubao/executing.png",
+      "bytes": 340229,
+      "sha256": "196d5bc72daa9daeef66f7eb63a76a10edf88d37cd892358595429a50bf06118"
+    },
+    {
+      "file": "png/characters/doubao/idle.png",
+      "bytes": 341200,
+      "sha256": "89ab97a1d4e6cedfe7116a6326f1f12b917b18987c790f5f7091f8cd207c1ed7"
+    },
+    {
+      "file": "png/characters/doubao/ready.png",
+      "bytes": 344164,
+      "sha256": "92fa295bb743ae01093ecb6ef4ad30ded1e97b9e483e2f8ddbdf945ae34bd7e6"
+    },
+    {
+      "file": "png/characters/doubao/speaking.png",
+      "bytes": 320127,
+      "sha256": "3f36302bf5b9b2a46a976f54b04165a00afd4bbb179f36af426de90678b4141c"
+    },
+    {
+      "file": "png/characters/doubao/thinking.png",
+      "bytes": 340578,
+      "sha256": "409347706a22d30b368234399cdc434d283ce1bf94b33845d74f3fce310a6bca"
+    },
+    {
+      "file": "png/characters/doubao/waiting.png",
+      "bytes": 334971,
+      "sha256": "6f203ae952de08e225a3a62669380d99a2ea9bdfc73e6b3d045ee1bcb9f7854e"
+    },
+    {
+      "file": "png/characters/gemini/aborted.png",
+      "bytes": 431819,
+      "sha256": "062561a89ab7f3833320b517bfa8aa38a313202fd5a53508e0982bf916de46ff"
+    },
+    {
+      "file": "png/characters/gemini/approval.png",
+      "bytes": 447510,
+      "sha256": "c92197a4306f2c275de31b88055890b90a2b6b3d3c9cc6d038757ade8d38fd3c"
+    },
+    {
+      "file": "png/characters/gemini/celebrate.png",
+      "bytes": 439789,
+      "sha256": "68fb70b7cc03301fd9eae8e7503d3861d7c4ef5f986bba5c9a91724d28e07611"
+    },
+    {
+      "file": "png/characters/gemini/done.png",
+      "bytes": 450648,
+      "sha256": "e93c64ed8e8f51520deaf02b6cc65b1891cf2388df137c2a03431313e299cb90"
+    },
+    {
+      "file": "png/characters/gemini/error.png",
+      "bytes": 446718,
+      "sha256": "6b3c5e2000478f16f79c699bf7a831f072d87a5923af73796ba26bd7d230ad97"
+    },
+    {
+      "file": "png/characters/gemini/executing.png",
+      "bytes": 453068,
+      "sha256": "239da735840c1e8dc38fb4df60eda1d1353aec485ce2a80d6b50c08a17292fb1"
+    },
+    {
+      "file": "png/characters/gemini/idle.png",
+      "bytes": 454883,
+      "sha256": "15d45b7e80c7d888c4eb4d7f4d3a2e2de9ff6d9a5e5c94f43b49183beb3a44c0"
+    },
+    {
+      "file": "png/characters/gemini/ready.png",
+      "bytes": 453040,
+      "sha256": "40289c8a6f65e3931b5140e557dd013065efc6ea661a76d795dd326c8138efe0"
+    },
+    {
+      "file": "png/characters/gemini/speaking.png",
+      "bytes": 433947,
+      "sha256": "084f1986fe416d54a1a4ab11011eda4a2b5778ad78f8cce09469c6d40ed1f351"
+    },
+    {
+      "file": "png/characters/gemini/thinking.png",
+      "bytes": 457262,
+      "sha256": "b9b2c6a17cac9e89facbd0e9c363df2a04342c5d01118a7215e87d9e4100391f"
+    },
+    {
+      "file": "png/characters/gemini/waiting.png",
+      "bytes": 454005,
+      "sha256": "0fc71ee03757b3013b1df3f012f4f6a56fcd630ed79e1895c9cedac871441c09"
+    },
+    {
+      "file": "png/characters/glm/aborted.png",
+      "bytes": 374280,
+      "sha256": "cce78f34ef37de00593e748bb2735213d5d03a50429d412aeb9b526f15aef328"
+    },
+    {
+      "file": "png/characters/glm/approval.png",
+      "bytes": 397619,
+      "sha256": "ac8c9164112507c7dfc0b9f4fb363cc65ffadea1f0415ab983bb1d573ab7b80a"
+    },
+    {
+      "file": "png/characters/glm/celebrate.png",
+      "bytes": 394612,
+      "sha256": "77a9e3dccda7d5b29ba62316286b59fb86f0fb96f6f468fb744a4934957693d5"
+    },
+    {
+      "file": "png/characters/glm/done.png",
+      "bytes": 410160,
+      "sha256": "c29ab08aa1f882d9e6b1c84aa4217b40b6b9613b0479ccdf9c661af1dd394248"
+    },
+    {
+      "file": "png/characters/glm/error.png",
+      "bytes": 394713,
+      "sha256": "ceead097887763a2cc48a5e06498c022ed504c765865a147eefc106393968519"
+    },
+    {
+      "file": "png/characters/glm/executing.png",
+      "bytes": 401872,
+      "sha256": "fedf6abf768d039634d75ce234faab51e3c0dd697a34fc97deafd5e004759373"
+    },
+    {
+      "file": "png/characters/glm/idle.png",
+      "bytes": 412661,
+      "sha256": "dbd1861f112cee28d28765c278357995dfe7ebfe3e4e464587d87b947e68c6b5"
+    },
+    {
+      "file": "png/characters/glm/ready.png",
+      "bytes": 400814,
+      "sha256": "ddd925c5a8cf6f96cad41f3a903c0cb7ccc312244f66706f4d7833186c68abfa"
+    },
+    {
+      "file": "png/characters/glm/speaking.png",
+      "bytes": 389888,
+      "sha256": "54bdf1265a31f56067ea6a156a6ad82fb4903ea1c93a1575e7fb6df7e8ee5b81"
+    },
+    {
+      "file": "png/characters/glm/thinking.png",
+      "bytes": 397220,
+      "sha256": "bbed7c146f13b3bb15568148f28380c1a20fade3545b183f7a9e958a852bb758"
+    },
+    {
+      "file": "png/characters/glm/waiting.png",
+      "bytes": 395921,
+      "sha256": "a16593ed73d267ca9bf9c115e049e2f8e90c2e2d1fefe788b110a5aec28db794"
+    },
+    {
+      "file": "png/characters/grok/aborted.png",
+      "bytes": 422716,
+      "sha256": "84cb0d80facec9e2c341ca6db58ded3f36eafdb27f5c635240e9256303b95f1c"
+    },
+    {
+      "file": "png/characters/grok/approval.png",
+      "bytes": 436397,
+      "sha256": "70a19905b1b4e444d79e7c9bd47fa3d9c41fdf18df8600008fc65a168e998726"
+    },
+    {
+      "file": "png/characters/grok/celebrate.png",
+      "bytes": 443070,
+      "sha256": "e34bb22cd7f61e4a85a4328dde675453b230b8d87b0702a91f859ab03cd2e1c6"
+    },
+    {
+      "file": "png/characters/grok/done.png",
+      "bytes": 436440,
+      "sha256": "45dca1f6ce84369c8a5f6f03b67ad7cb8bf051446072303c6749b6e662cc7912"
+    },
+    {
+      "file": "png/characters/grok/error.png",
+      "bytes": 443373,
+      "sha256": "fbc1656b2fa463ce6d2b430177b8dad3b5c2e3ad8f23c2703b844e706653ca5a"
+    },
+    {
+      "file": "png/characters/grok/executing.png",
+      "bytes": 445553,
+      "sha256": "a521585bff6ca13ccd99a8c09736f449d1cad3e29ec806654a978420a712a10c"
+    },
+    {
+      "file": "png/characters/grok/idle.png",
+      "bytes": 426871,
+      "sha256": "7aa2ab176c95971d373e83d5b445246760919d68b791cc5fec3754016d14750c"
+    },
+    {
+      "file": "png/characters/grok/ready.png",
+      "bytes": 444831,
+      "sha256": "24a42efe2506938ae5b04b85e123ef1a40783382f2a569063d919fd91a8d4f19"
+    },
+    {
+      "file": "png/characters/grok/speaking.png",
+      "bytes": 445342,
+      "sha256": "ea63801e0a49aee991b32edc3f045a3d6e4a65d73ac197492c3ffac13ceb4636"
+    },
+    {
+      "file": "png/characters/grok/thinking.png",
+      "bytes": 442384,
+      "sha256": "5adaf62f4d8083f479b3d8eccc854f188f62c1d6e37276dda029cc263cece105"
+    },
+    {
+      "file": "png/characters/grok/waiting.png",
+      "bytes": 437569,
+      "sha256": "53e3b151389c84822681582ad3e92a5aded33818ca81a0d107560552aeb11818"
+    },
+    {
+      "file": "png/characters/kimi/aborted.png",
+      "bytes": 421241,
+      "sha256": "3851bb943f920930bb210412b02eddc1b543659e51aeb87f86c48f9ededd2fe9"
+    },
+    {
+      "file": "png/characters/kimi/approval.png",
+      "bytes": 429346,
+      "sha256": "a616efd12665aae27dd670ea5a5b3fd531b23ef4be5380d10541df62a50d15ad"
+    },
+    {
+      "file": "png/characters/kimi/celebrate.png",
+      "bytes": 437368,
+      "sha256": "9ab093250fda814e249398a85c4871d833bac7a1d003749781c456a8d9c677da"
+    },
+    {
+      "file": "png/characters/kimi/done.png",
+      "bytes": 430824,
+      "sha256": "4e59dd88e233e8374904c4b41ee0611e0cec07f53aadb7c4adbd856b02746972"
+    },
+    {
+      "file": "png/characters/kimi/error.png",
+      "bytes": 429754,
+      "sha256": "806d2e712dbaf191a5c56e7d4cc72c45f42ee7a0e488063fc0a78235a7cff39a"
+    },
+    {
+      "file": "png/characters/kimi/executing.png",
+      "bytes": 427628,
+      "sha256": "0a88b4d48a8d65fc36445bdd855d083a8f7312e6e58cccb47fcc89a5249ee523"
+    },
+    {
+      "file": "png/characters/kimi/idle.png",
+      "bytes": 436401,
+      "sha256": "f967e440c6bda9be2dd6159719bbcf7f97596f55f860540a69f565fecfbf7992"
+    },
+    {
+      "file": "png/characters/kimi/ready.png",
+      "bytes": 435599,
+      "sha256": "a87a922d7e83c773bc67bd00d3f9f73a73053fedc867e5946a232b2bc344c0f5"
+    },
+    {
+      "file": "png/characters/kimi/speaking.png",
+      "bytes": 433019,
+      "sha256": "1967e59233ef77b8b63d1cf7d4c09e3442610ca61f22da1ca78568ddf6ad31b2"
+    },
+    {
+      "file": "png/characters/kimi/thinking.png",
+      "bytes": 436227,
+      "sha256": "f40b3ac1226bbe9e23b7a76d3502e0fb9d295788e144688b6fed36a7cae763b4"
+    },
+    {
+      "file": "png/characters/kimi/waiting.png",
+      "bytes": 426781,
+      "sha256": "890ac365ba539aab3afd22ff85030a1e4f98dab52ed9e414ca8a826888d50d13"
+    },
+    {
+      "file": "png/characters/mimo/aborted.png",
+      "bytes": 325268,
+      "sha256": "9ce04e229eafd500c0fc92f28ff89dd9e597fd826a564ccbfc1758623142626e"
+    },
+    {
+      "file": "png/characters/mimo/approval.png",
+      "bytes": 338785,
+      "sha256": "874b5fe774304b24083fbd8e2d320401d29fc87569a876813d71a37baec6a943"
+    },
+    {
+      "file": "png/characters/mimo/celebrate.png",
+      "bytes": 342937,
+      "sha256": "a08555e661c32b1dc0081734ecd35501ae99c333bd9da7184600ea3b0eca1726"
+    },
+    {
+      "file": "png/characters/mimo/done.png",
+      "bytes": 354937,
+      "sha256": "faf9339200fb1978c53068a78df37681dcd08272f7b3d2d69829087969c33d5a"
+    },
+    {
+      "file": "png/characters/mimo/error.png",
+      "bytes": 334213,
+      "sha256": "22be37ef05389133e41cb7f17bf4f80c542285c5ea3db573902f6d43d7ab5552"
+    },
+    {
+      "file": "png/characters/mimo/executing.png",
+      "bytes": 333789,
+      "sha256": "83fd1ab61f38c64af986a48aef054e28ad61957a09fa04b5acfae63ce9da6551"
+    },
+    {
+      "file": "png/characters/mimo/idle.png",
+      "bytes": 364656,
+      "sha256": "b29be6586f3b616aa045104cd234aadce9e108aaed79d834c2d5b815a175fed9"
+    },
+    {
+      "file": "png/characters/mimo/ready.png",
+      "bytes": 355922,
+      "sha256": "32b7c0be18cd7c1436068d54034ac0bbcf18f8ce667169b8830019311f4ef719"
+    },
+    {
+      "file": "png/characters/mimo/speaking.png",
+      "bytes": 335438,
+      "sha256": "93664a477d0cd2e0b3c2b6bd21f17330a36d8f045943a1ed46270dc7609d04da"
+    },
+    {
+      "file": "png/characters/mimo/thinking.png",
+      "bytes": 362148,
+      "sha256": "b3a893b6f7e095aafc7a41ca1b9e7a9be1d5b26c17784db0d2ad4b73ef5f1ddd"
+    },
+    {
+      "file": "png/characters/mimo/waiting.png",
+      "bytes": 341598,
+      "sha256": "94670bdb0bcb1d64844254ce7dc25cd82f118e4ad563ad0b574a80d56a87f2ae"
+    },
+    {
+      "file": "png/characters/minimax/aborted.png",
+      "bytes": 317032,
+      "sha256": "4885aff63ebf0a571770b3915574abd18e67b749ddd211390e3daaa014ef3b21"
+    },
+    {
+      "file": "png/characters/minimax/approval.png",
+      "bytes": 332236,
+      "sha256": "2a04f680911b0d115b53c0e3a1d489d09a74c331120e55d49067b05d23968d8b"
+    },
+    {
+      "file": "png/characters/minimax/celebrate.png",
+      "bytes": 346345,
+      "sha256": "f93d67cdf7499b317e8d92318d42a91e6dabea410a42df160452f3deed607294"
+    },
+    {
+      "file": "png/characters/minimax/done.png",
+      "bytes": 325528,
+      "sha256": "3f86bdbe6cbb578fe2098bb0fa3919f3d14e50b5bc69c39eca98061a6e75431d"
+    },
+    {
+      "file": "png/characters/minimax/error.png",
+      "bytes": 328185,
+      "sha256": "8b9bbf3af17e6e41205964950ce528cfbffbb515b502fc12ccc806c49170ccee"
+    },
+    {
+      "file": "png/characters/minimax/executing.png",
+      "bytes": 333656,
+      "sha256": "6e27a2914997e9ab1c9881a3d01cbb6d2711d88a81c8cbe12a7d9d02a706ea00"
+    },
+    {
+      "file": "png/characters/minimax/idle.png",
+      "bytes": 335659,
+      "sha256": "eb2873e1e7050022082dfe3575460725160fe5e14db146bfdab9958feb099305"
+    },
+    {
+      "file": "png/characters/minimax/ready.png",
+      "bytes": 342198,
+      "sha256": "8bf5bced3ccc2e5c6d27d3b39d587f99164947ea9c0a09321e8e06dc66d1ec03"
+    },
+    {
+      "file": "png/characters/minimax/speaking.png",
+      "bytes": 342031,
+      "sha256": "464b314bd8fca3d1b4818dd386355aaccd33b19875209f72a55842df1d4da3fe"
+    },
+    {
+      "file": "png/characters/minimax/thinking.png",
+      "bytes": 336605,
+      "sha256": "99c2d8d2062f645f9ba87588adcb2932c3e52bee78d0879109bd1edd7ff57de9"
+    },
+    {
+      "file": "png/characters/minimax/waiting.png",
+      "bytes": 320332,
+      "sha256": "970e6a1ef17386d0ee2f49b31ca1cadb525dc843ea37e6c938790157738a4c57"
+    },
+    {
+      "file": "png/characters/qwen/aborted.png",
+      "bytes": 412250,
+      "sha256": "82f4f6055de2498b0f84c4fe6531b1b18bd8ef9f115c68e035a614bd01d8caa2"
+    },
+    {
+      "file": "png/characters/qwen/approval.png",
+      "bytes": 415412,
+      "sha256": "5a626dce5154cc2d52d4335a74d8fcd670ddfa84a9c02ce1ff3e502b903ed9b6"
+    },
+    {
+      "file": "png/characters/qwen/celebrate.png",
+      "bytes": 413451,
+      "sha256": "58d989911930fc0548bbd9180f3aa9c89295a0c39eab5942ca1b5f6bb0b1343e"
+    },
+    {
+      "file": "png/characters/qwen/done.png",
+      "bytes": 420722,
+      "sha256": "7298e680814accc8c8080727ba4c1364008afa469314e09c52bcf3c12a225a97"
+    },
+    {
+      "file": "png/characters/qwen/error.png",
+      "bytes": 420954,
+      "sha256": "a2eef9187b6c220e56863e5109aef0644be6835363d2cecee487eb145e28f5fb"
+    },
+    {
+      "file": "png/characters/qwen/executing.png",
+      "bytes": 424521,
+      "sha256": "0746075f425fed26ded2c695d29dde991c4fed5752caf84b22b486abdc6628cb"
+    },
+    {
+      "file": "png/characters/qwen/idle.png",
+      "bytes": 424722,
+      "sha256": "71d7465b2f37117f8083c4a62bfe25d4531558fe0cb41994e7c0be497536c302"
+    },
+    {
+      "file": "png/characters/qwen/ready.png",
+      "bytes": 437171,
+      "sha256": "e7b939c2f420814dab2cf46e7c0896ea6039bbb77f3ffc973a47394a972f08ad"
+    },
+    {
+      "file": "png/characters/qwen/speaking.png",
+      "bytes": 430751,
+      "sha256": "000ab8babd30aa09c76e6b8056bc817734e61366dad56f4df090bb8624f9cd26"
+    },
+    {
+      "file": "png/characters/qwen/thinking.png",
+      "bytes": 431511,
+      "sha256": "26e0bcb9f0ffaa266b39f55ad1d92fc238b9a2e16658c9d4b39f1ea07efcce95"
+    },
+    {
+      "file": "png/characters/qwen/waiting.png",
+      "bytes": 419324,
+      "sha256": "c3797f6d8b48ed406c3d34bd1dee567423a392bb6228e69f9a874d0d0d4ac582"
+    },
+    {
+      "file": "png/characters/step/aborted.png",
+      "bytes": 343523,
+      "sha256": "c9f09e0e86de0a9f4bf0d9134d457a85f35fafe03e70736031a80f3cb00d0f82"
+    },
+    {
+      "file": "png/characters/step/approval.png",
+      "bytes": 369661,
+      "sha256": "53696f5530e57678ac9864d5baa0998044d34895aad9092be7af24547cdc44d3"
+    },
+    {
+      "file": "png/characters/step/celebrate.png",
+      "bytes": 349836,
+      "sha256": "01283319f4df39ea9af30a5cf65b93da2bd4742241bbae543246624d5b70ea2d"
+    },
+    {
+      "file": "png/characters/step/done.png",
+      "bytes": 372246,
+      "sha256": "8a4ab06a9ddc43c500602df7586d3b3ec08e2967e8eeb7f280280458313710ae"
+    },
+    {
+      "file": "png/characters/step/error.png",
+      "bytes": 365623,
+      "sha256": "95ddb77b6992b7c8cdf266206e8d27a18ec58d3083007a8a8eace3bede628ffc"
+    },
+    {
+      "file": "png/characters/step/executing.png",
+      "bytes": 363339,
+      "sha256": "e5b29ebeb634a3567e4f2e5908a1f77511cd8acc1ae2b0a2e6d5f6c9e8c95ced"
+    },
+    {
+      "file": "png/characters/step/idle.png",
+      "bytes": 375248,
+      "sha256": "a24a033bf4f74a14cc14d1bc82d5d2708f5c2ae2b1550ab30bfb977ad036b22e"
+    },
+    {
+      "file": "png/characters/step/ready.png",
+      "bytes": 381537,
+      "sha256": "e03adb211879a9891a02a74854a8fa234bcad6e77ba107cf4ceaf87e3797db2a"
+    },
+    {
+      "file": "png/characters/step/speaking.png",
+      "bytes": 353428,
+      "sha256": "8874f66f7641a5823e2d4fd225905a72cf22dfe5bc88a29f7164fb19ea1dda4a"
+    },
+    {
+      "file": "png/characters/step/thinking.png",
+      "bytes": 378584,
+      "sha256": "21e46a552b411e0616fa13a95ba7c54648229aaa3d7057ca05733f2b18b8a00d"
+    },
+    {
+      "file": "png/characters/step/waiting.png",
+      "bytes": 367941,
+      "sha256": "7b06ac57bf1ad909e34d75da968177d7495681b00b3fe150e0368f79698b52b6"
+    },
+    {
+      "file": "png/portraits/chatgpt.png",
+      "bytes": 477294,
+      "sha256": "ae0e0eb6ec35824df0578dbbb3c065b0cd4b7b46098d08c678c6fa04b9375ab3"
+    },
+    {
+      "file": "png/portraits/claude.png",
+      "bytes": 537560,
+      "sha256": "96ef90761a88c941f4c21745b2d6d209b04a22169416f161cfeca7c8afbd0b60"
+    },
+    {
+      "file": "png/portraits/deepseek.png",
+      "bytes": 475117,
+      "sha256": "da815fc566d85b8b5a7ca9c5a64496360734f3ac234283360ff099b9ae8c5043"
+    },
+    {
+      "file": "png/portraits/doubao.png",
+      "bytes": 464821,
+      "sha256": "ecd1c2bad1c1d8c1f9b87c9b9564452926401112c0fd0242dad5bd6eef9b0776"
+    },
+    {
+      "file": "png/portraits/gemini.png",
+      "bytes": 562030,
+      "sha256": "ee12ff8ad93cdda93536d477b551221f42aad9f6d38a6e7c625b423d8bbe48a7"
+    },
+    {
+      "file": "png/portraits/glm.png",
+      "bytes": 458191,
+      "sha256": "61b220208fed0c1f5e0fca41dbc9213f39fdd276c463231562369325a50f9d8f"
+    },
+    {
+      "file": "png/portraits/grok.png",
+      "bytes": 516325,
+      "sha256": "7e0f2d2a904e9990856d65c01860785ca7d579e8a75fa978f52fbb09916e2e95"
+    },
+    {
+      "file": "png/portraits/kimi.png",
+      "bytes": 498846,
+      "sha256": "b4236c593c5ecd66b477bf0e58b3d0611b983f6692019d19a85af4eea23b9ced"
+    },
+    {
+      "file": "png/portraits/mimo.png",
+      "bytes": 431320,
+      "sha256": "2633471a1209af8b7dfb3e05761af512ffab06bb3e898725b5dc62f60b9b37fa"
+    },
+    {
+      "file": "png/portraits/minimax.png",
+      "bytes": 437780,
+      "sha256": "a2dff40f02de889b159361bf9dfdf38b687361ad199f9eed8118e62a269ca030"
+    },
+    {
+      "file": "png/portraits/qwen.png",
+      "bytes": 534538,
+      "sha256": "a6bd85ade7548343ca7ce2d724e2ed767e7fb9af01dec030e73357c8df675fbe"
+    },
+    {
+      "file": "png/portraits/step.png",
+      "bytes": 487249,
+      "sha256": "81a03d0d6ee557beee420af2ca98544e03caf17dcb8d7ffc2637882c6f742c61"
+    },
+    {
+      "file": "png/scene/chair.png",
+      "bytes": 596072,
+      "sha256": "17199e446bc624333a7e0fc87095ea5cd1a5be63398758022de932810f224cbe"
+    },
+    {
+      "file": "png/scene/cup.png",
+      "bytes": 637575,
+      "sha256": "93ac721fb34b6541c47a9b3ccfdaa19679434f9df42e7ce57585b402de8c5cea"
+    },
+    {
+      "file": "png/scene/folder.png",
+      "bytes": 663410,
+      "sha256": "007153fe12d439a5a8ae25d138133390e44a0fb45f682aa616073ab2b5c6193a"
+    },
+    {
+      "file": "png/scene/notebook.png",
+      "bytes": 554689,
+      "sha256": "292922e6ae50e94ba3f41591970f36a4f048b81ae425a43f49280a0650c40eb0"
+    },
+    {
+      "file": "png/scene/plant.png",
+      "bytes": 799527,
+      "sha256": "52159dcac067ed781bd3794122166c5a754af5263ca62630ec9dac84a607da09"
+    },
+    {
+      "file": "png/scene/room.png",
+      "bytes": 3574793,
+      "sha256": "3b16c0ff310bfcc88e2b6cc87dbd2e5412ce35ec0a88affd6e5847e1c7e1168d"
+    },
+    {
+      "file": "png/scene/wood-long.png",
+      "bytes": 701261,
+      "sha256": "2222d2eaed21b63e638512a16ec7bb4e27bf32059b5154675660a9407be158d5"
+    },
+    {
+      "file": "png/scene/wood-short.png",
+      "bytes": 989432,
+      "sha256": "85a4c9ca86521d0bb5629e8c1d27208123ba0e25ba990f0de066a8e4b48011e6"
+    },
+    {
+      "file": "webp/characters/chatgpt/aborted.webp",
+      "bytes": 66890,
+      "sha256": "0cdf54db7ef20b7f4faab57fabcd80b4432a45f5f88c87842c5ca0373154f2a6"
+    },
+    {
+      "file": "webp/characters/chatgpt/approval.webp",
+      "bytes": 73328,
+      "sha256": "cf588375c9cf00d8b60ed3b36acfe3f230dc8b1f99eba4baf0b5957c2601d458"
+    },
+    {
+      "file": "webp/characters/chatgpt/celebrate.webp",
+      "bytes": 75124,
+      "sha256": "b107c1042d2c93f8ef868c9973efb6dd80daf54ca69a9b89c8078928b17e5677"
+    },
+    {
+      "file": "webp/characters/chatgpt/done.webp",
+      "bytes": 72778,
+      "sha256": "62ecb569811b409a4e20edcc131b67590ee342f97f33387d1f19f6086f9d045f"
+    },
+    {
+      "file": "webp/characters/chatgpt/error.webp",
+      "bytes": 71558,
+      "sha256": "3a7e87982104ef702f92cc3a5498d8c212513197acd4e5646335b607391d1e6a"
+    },
+    {
+      "file": "webp/characters/chatgpt/executing.webp",
+      "bytes": 72884,
+      "sha256": "e5decaf136aeb61beab35a2ffa66b7197e95fe600a14b06d1dcc485ae616c704"
+    },
+    {
+      "file": "webp/characters/chatgpt/idle.webp",
+      "bytes": 76154,
+      "sha256": "bbb58e979b3e0d0059906191da2ec1897607c8f9d9660e56ee3d34d14ec25497"
+    },
+    {
+      "file": "webp/characters/chatgpt/ready.webp",
+      "bytes": 75846,
+      "sha256": "c20f764444f3f97bcf53307d5ca787bb93f05b1636f46b5fb1de24afa7c1b390"
+    },
+    {
+      "file": "webp/characters/chatgpt/speaking.webp",
+      "bytes": 71174,
+      "sha256": "97e6a25487f199f03cc51dcd686cee3e5a35e2e47b74bb01f24414baf75f217b"
+    },
+    {
+      "file": "webp/characters/chatgpt/thinking.webp",
+      "bytes": 73966,
+      "sha256": "46ca3b5e8b27709ba975cb5acc1afabfb7bb0fc8e7805faaad6d5ae573ecd94e"
+    },
+    {
+      "file": "webp/characters/chatgpt/waiting.webp",
+      "bytes": 68424,
+      "sha256": "2b7bf5ed0c6d76c700d40c4fb1995f66c3089caab4214c30484a74b6f5a988d4"
+    },
+    {
+      "file": "webp/characters/claude/aborted.webp",
+      "bytes": 84900,
+      "sha256": "815cf66772fa0d13871c52a228d151e57cc2f8368d2108573c0ddb35b3365899"
+    },
+    {
+      "file": "webp/characters/claude/approval.webp",
+      "bytes": 90688,
+      "sha256": "677b0934b0df31fc9e297c517f58e5d42d1878ec8f83bc269eb04d100eb269a5"
+    },
+    {
+      "file": "webp/characters/claude/celebrate.webp",
+      "bytes": 93450,
+      "sha256": "f9740602e45d9e234f53a61489c0ca37b4c8241602fdfeba73ad46f21b91a0a4"
+    },
+    {
+      "file": "webp/characters/claude/done.webp",
+      "bytes": 90918,
+      "sha256": "93d481606ab6e4181a6eb62dd72f4e7b302501069d57787fe33cfd3d26168b65"
+    },
+    {
+      "file": "webp/characters/claude/error.webp",
+      "bytes": 88146,
+      "sha256": "85594c8c2f65d6ed17ec7b92e0ad621795afacf133f310fc630f96ee553846d7"
+    },
+    {
+      "file": "webp/characters/claude/executing.webp",
+      "bytes": 87906,
+      "sha256": "8d7212c7048af10be708068a072f28015c267e611e07f7d1153499a28d43f484"
+    },
+    {
+      "file": "webp/characters/claude/idle.webp",
+      "bytes": 87858,
+      "sha256": "25d4f628e4e5b0e6b3e11d7db54de807df1301eeb4931822a10767518597e96c"
+    },
+    {
+      "file": "webp/characters/claude/ready.webp",
+      "bytes": 91494,
+      "sha256": "048a3d7adefa1e127f404e07325656636cafc03aa2c6418db8d7734ad1ff6db4"
+    },
+    {
+      "file": "webp/characters/claude/speaking.webp",
+      "bytes": 88410,
+      "sha256": "d7603d5ffd368f11e0f0ba08f1ac59cb55e3d7c28e2c6dce5bb3e9f1630a209b"
+    },
+    {
+      "file": "webp/characters/claude/thinking.webp",
+      "bytes": 91224,
+      "sha256": "4ace28481267b52cab16de8e0d13654c62ddd36e7b725c8f87b7811f007af758"
+    },
+    {
+      "file": "webp/characters/claude/waiting.webp",
+      "bytes": 88730,
+      "sha256": "0268c0e338ad1feb91f046415e2ae7cc974d6c70314548e4d8367be867a51f36"
+    },
+    {
+      "file": "webp/characters/deepseek/aborted.webp",
+      "bytes": 70664,
+      "sha256": "1cac5da541fb7bbf149a34ba4853a75c78b34befdcf3ccd18fa38ee8c895398b"
+    },
+    {
+      "file": "webp/characters/deepseek/approval.webp",
+      "bytes": 74728,
+      "sha256": "75713d7aff6757c159c0ccf1c0b53df630ed6c44b37c240dcfcb08ee590acdc7"
+    },
+    {
+      "file": "webp/characters/deepseek/celebrate.webp",
+      "bytes": 73710,
+      "sha256": "a4acb946a3485df1d204ed4bd7951259cc753a43ac3069f05523572d8a05a833"
+    },
+    {
+      "file": "webp/characters/deepseek/done.webp",
+      "bytes": 75806,
+      "sha256": "47ad6c4616ea097850350d5b43f2bb0fc3e47c7dc88f5ab59642709cf61f30c1"
+    },
+    {
+      "file": "webp/characters/deepseek/error.webp",
+      "bytes": 73210,
+      "sha256": "33ad88dc0ee52b868f50481c80f46eed2538682549c5339e88b92b2aa2e7f678"
+    },
+    {
+      "file": "webp/characters/deepseek/executing.webp",
+      "bytes": 73972,
+      "sha256": "06119616f67e03759bd385f33eca4059f407604f2f4c53784424f33c3b8a8ebc"
+    },
+    {
+      "file": "webp/characters/deepseek/idle.webp",
+      "bytes": 75406,
+      "sha256": "8eb3c74cf4edc366dd6ee90af631ff430fb861ff98f40b761e3543d618124387"
+    },
+    {
+      "file": "webp/characters/deepseek/ready.webp",
+      "bytes": 79302,
+      "sha256": "73cf395f50271c9729b9e524291f45f19a67e3cc0c773d71f04cb7d6aeffd672"
+    },
+    {
+      "file": "webp/characters/deepseek/speaking.webp",
+      "bytes": 74294,
+      "sha256": "04c789abdea76786eea169b614c96c04725c5c028eb6a8e32f36fe03558a7608"
+    },
+    {
+      "file": "webp/characters/deepseek/thinking.webp",
+      "bytes": 77194,
+      "sha256": "cca76aee68662f03d74fa69b1b90580e64ebd302710f38599b94151b2e76a7a4"
+    },
+    {
+      "file": "webp/characters/deepseek/waiting.webp",
+      "bytes": 74330,
+      "sha256": "0b1c953f201cad0c5b12dba78716095805acc3cbbbce5e50495c224574ff1f01"
+    },
+    {
+      "file": "webp/characters/doubao/aborted.webp",
+      "bytes": 59844,
+      "sha256": "20ee029ee973877bc6753906d18e0794a45c334bc9efd8707c0e6ebe65fd1d8c"
+    },
+    {
+      "file": "webp/characters/doubao/approval.webp",
+      "bytes": 65432,
+      "sha256": "771ee16f91aa0731411b1c081f97f3d9e284077573ebf09d390e47466ca9a8c4"
+    },
+    {
+      "file": "webp/characters/doubao/celebrate.webp",
+      "bytes": 64610,
+      "sha256": "e8a7667dea67a492f2799a9ed31c650d7a09a52d77a2c2e2d0eb1a5992f0d13a"
+    },
+    {
+      "file": "webp/characters/doubao/done.webp",
+      "bytes": 65408,
+      "sha256": "656ff747684ee8a7ebf6da933248bb543cc6dddc24242621f5566e09dfe51804"
+    },
+    {
+      "file": "webp/characters/doubao/error.webp",
+      "bytes": 66410,
+      "sha256": "df220c1fdfd94010b398b2f521cb305ebd0a5731a2b5c1cada8b97401fafabb9"
+    },
+    {
+      "file": "webp/characters/doubao/executing.webp",
+      "bytes": 67250,
+      "sha256": "98b5e3ba1f4657bdab86a91a20d64b35891552c1502604ec54c2d59eafd4aa45"
+    },
+    {
+      "file": "webp/characters/doubao/idle.webp",
+      "bytes": 67246,
+      "sha256": "c650c8a9a4d9e6f0b9225b13c9529a34f10ac2e56fc1ccca0b503ee6e7ba5b8f"
+    },
+    {
+      "file": "webp/characters/doubao/ready.webp",
+      "bytes": 68024,
+      "sha256": "7f47a0c9e14144c08845c8b576457da50ff87c050b61d1d95a9579d80aa6ee61"
+    },
+    {
+      "file": "webp/characters/doubao/speaking.webp",
+      "bytes": 65090,
+      "sha256": "51fec96d8c39c11d3ca9f791ffea5ed194710ae8e3e25c4e7768f6b932333e47"
+    },
+    {
+      "file": "webp/characters/doubao/thinking.webp",
+      "bytes": 66546,
+      "sha256": "71cdd91d56f25bdc8eb762aafe71f2b6e04aade1b65cf017e74f020b143d4bd1"
+    },
+    {
+      "file": "webp/characters/doubao/waiting.webp",
+      "bytes": 66000,
+      "sha256": "d72da2142fc1321635baa09ce85cf5473886890ea2f3d98c65055c9ce8ab2fc4"
+    },
+    {
+      "file": "webp/characters/gemini/aborted.webp",
+      "bytes": 85620,
+      "sha256": "4871b4094fcce863124d7374ab5ec9754064c0c75813d862b9e9e6247ba8af16"
+    },
+    {
+      "file": "webp/characters/gemini/approval.webp",
+      "bytes": 87286,
+      "sha256": "5ff3089b1100cbf65168b0cc7f5aaa00b39d55b8adeed2da97a347df988cd3af"
+    },
+    {
+      "file": "webp/characters/gemini/celebrate.webp",
+      "bytes": 86130,
+      "sha256": "fc5b7faa8df5abab93ec795a57e4e3550631ff890bb4f451d816994e6ab37545"
+    },
+    {
+      "file": "webp/characters/gemini/done.webp",
+      "bytes": 88404,
+      "sha256": "780cc3706b6f55986fae2f3bd2d2f770d9110bbec66ca6a796ebf1299cf3a59d"
+    },
+    {
+      "file": "webp/characters/gemini/error.webp",
+      "bytes": 88822,
+      "sha256": "e9572011f44556aa50b076f7a0301fb0a991f7b9c667e195c2d454934f834ffb"
+    },
+    {
+      "file": "webp/characters/gemini/executing.webp",
+      "bytes": 88912,
+      "sha256": "6d83e773a92240df7150cbd65227e2aaf8a7fa7319e9d4f4b1e3daea63b2cd53"
+    },
+    {
+      "file": "webp/characters/gemini/idle.webp",
+      "bytes": 88644,
+      "sha256": "4b7710ac362b638e3aee60dbc22eea99a49dc93467be3c6c881180c17ca18159"
+    },
+    {
+      "file": "webp/characters/gemini/ready.webp",
+      "bytes": 89754,
+      "sha256": "5fcf05a243ea068b7863871523120327b3c0942920283637d232f7f2da3b5983"
+    },
+    {
+      "file": "webp/characters/gemini/speaking.webp",
+      "bytes": 86256,
+      "sha256": "871d5694353bf535bdf65d70f6a9549bdee778ff77cf27f54bb4de4acdcdfc51"
+    },
+    {
+      "file": "webp/characters/gemini/thinking.webp",
+      "bytes": 90886,
+      "sha256": "7fdd43635bdb0642de8bbccef17afe76ef3998876414dd3cc308eb3e1b7882c8"
+    },
+    {
+      "file": "webp/characters/gemini/waiting.webp",
+      "bytes": 89852,
+      "sha256": "0fd0d5d0b429edb0645ad62212d1051c6489ded3b9cc4677f031901892dd9204"
+    },
+    {
+      "file": "webp/characters/glm/aborted.webp",
+      "bytes": 68048,
+      "sha256": "7fabf1a880c2e7f2562af10bb8f43a3181975b14eeaa58e9f69034f8f25cf15f"
+    },
+    {
+      "file": "webp/characters/glm/approval.webp",
+      "bytes": 73034,
+      "sha256": "179e89313ab7f503927b62f2d541f261370656b7d47f6fc352bc256b3d0c3728"
+    },
+    {
+      "file": "webp/characters/glm/celebrate.webp",
+      "bytes": 74846,
+      "sha256": "157a5f491ceb6dee06b44c8ea3b527dc3001663edfcc0da6fa689fe501b42324"
+    },
+    {
+      "file": "webp/characters/glm/done.webp",
+      "bytes": 76316,
+      "sha256": "8c3ff59c57813f88f555292224272907b99c12d63b561b4fefe8e1d5ca4107bb"
+    },
+    {
+      "file": "webp/characters/glm/error.webp",
+      "bytes": 71872,
+      "sha256": "0fb60445ad8750a6a048d594849ab520022f8017c93e260afd0cb6615d6d273c"
+    },
+    {
+      "file": "webp/characters/glm/executing.webp",
+      "bytes": 74192,
+      "sha256": "3f80e81543d81080dc89a7f0f5693c0e03fa2c056a04f108fdca6548b4b716d8"
+    },
+    {
+      "file": "webp/characters/glm/idle.webp",
+      "bytes": 75558,
+      "sha256": "262735ecd6b9c936d19d55f3bf41899ddac83ee9812f658cfa197f7a251c19c0"
+    },
+    {
+      "file": "webp/characters/glm/ready.webp",
+      "bytes": 73932,
+      "sha256": "0a5bd2dde6a77a7cfdf777772923101dd9a6bc6d8d4deda92a6ba70f79c065a7"
+    },
+    {
+      "file": "webp/characters/glm/speaking.webp",
+      "bytes": 71542,
+      "sha256": "a322689874daae9b68d82a83873eeded02ca5356bc24b34bcb794dbb17b6dd5e"
+    },
+    {
+      "file": "webp/characters/glm/thinking.webp",
+      "bytes": 72946,
+      "sha256": "fd0cd048b2fa79b7169eac049bd60a600a588fe0fd2d985b93fb7077ca1688a0"
+    },
+    {
+      "file": "webp/characters/glm/waiting.webp",
+      "bytes": 71852,
+      "sha256": "1996d0821af9a173d1087dbad0da8c41e8dbd21007b7004143c4d0f3fcac3c08"
+    },
+    {
+      "file": "webp/characters/grok/aborted.webp",
+      "bytes": 81330,
+      "sha256": "fa057992de074c7de6fd30058f29af9175b7107859cfbc0c9a6029bc40071b35"
+    },
+    {
+      "file": "webp/characters/grok/approval.webp",
+      "bytes": 83770,
+      "sha256": "64753bbcef43f7743fb45a4bf2b15192492dff04dcdc233edba4b7aa52c94872"
+    },
+    {
+      "file": "webp/characters/grok/celebrate.webp",
+      "bytes": 85656,
+      "sha256": "9a4ff1436a5e42e07f0d93793ee0175112d9f4fa028ff927d5843313eae31143"
+    },
+    {
+      "file": "webp/characters/grok/done.webp",
+      "bytes": 83752,
+      "sha256": "d8416e347d3dcc31065a4b1f1541c3466739bd868417a02b528a1272360c901e"
+    },
+    {
+      "file": "webp/characters/grok/error.webp",
+      "bytes": 85808,
+      "sha256": "a65a6a1b3eadf598163366deecfa45569b3366268ff522807134081e31ee8f3a"
+    },
+    {
+      "file": "webp/characters/grok/executing.webp",
+      "bytes": 84706,
+      "sha256": "e0b78a675d715fd1609de1ada94dc9ad516706a33c0a21c634614b8bf4e220b5"
+    },
+    {
+      "file": "webp/characters/grok/idle.webp",
+      "bytes": 83312,
+      "sha256": "877128ef4ceae46a8e7f89044c3dcc4d7334d57086d69154e6cbfa714d0ec7b1"
+    },
+    {
+      "file": "webp/characters/grok/ready.webp",
+      "bytes": 86876,
+      "sha256": "05549e4383795308a7d40552080f285bdb43b2bd8051e483ff1ad02ca4849bcb"
+    },
+    {
+      "file": "webp/characters/grok/speaking.webp",
+      "bytes": 85680,
+      "sha256": "5b7b6c20328fd7ae9f16b5e18054a7d090148d0d4a9507575ab25c3c9aace7f0"
+    },
+    {
+      "file": "webp/characters/grok/thinking.webp",
+      "bytes": 84858,
+      "sha256": "46ddf15200c5b8f9dd55367033e28102dee8e18baeb4e294a9a7bfdab7a24ae5"
+    },
+    {
+      "file": "webp/characters/grok/waiting.webp",
+      "bytes": 84114,
+      "sha256": "51369639fc14dc6402d341918d19c1d53e01aa03fd10742c162cf522fd5400bc"
+    },
+    {
+      "file": "webp/characters/kimi/aborted.webp",
+      "bytes": 81008,
+      "sha256": "56c8dd86ab7a4a7927243c63eb349c01ed9e112f09e19f17c7a0d1dd479a3d1e"
+    },
+    {
+      "file": "webp/characters/kimi/approval.webp",
+      "bytes": 82894,
+      "sha256": "b9169e341f7a44b02e18d4c26faf35e9cd7c6bdf309bfb741c7d940c265638cf"
+    },
+    {
+      "file": "webp/characters/kimi/celebrate.webp",
+      "bytes": 85156,
+      "sha256": "ade3bbf6779727ff808f98c57e733612ec7c02c09b941a3c9c28b3acf7412a93"
+    },
+    {
+      "file": "webp/characters/kimi/done.webp",
+      "bytes": 83260,
+      "sha256": "2c122f0e678f8f598880f80028290f100936dfae91db1d47b167953720c8cd0e"
+    },
+    {
+      "file": "webp/characters/kimi/error.webp",
+      "bytes": 82426,
+      "sha256": "0432d1c411219a75e9d0056f1075c084672f3b4cdcbab01362985583b9de888a"
+    },
+    {
+      "file": "webp/characters/kimi/executing.webp",
+      "bytes": 81660,
+      "sha256": "edf90123cd125fed5846f4f6fc3296e2ebaff97bf0f56778d5566896bfcb964a"
+    },
+    {
+      "file": "webp/characters/kimi/idle.webp",
+      "bytes": 83942,
+      "sha256": "31b7e65fc503c50cafc29d8a8e9d4b23ad5cfb91de1b80cd18a7cb0382ce03ff"
+    },
+    {
+      "file": "webp/characters/kimi/ready.webp",
+      "bytes": 84396,
+      "sha256": "5c0c3a10be91b05bb8618c51c81cf740e2efee3a31b03064ecbf3b87bc81b183"
+    },
+    {
+      "file": "webp/characters/kimi/speaking.webp",
+      "bytes": 82566,
+      "sha256": "6d2ddbb7e921e325d65500434adf750ca7a51f67fef1da696f3c223335c6d788"
+    },
+    {
+      "file": "webp/characters/kimi/thinking.webp",
+      "bytes": 84050,
+      "sha256": "c9e990714d8ed2120af5208f399f55da3748f8c0a79703535b2c17a8db061a21"
+    },
+    {
+      "file": "webp/characters/kimi/waiting.webp",
+      "bytes": 81810,
+      "sha256": "5f9384fb953767911dab3a801b49f4a12903141e8fcd71752d70dd75bac8cb9b"
+    },
+    {
+      "file": "webp/characters/mimo/aborted.webp",
+      "bytes": 63520,
+      "sha256": "b7c5ba8266e4d2c0a711b79c6599b99ba974a04396cbf23042b7130691c251e0"
+    },
+    {
+      "file": "webp/characters/mimo/approval.webp",
+      "bytes": 65892,
+      "sha256": "21ea513a5a324e7ccb0f7105b0e554ebefa552fce3434c8ac46857fca6ff1f38"
+    },
+    {
+      "file": "webp/characters/mimo/celebrate.webp",
+      "bytes": 68230,
+      "sha256": "62d38b6ddf3bfdbea6466fd0c8399651512aff22654546988390fe091e3bace2"
+    },
+    {
+      "file": "webp/characters/mimo/done.webp",
+      "bytes": 68982,
+      "sha256": "a55a41cb542acc8e85f4831d7d43f1221ac6e9f218ad65459ed492fb3fe784dc"
+    },
+    {
+      "file": "webp/characters/mimo/error.webp",
+      "bytes": 64708,
+      "sha256": "e2ddf82b4757357b3013d7916728899f3880ff557f85b28058e13e91ea8a3713"
+    },
+    {
+      "file": "webp/characters/mimo/executing.webp",
+      "bytes": 63996,
+      "sha256": "0eae3d6bfe4266d915d4ad67e645e38266e684d6e4fe80853751cc50c0aec0ef"
+    },
+    {
+      "file": "webp/characters/mimo/idle.webp",
+      "bytes": 70794,
+      "sha256": "64d667c85be9caf419ae7ab28a7e1d0e027e5c9416d3a4e864e3d96c2934cc1b"
+    },
+    {
+      "file": "webp/characters/mimo/ready.webp",
+      "bytes": 68998,
+      "sha256": "4e0ff10e58abe1184bc1dc6f8c698637a6b832a821a66681ad87636c7561362d"
+    },
+    {
+      "file": "webp/characters/mimo/speaking.webp",
+      "bytes": 67154,
+      "sha256": "78b0b1af72976bb04e85b040b272ee8afeec2431bdbe87e8508ebb238826cd6c"
+    },
+    {
+      "file": "webp/characters/mimo/thinking.webp",
+      "bytes": 71670,
+      "sha256": "31ea2f0b6c83d47a6e71255edc95365c3c136b57d4067d789b2a2f29aa838be5"
+    },
+    {
+      "file": "webp/characters/mimo/waiting.webp",
+      "bytes": 66652,
+      "sha256": "00f9a0d12f1b01e2f327a8925ad8ca228e3ed1ff4a937896d7aa561a84fe4353"
+    },
+    {
+      "file": "webp/characters/minimax/aborted.webp",
+      "bytes": 64926,
+      "sha256": "2370e417d394d80c31cb5a59c0a6e93b45a245133e51f901ded5099b54d39665"
+    },
+    {
+      "file": "webp/characters/minimax/approval.webp",
+      "bytes": 68216,
+      "sha256": "59e52a1c40f10d59fe732088bf75193d84184676c3111eb358678aed5c48f2ac"
+    },
+    {
+      "file": "webp/characters/minimax/celebrate.webp",
+      "bytes": 71246,
+      "sha256": "ea55097e981c9467d7b020853e6eeb099a7bde46278da6c08c673a4da4ab67a6"
+    },
+    {
+      "file": "webp/characters/minimax/done.webp",
+      "bytes": 66356,
+      "sha256": "649d610839be87a3ef9414a2214631d5040fb27d466566b07e5d02767a6f0e35"
+    },
+    {
+      "file": "webp/characters/minimax/error.webp",
+      "bytes": 68006,
+      "sha256": "b24001f5b9c18212e9983da134ebd089256c646ebd7e9222666bf506d1e2afb8"
+    },
+    {
+      "file": "webp/characters/minimax/executing.webp",
+      "bytes": 68836,
+      "sha256": "a034a4cac2a52f95a7962b1f0570ad7dc3db5ae4ea32a34365686bba0e8aa31f"
+    },
+    {
+      "file": "webp/characters/minimax/idle.webp",
+      "bytes": 70694,
+      "sha256": "484693b82b875bd67c5ad08283e9263748b24c4f3618a54284ba0eab33865703"
+    },
+    {
+      "file": "webp/characters/minimax/ready.webp",
+      "bytes": 69958,
+      "sha256": "df7c3cdb7792f2b78d44987fa3bde8e56f0b0d9df3a97beb25f33031037c670d"
+    },
+    {
+      "file": "webp/characters/minimax/speaking.webp",
+      "bytes": 69590,
+      "sha256": "e4f617ef8122fca8f8d0fc94c87e4d8917a17858f24404c87f08bbc6fd6c4783"
+    },
+    {
+      "file": "webp/characters/minimax/thinking.webp",
+      "bytes": 68922,
+      "sha256": "61be28c6d205f5c0bad1214dbbc5401174dab98520620d4e4b6c12c8a2bf774e"
+    },
+    {
+      "file": "webp/characters/minimax/waiting.webp",
+      "bytes": 65332,
+      "sha256": "1a83d6edd7a90fcf8fd6f11b7ab4591226afe9c95cf9611b8f2615813e9769dc"
+    },
+    {
+      "file": "webp/characters/qwen/aborted.webp",
+      "bytes": 78828,
+      "sha256": "a55a48622cbcde969497d21459dc411b88466b454024f928f49d77c55944ef69"
+    },
+    {
+      "file": "webp/characters/qwen/approval.webp",
+      "bytes": 79524,
+      "sha256": "3c993183558d940ce1e19e27c6ab0c9b013ff52102b0c1746348b582faaf19ea"
+    },
+    {
+      "file": "webp/characters/qwen/celebrate.webp",
+      "bytes": 79652,
+      "sha256": "5e7b5afea0afa75a3c1b5db3b6ffd6bbf7ccf0089749fcec6afa8a2d6b9d9812"
+    },
+    {
+      "file": "webp/characters/qwen/done.webp",
+      "bytes": 80584,
+      "sha256": "1a42efbfb28376e90369b61e6b7be2a73807616f7b639707dd1ada7ecb4c7cf4"
+    },
+    {
+      "file": "webp/characters/qwen/error.webp",
+      "bytes": 80444,
+      "sha256": "76be64ed63e8bbc60c2f2af312d927a4a437a9f4b353963c51bd5d606be613f5"
+    },
+    {
+      "file": "webp/characters/qwen/executing.webp",
+      "bytes": 79892,
+      "sha256": "78a6d1a78b690c3be389be1e3a46dc5ab3ed9619e7465bace4b69a396fd60dff"
+    },
+    {
+      "file": "webp/characters/qwen/idle.webp",
+      "bytes": 81202,
+      "sha256": "e9f67e550cf100727bfeaf1f5fb28c720161403405d7675b94ba8fdb2f7377b5"
+    },
+    {
+      "file": "webp/characters/qwen/ready.webp",
+      "bytes": 84118,
+      "sha256": "596489ac68f3d62a215b3d355187ab3a7c57bdf431059030a461bb584c0817a8"
+    },
+    {
+      "file": "webp/characters/qwen/speaking.webp",
+      "bytes": 81812,
+      "sha256": "c0fb743ea83c1d1d9a873b2b4bb7bac78abc3855ff890e66cb2f1f30fad2f8c0"
+    },
+    {
+      "file": "webp/characters/qwen/thinking.webp",
+      "bytes": 82152,
+      "sha256": "1bd0937f49e680c8e74333fce144c19d1ec18c2e32a892a40ad4abd74d391ad1"
+    },
+    {
+      "file": "webp/characters/qwen/waiting.webp",
+      "bytes": 78396,
+      "sha256": "8584a6e4b8b40e1925b84009f39bcb1f7a0adbeed419d3c6bcddfa565c4f7de2"
+    },
+    {
+      "file": "webp/characters/step/aborted.webp",
+      "bytes": 68926,
+      "sha256": "eea9c1cc62b6f965a8c2443993e62be289a8cd442e1a6490d1e6658109302e8e"
+    },
+    {
+      "file": "webp/characters/step/approval.webp",
+      "bytes": 74282,
+      "sha256": "d88b20fde34b6317ee9c80f45d7094ee1dc10ae3a29fd6854870089434fcf835"
+    },
+    {
+      "file": "webp/characters/step/celebrate.webp",
+      "bytes": 70634,
+      "sha256": "d5b7cb1212ea4faf6eea75a210a721ec50af71c76b08ee74f1d2b49c8a3911d7"
+    },
+    {
+      "file": "webp/characters/step/done.webp",
+      "bytes": 74830,
+      "sha256": "df496ddeef7e5eae2938dc7ac060eda68b09febdd8a65d8278565dbddf0090ac"
+    },
+    {
+      "file": "webp/characters/step/error.webp",
+      "bytes": 74632,
+      "sha256": "8b47cc8ffea5f1216fbf33434a801b3fbddf6d2a9770f6edeb6d1884a1dbbd77"
+    },
+    {
+      "file": "webp/characters/step/executing.webp",
+      "bytes": 73826,
+      "sha256": "b60a0f7b508545b02452dab8048a2fa92a21f0d24db7f19fc34ae754ba72e352"
+    },
+    {
+      "file": "webp/characters/step/idle.webp",
+      "bytes": 74232,
+      "sha256": "5ca93cf3fa03f245adf8599ef07d34a8708f3787da968b134c06ebea8f153ae6"
+    },
+    {
+      "file": "webp/characters/step/ready.webp",
+      "bytes": 75568,
+      "sha256": "0b9816089ded50341afa83544959ba9119ca8ef2fe89da80ddbbe6c20fd87871"
+    },
+    {
+      "file": "webp/characters/step/speaking.webp",
+      "bytes": 70564,
+      "sha256": "f26669f2354125cbb0cc0616da6f20ff2f6d9a0edcfb647c91c8bd7cb88c9cfa"
+    },
+    {
+      "file": "webp/characters/step/thinking.webp",
+      "bytes": 74324,
+      "sha256": "e47488bad2bf77763fa42a2da6ef649bc61b83f92190e7d9732de73232310433"
+    },
+    {
+      "file": "webp/characters/step/waiting.webp",
+      "bytes": 72248,
+      "sha256": "c84f68a85c8eeed13f8c9478c1814454a8482ecdca121e3ae1f47f48192a368d"
+    },
+    {
+      "file": "webp/portraits/chatgpt.webp",
+      "bytes": 85416,
+      "sha256": "79e7050513743340bdd9f4c41c9354d9707ea41e4bc84e44a8745501844e3ebd"
+    },
+    {
+      "file": "webp/portraits/claude.webp",
+      "bytes": 92266,
+      "sha256": "561f7b0bd76d9073f9d14838a85a57ebbc86a4ebb542b8dc95abba74ecbf454f"
+    },
+    {
+      "file": "webp/portraits/deepseek.webp",
+      "bytes": 79762,
+      "sha256": "5c29e94c9b1787e8021c7399a03997be71d3301fec30447902e7328f359ca754"
+    },
+    {
+      "file": "webp/portraits/doubao.webp",
+      "bytes": 82346,
+      "sha256": "92a8af40d6a855a09f46c93b96d059eff109591ed7527afc0fc9ba7e1ce4fedf"
+    },
+    {
+      "file": "webp/portraits/gemini.webp",
+      "bytes": 95836,
+      "sha256": "42995d54f19de648158a0526fc900cbeb5e84fafa8ae1e300885b304eaa1c248"
+    },
+    {
+      "file": "webp/portraits/glm.webp",
+      "bytes": 72750,
+      "sha256": "eccae745b211fdb10de7485503337bc76f6d05ad1e62dd473a707d37dd83638a"
+    },
+    {
+      "file": "webp/portraits/grok.webp",
+      "bytes": 86382,
+      "sha256": "9e310404f104f0f0cfd149f1ace8952f9e9647ca0fe00698e734e66199b802a4"
+    },
+    {
+      "file": "webp/portraits/kimi.webp",
+      "bytes": 86998,
+      "sha256": "1eebe210cae3c666eb5b08ac063e6721a39387342e0dfcfd93c87fdb7e40b136"
+    },
+    {
+      "file": "webp/portraits/mimo.webp",
+      "bytes": 75062,
+      "sha256": "6395eaa99834a39446b0347fd2f04e620ea4fb17901d7551e09b7a03dfdc7154"
+    },
+    {
+      "file": "webp/portraits/minimax.webp",
+      "bytes": 77692,
+      "sha256": "75972b9776ceb16a2bfeb0b3bc12dbc54155df2e7a40bb69db0df9d9170beb3f"
+    },
+    {
+      "file": "webp/portraits/qwen.webp",
+      "bytes": 88848,
+      "sha256": "70869781ecbfb2c81f9da9b9797101db1b06f5ef90a56191f40cc96d15dc1232"
+    },
+    {
+      "file": "webp/portraits/step.webp",
+      "bytes": 80920,
+      "sha256": "33ea4e90620b5c8505e0d681cf7fad86aa216f43195a3d2205066ae15622eaec"
+    },
+    {
+      "file": "webp/scene/chair.webp",
+      "bytes": 92830,
+      "sha256": "26d11415a85a63360899afa1821b4589797c959e94a3e194748968259492a9d9"
+    },
+    {
+      "file": "webp/scene/cup.webp",
+      "bytes": 75080,
+      "sha256": "3b1bef8813dc964046dc5b50bd7bf78a712b521fdfd7beda54cb53bc8a1fbef4"
+    },
+    {
+      "file": "webp/scene/folder.webp",
+      "bytes": 79220,
+      "sha256": "288670b10d7691365ba79cec3dbffb7b2031d13745d75d012f8783879449852f"
+    },
+    {
+      "file": "webp/scene/notebook.webp",
+      "bytes": 81276,
+      "sha256": "4fb26e728199ae622b5a06a7b07a109db0da9f723006ee6b751735145dce96c1"
+    },
+    {
+      "file": "webp/scene/plant.webp",
+      "bytes": 119088,
+      "sha256": "4c054d3abf125c6846a080153873d9b565be5533f9899ecdec32750a5fa4e614"
+    },
+    {
+      "file": "webp/scene/room.webp",
+      "bytes": 365266,
+      "sha256": "2a03a1564a10743d3d9f4d0d0eedcff0d442287840756dd2c2825a136fe17820"
+    },
+    {
+      "file": "webp/scene/wood-long.webp",
+      "bytes": 82294,
+      "sha256": "035a947948bd90ef6f6cadc7b9dbed703175b5166039394811b0ae2f8cd1baa2"
+    },
+    {
+      "file": "webp/scene/wood-short.webp",
+      "bytes": 117290,
+      "sha256": "63576fe64997a9237a87d72e9be64bf089c17b86b7ad5e9cd9cf037326b62d7a"
+    }
+  ]
+}

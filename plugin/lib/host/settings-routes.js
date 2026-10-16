@@ -148,6 +148,16 @@ function serveAvatar(res, settings, key) {
  */
 export async function handleSettingsRoutes(req, res, requestPath, method, deps) {
     const { ctx, settings, logger } = deps;
+    // Explicit allowlist: package art only; never resolve an arbitrary client-supplied path.
+    const artMatch = /^\/art\/((?:seated-)?(?:chatgpt|claude|gemini|grok|deepseek|glm|minimax|kimi|step|mimo|qwen|doubao)|longtable|room|wood-short|wood-long)\.webp$/.exec(requestPath);
+    if (method === 'GET' && artMatch) {
+        try {
+            const buffer = fs.readFileSync(new URL(`../art/${artMatch[1]}.webp`, import.meta.url));
+            res.writeHead(200, { 'content-type': 'image/webp', 'content-length': buffer.length, 'cache-control': 'public, max-age=86400', 'x-content-type-options': 'nosniff' });
+            res.end(buffer);
+        } catch { sendJson(res, 404, { error: '美术资源未安装。' }); }
+        return true;
+    }
     if (method === 'GET' && requestPath === '/models') {
         sendJson(res, 200, { providers: await modelCatalog(ctx) });
         return true;

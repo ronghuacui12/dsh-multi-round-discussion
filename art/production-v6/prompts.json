@@ -1,0 +1,67 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-16",
+  "base": "Use case: stylized-concept.\nAsset type: production transparent character animation/state atlas for a cozy anime AI discussion room.\nCreate ONE precisely aligned sprite sheet: EXACTLY FOUR columns by THREE rows, twelve equal SQUARE cells, wide 4:3 canvas, ideally 2560x1920. Every cell has transparent background, no drawn grid or labels. Keep each figure wholly within its cell with generous 8% transparent gutters, no overlaps, no floating decorations across cells. Same character design, same camera, same scale, head size and seat anchor in all first ELEVEN cells. Front view with gentle 10-degree downward camera, complete compact seated chibi, sitting on an invisible chair, knees bent, little shoes visible, NO furniture/table/chair drawn. 1.8-head-tall rounded chibi, broad large face, tiny torso/arms/legs. Clean delicate colored contours, clear warm cel shadows, pastel fill, crisp eyes, controlled soft gradients, tiny blush, no photorealism or painterly noise. Match the reference character's identity and the warm cozy room reference's cohesive polished chibi art.\nCell order left-to-right, top-to-bottom:\n1 idle: eyes open, small calm smile, hands relaxed on lap.\n2 ready: alert bright eyes, lean forward a little, both small fists ready near chest.\n3 thinking: thoughtful brows, tiny closed mouth, one finger touching temple.\n4 waiting: gentle half-lidded eyes, cheek resting on palm.\n5 done: pleased closed-eye smile, one small thumbs up.\n6 approval: hopeful wide eyes, both hands politely clasped before chest.\n7 executing: focused eyes, writing with a short pencil in a tiny plain notebook held on lap.\n8 error: worried brows, wobbly little mouth, one small blue sweatdrop near temple, no floating error symbols.\n9 aborted: closed eyes, relaxed downcast head, both hands on lap, peaceful subdued pause, no injury.\n10 celebrate: joyful closed-eye smile, both small arms raised, no confetti.\n11 speaking: open smiling mouth, one palm raised in a conversational gesture.\n12 portrait: larger head-and-shoulders bust of the SAME character, friendly eyes open, centered, all hair/ears/horns inside square with transparent corners. This is the only cell with different crop.\nNo names, letters, typography, watermarks, panel borders, circles, background cards, duplicated heads, extra arms or missing accessories. Preserve actual alpha transparency.",
+  "characters": [
+    {
+      "id": "chatgpt",
+      "design": "ChatGPT silver-white dragon girl: long silver-lavender hair, two ivory curved segmented horns, pointed ears, violet eyes, white dress with short draped sleeves, small silver interwoven knot on the same side as reference, small lavender membrane wings and ONE white scaly tail. Preserve these, keep wings/tail compact within each cell. Small astrolabe may rest on lap in idle only; do not obscure expression.",
+      "ref": "art/references/apprentice-ai-girls-chibis/ChatGPT-Chibi.png"
+    },
+    {
+      "id": "claude",
+      "design": "Claude copper-orange long-haired human girl, amber brown eyes, orange radial flower on head with black bow, cream white/black/copper classical dress, orange flower brooch. No horns, ears, wings or tail. Retain small dark-brown floral book on lap in idle only.",
+      "ref": "art/references/apprentice-ai-girls-chibis/Claude-Chibi.png"
+    },
+    {
+      "id": "gemini",
+      "design": "Gemini blue-to-purple long-haired cat girl, blue cat ears, double side buns with long curls, multicolor star hairclip, one pink eye and one amber eye, indigo purple white celestial outfit with star ornaments. Compact ONE fluffy purple cat tail, no horns.",
+      "ref": "art/references/apprentice-ai-girls-chibis/Gemini-Chibi.png"
+    },
+    {
+      "id": "grok",
+      "design": "Grok golden blonde twin-tail gothic girl, blue eyes, small dark crown, black bows, black and burgundy Victorian gothic dress with gold trim, compact small black bat wings. No animal ears or extra tails. Preserve outfit and warm blonde identity.",
+      "ref": "art/references/apprentice-ai-girls-chibis/Grok-Chibi.png"
+    },
+    {
+      "id": "deepseek",
+      "design": "DeepSeek whale girl: deep navy to pale blue long wavy hair, blue eyes, blue-white whale-fin ears (no additional human ears), white frilled headband, navy and white maid dress, white apron with a simple whale silhouette, ONE blue whale tail with two-lobed fin, compact and continuous, no horns/wings.",
+      "ref": "art/references/apprentice-ai-girls-chibis/DeepSeek-Chibi.png"
+    },
+    {
+      "id": "glm",
+      "design": "GLM black-and-white chess-themed human maid girl, long black hair, gray eyes, white frilled headband, small dark angular Z hair ornament as in reference, black-white geometric maid dress. Plain tiny Go board may rest on lap for idle. Human ears, no animal ears/horns/tail.",
+      "ref": "art/references/apprentice-ai-girls-chibis/GLM-Chibi.png"
+    },
+    {
+      "id": "minimax",
+      "design": "MiniMax coral pink-orange wavy-haired girl, coral beret with small red waveform embroidery and ribbon, rosy eyes, pastel pink and cream oversized jacket over plaid skirt, red ribbon accents, microphone-inspired accessories per reference. Human girl, no horns/animal ears/wings.",
+      "ref": "art/references/apprentice-ai-girls-chibis/MiniMax-Chibi.png"
+    },
+    {
+      "id": "kimi",
+      "design": "Kimi silver-white long wavy-haired moonlit maid girl, gray lilac eyes, white frilled headband, dark navy bow with K-shaped ornament on the reference side, navy black white frilled dress, small musical-note adornments and silver trim. Human girl, NO dragon horns/wings/tail and no cat ears.",
+      "ref": "art/references/apprentice-ai-girls-chibis/Kimi-Chibi.png"
+    },
+    {
+      "id": "step",
+      "design": "Step girl: pale sky-blue hair with cyan shaded long locks and a small curled ahoge, blue eyes, black white tailored outfit, small black square tech hair clip, white collar and dark tie/ribbon. Keep actual reference hairstyle and clothing. Her signature little square lantern may sit on lap only in idle, not become a head.",
+      "ref": "art/references/additional-models/step-source.png"
+    },
+    {
+      "id": "mimo",
+      "design": "MiMo orange-and-white rabbit MAID girl, long silver-white fluffy wavy hair with side braids, orange eyes, white floppy rabbit ears with pale pink inner ears, white frilled headband with small orange mi badge, orange bows, black neck ribbon, white puff-sleeve blouse, orange corset waist and orange-white frilled maid skirt/apron. Follow input image 1 exactly, do NOT invent a futuristic jacket or headset, do not shorten hair. Bunny ear tips bend outward and stay within each cell.",
+      "ref": "art/references/additional-models/mimo-rabbit-three-view.png"
+    },
+    {
+      "id": "qwen",
+      "design": "Qwen blue violet long wavy-haired Chinese-inspired girl, violet eyes, blue white gold qipao-inspired dress, ornate small navy side hat with hexagonal blue-white flower emblem, slim gold ornaments. Preserve folding fan; in idle a small closed blue-white fan on lap. No horns or animal ears.",
+      "ref": "art/references/apprentice-ai-girls-chibis/Qwen-Chibi.png"
+    },
+    {
+      "id": "doubao",
+      "design": "Doubao human maid girl with short black BOB hair, small ahoge, pink-brown eyes, white frilled headband, pink ribbons and a white dumpling mascot hair accessory. Black white pink Chinese-inspired frilled maid dress, pink frog-button details and dumpling motif apron from reference. No double-bun hairstyle, no beast ears/horns/wings. A tiny bamboo steamer can rest on lap in idle only.",
+      "ref": "art/references/additional-models/doubao-source.png"
+    }
+  ]
+}

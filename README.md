@@ -1,5 +1,30 @@
 # dsh多轮讨论
 
+> **2026-10-16 更新**：新增十二模型长桌交互、按实际参与人数收拢的分层场景，以及完整 152 件美术资源包。当前客户端使用 v5 独立坐姿人物、房间和长短桌；v6 的 132 张人物状态图、12 张头像与 8 件场景素材已归档，**尚未接入客户端状态切换**。详见 [当前项目状态与验证](PROJECT_STATUS.md) 和 [美术总清单](美术素材总清单-v6.md)。
+
+![十二模型美术资源总览](art/production-v6/review/overview.png)
+
+[查看全部人物状态](art/production-v6/review/all-states.png) · [查看 1～12 人排布](art/quantity-review-v6/all-counts.png)
+
+上图是美术素材总览与独立素材拼合示意，不代表十二个真实 API 已接入。模型调用仍使用用户在 DSH 中注册的路由。
+
+### 开发与验证
+
+需要 Node.js 22.19+，在仓库根目录执行：
+
+```bash
+npm ci
+npm run build
+npm run typecheck
+npm test
+npm run test:art
+npm run preview
+```
+
+模拟预览默认在 `http://127.0.0.1:19409/?count=6`，也可传入 `count=3` 或 `count=12`。它加载实际客户端 bundle，模型调用与写入使用内存模拟数据。源代码和测试通过仓库相对路径运行，无需作者本机目录。
+
+代码沿用根目录 MIT 许可；社区拟人美术的来源与许可单独见 [美术署名](art/production-v6/CREDITS.md)，不应将根目录 MIT 自动套用于全部人物美术。
+
 **给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（DSH）加一个"多模型研讨"的 agent 预设：多个模型各自独立出方案，互相看到对方（匿名）的方案后逐条评议，再由主导模型拍板融合，最后按你选的执行方式落地。**
 
 不是"让几个模型一起聊天"。角色是分开的，阶段是不可跳的：

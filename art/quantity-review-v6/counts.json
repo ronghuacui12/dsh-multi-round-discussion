@@ -1,0 +1,228 @@
+{
+  "assetPack": "production-v6",
+  "purpose": "Static asset composition, not application screenshots",
+  "cases": [
+    {
+      "count": 1,
+      "selected": [
+        "chatgpt"
+      ],
+      "renderedCharacters": 1,
+      "chairInstances": 1,
+      "tableId": "wood-short",
+      "tableWidth": 600,
+      "stride": 350,
+      "characterWidth": 340,
+      "file": "count-1.png"
+    },
+    {
+      "count": 2,
+      "selected": [
+        "chatgpt",
+        "claude"
+      ],
+      "renderedCharacters": 2,
+      "chairInstances": 2,
+      "tableId": "wood-short",
+      "tableWidth": 815,
+      "stride": 350,
+      "characterWidth": 340,
+      "file": "count-2.png"
+    },
+    {
+      "count": 3,
+      "selected": [
+        "claude",
+        "chatgpt",
+        "deepseek"
+      ],
+      "renderedCharacters": 3,
+      "chairInstances": 3,
+      "tableId": "wood-short",
+      "tableWidth": 1165,
+      "stride": 350,
+      "characterWidth": 340,
+      "file": "count-3.png"
+    },
+    {
+      "count": 4,
+      "selected": [
+        "claude",
+        "chatgpt",
+        "deepseek",
+        "gemini"
+      ],
+      "renderedCharacters": 4,
+      "chairInstances": 4,
+      "tableId": "wood-short",
+      "tableWidth": 1515,
+      "stride": 350,
+      "characterWidth": 340,
+      "file": "count-4.png"
+    },
+    {
+      "count": 5,
+      "selected": [
+        "claude",
+        "deepseek",
+        "chatgpt",
+        "gemini",
+        "grok"
+      ],
+      "renderedCharacters": 5,
+      "chairInstances": 5,
+      "tableId": "wood-short",
+      "tableWidth": 1865,
+      "stride": 350,
+      "characterWidth": 340,
+      "file": "count-5.png"
+    },
+    {
+      "count": 6,
+      "selected": [
+        "claude",
+        "deepseek",
+        "chatgpt",
+        "gemini",
+        "grok",
+        "glm"
+      ],
+      "renderedCharacters": 6,
+      "chairInstances": 6,
+      "tableId": "wood-short",
+      "tableWidth": 1900,
+      "stride": 293.3333333333333,
+      "characterWidth": 340,
+      "file": "count-6.png"
+    },
+    {
+      "count": 7,
+      "selected": [
+        "claude",
+        "deepseek",
+        "gemini",
+        "chatgpt",
+        "grok",
+        "glm",
+        "kimi"
+      ],
+      "renderedCharacters": 7,
+      "chairInstances": 7,
+      "tableId": "wood-long",
+      "tableWidth": 1900,
+      "stride": 251.42857142857142,
+      "characterWidth": 340,
+      "file": "count-7.png"
+    },
+    {
+      "count": 8,
+      "selected": [
+        "claude",
+        "deepseek",
+        "gemini",
+        "chatgpt",
+        "grok",
+        "glm",
+        "kimi",
+        "minimax"
+      ],
+      "renderedCharacters": 8,
+      "chairInstances": 8,
+      "tableId": "wood-long",
+      "tableWidth": 1900,
+      "stride": 220,
+      "characterWidth": 340,
+      "file": "count-8.png"
+    },
+    {
+      "count": 9,
+      "selected": [
+        "claude",
+        "deepseek",
+        "gemini",
+        "grok",
+        "chatgpt",
+        "glm",
+        "kimi",
+        "minimax",
+        "qwen"
+      ],
+      "renderedCharacters": 9,
+      "chairInstances": 9,
+      "tableId": "wood-long",
+      "tableWidth": 1900,
+      "stride": 195.55555555555554,
+      "characterWidth": 323,
+      "file": "count-9.png"
+    },
+    {
+      "count": 10,
+      "selected": [
+        "claude",
+        "deepseek",
+        "gemini",
+        "grok",
+        "chatgpt",
+        "glm",
+        "kimi",
+        "minimax",
+        "qwen",
+        "step"
+      ],
+      "renderedCharacters": 10,
+      "chairInstances": 10,
+      "tableId": "wood-long",
+      "tableWidth": 1900,
+      "stride": 176,
+      "characterWidth": 290,
+      "file": "count-10.png"
+    },
+    {
+      "count": 11,
+      "selected": [
+        "claude",
+        "deepseek",
+        "gemini",
+        "grok",
+        "glm",
+        "chatgpt",
+        "kimi",
+        "minimax",
+        "qwen",
+        "step",
+        "mimo"
+      ],
+      "renderedCharacters": 11,
+      "chairInstances": 11,
+      "tableId": "wood-long",
+      "tableWidth": 1900,
+      "stride": 160,
+      "characterWidth": 264,
+      "file": "count-11.png"
+    },
+    {
+      "count": 12,
+      "selected": [
+        "claude",
+        "deepseek",
+        "gemini",
+        "grok",
+        "glm",
+        "chatgpt",
+        "kimi",
+        "minimax",
+        "qwen",
+        "step",
+        "mimo",
+        "doubao"
+      ],
+      "renderedCharacters": 12,
+      "chairInstances": 12,
+      "tableId": "wood-long",
+      "tableWidth": 1900,
+      "stride": 146.66666666666666,
+      "characterWidth": 242,
+      "file": "count-12.png"
+    }
+  ]
+}

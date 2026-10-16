@@ -1,0 +1,574 @@
+{
+  "version": 1,
+  "note": "圆桌视图 Q 版素材契约。把这个文件填好，代码侧零改动即可接入。uncolored=true 表示给的是白/灰底素材，由代码按 tint 换色。",
+  "canvas": {
+    "width": 512,
+    "height": 640,
+    "anchor": {
+      "x": 256,
+      "y": 600
+    },
+    "safeMargin": 16
+  },
+  "render": {
+    "screenWidthRatioOfStageHeight": 0.19,
+    "minScreenWidth": 44,
+    "maxScreenWidth": 96,
+    "heightPerWidth": 1.3,
+    "shadowDrawnByCode": true
+  },
+  "anchors": {
+    "headCenter": {
+      "x": 256,
+      "y": 190
+    },
+    "faceSlot": {
+      "x": 256,
+      "y": 190,
+      "r": 78
+    },
+    "shoulderL": {
+      "x": 172,
+      "y": 300
+    },
+    "shoulderR": {
+      "x": 340,
+      "y": 300
+    },
+    "handL": {
+      "x": 150,
+      "y": 430
+    },
+    "handR": {
+      "x": 362,
+      "y": 430
+    },
+    "chest": {
+      "x": 256,
+      "y": 350
+    }
+  },
+  "templates": {
+    "t01": {
+      "name": "模板1 · 标准",
+      "layers": [
+        {
+          "part": "legs",
+          "file": "templates/t01/legs.png",
+          "z": 10,
+          "tint": "pants"
+        },
+        {
+          "part": "body",
+          "file": "templates/t01/body.png",
+          "z": 20,
+          "tint": "cloth"
+        },
+        {
+          "part": "armL",
+          "file": "templates/t01/arm_l.png",
+          "z": 22,
+          "tint": "cloth"
+        },
+        {
+          "part": "armR",
+          "file": "templates/t01/arm_r.png",
+          "z": 24,
+          "tint": "cloth"
+        },
+        {
+          "part": "head",
+          "file": "templates/t01/head.png",
+          "z": 30,
+          "tint": "skin"
+        }
+      ]
+    },
+    "t02": {
+      "name": "模板2 · 圆润",
+      "layers": [
+        {
+          "part": "head",
+          "file": "templates/t02/head.png",
+          "z": 30,
+          "tint": "skin"
+        }
+      ]
+    },
+    "t03": {
+      "name": "模板3 · 瘦高",
+      "layers": []
+    },
+    "t04": {
+      "name": "模板4 · 女性",
+      "layers": []
+    },
+    "t05": {
+      "name": "模板5 · 女性变体",
+      "layers": []
+    },
+    "t06": {
+      "name": "模板6 · 戴眼镜",
+      "layers": []
+    }
+  },
+  "hair": {
+    "hair01": {
+      "name": "短盖",
+      "back": "hair/hair01_back.png",
+      "front": "hair/hair01_front.png",
+      "z": {
+        "back": 5,
+        "front": 35
+      },
+      "tint": "hair"
+    },
+    "hair02": {
+      "name": "刺猬",
+      "back": "hair/hair02_back.png",
+      "front": "hair/hair02_front.png",
+      "z": {
+        "back": 5,
+        "front": 35
+      },
+      "tint": "hair"
+    },
+    "hair03": {
+      "name": "侧分",
+      "back": "hair/hair03_back.png",
+      "front": "hair/hair03_front.png",
+      "z": {
+        "back": 5,
+        "front": 35
+      },
+      "tint": "hair"
+    },
+    "hair04": {
+      "name": "马尾",
+      "back": "hair/hair04_back.png",
+      "front": "hair/hair04_front.png",
+      "z": {
+        "back": 5,
+        "front": 35
+      },
+      "tint": "hair"
+    },
+    "hair05": {
+      "name": "丸子头",
+      "back": "hair/hair05_back.png",
+      "front": "hair/hair05_front.png",
+      "z": {
+        "back": 5,
+        "front": 35
+      },
+      "tint": "hair"
+    },
+    "hair06": {
+      "name": "寸头",
+      "back": "hair/hair06_back.png",
+      "front": "hair/hair06_front.png",
+      "z": {
+        "back": 5,
+        "front": 35
+      },
+      "tint": "hair"
+    }
+  },
+  "poses": {
+    "leader_sit": {
+      "file": "poses/leader_sit.png",
+      "role": "decisionMaker",
+      "z": 15
+    },
+    "leader_point": {
+      "file": "poses/leader_point.png",
+      "role": "decisionMaker",
+      "z": 15
+    },
+    "leader_listen": {
+      "file": "poses/leader_listen.png",
+      "role": "decisionMaker",
+      "z": 15
+    },
+    "leader_nod": {
+      "file": "poses/leader_nod.png",
+      "role": "decisionMaker",
+      "z": 15
+    },
+    "proposer_lean": {
+      "file": "poses/proposer_lean.png",
+      "role": "proposer",
+      "z": 15
+    },
+    "proposer_flag": {
+      "file": "poses/proposer_flag.png",
+      "role": "proposer",
+      "z": 15
+    },
+    "proposer_notes": {
+      "file": "poses/proposer_notes.png",
+      "role": "proposer",
+      "z": 15
+    },
+    "proposer_scratch": {
+      "file": "poses/proposer_scratch.png",
+      "role": "proposer",
+      "z": 15
+    },
+    "reviewer_inspect": {
+      "file": "poses/reviewer_inspect.png",
+      "role": "reviewer",
+      "z": 15
+    },
+    "reviewer_mark": {
+      "file": "poses/reviewer_mark.png",
+      "role": "reviewer",
+      "z": 15
+    },
+    "reviewer_shake": {
+      "file": "poses/reviewer_shake.png",
+      "role": "reviewer",
+      "z": 15
+    },
+    "reviewer_note": {
+      "file": "poses/reviewer_note.png",
+      "role": "reviewer",
+      "z": 15
+    },
+    "executor_ready": {
+      "file": "poses/executor_ready.png",
+      "role": "executor",
+      "z": 15
+    },
+    "executor_work": {
+      "file": "poses/executor_work.png",
+      "role": "executor",
+      "z": 15
+    },
+    "executor_report": {
+      "file": "poses/executor_report.png",
+      "role": "executor",
+      "z": 15
+    },
+    "executor_wipe": {
+      "file": "poses/executor_wipe.png",
+      "role": "executor",
+      "z": 15
+    },
+    "verifier_check": {
+      "file": "poses/verifier_check.png",
+      "role": "verifier",
+      "z": 15
+    },
+    "verifier_scan": {
+      "file": "poses/verifier_scan.png",
+      "role": "verifier",
+      "z": 15
+    },
+    "verifier_pass": {
+      "file": "poses/verifier_pass.png",
+      "role": "verifier",
+      "z": 15
+    },
+    "verifier_frown": {
+      "file": "poses/verifier_frown.png",
+      "role": "verifier",
+      "z": 15
+    }
+  },
+  "faces": {
+    "eyes": {
+      "normal": "faces/eyes_normal.png",
+      "wide": "faces/eyes_wide.png",
+      "squint": "faces/eyes_squint.png",
+      "closed": "faces/eyes_closed.png",
+      "happy": "faces/eyes_happy.png",
+      "star": "faces/eyes_star.png",
+      "side": "faces/eyes_side.png",
+      "dizzy": "faces/eyes_dizzy.png",
+      "focus": "faces/eyes_focus.png"
+    },
+    "brow": {
+      "flat": "faces/brow_flat.png",
+      "angry": "faces/brow_angry.png",
+      "sad": "faces/brow_sad.png",
+      "think": "faces/brow_think.png"
+    },
+    "mouth": {
+      "small": "faces/mouth_small.png",
+      "smile": "faces/mouth_smile.png",
+      "open": "faces/mouth_open.png",
+      "laugh": "faces/mouth_laugh.png",
+      "wave": "faces/mouth_wave.png",
+      "pout": "faces/mouth_pout.png"
+    },
+    "extra": {
+      "blush": "faces/extra_blush.png",
+      "sweat": "faces/extra_sweat.png",
+      "anger": "faces/extra_anger.png"
+    },
+    "z": {
+      "eyes": 40,
+      "brow": 41,
+      "mouth": 42,
+      "extra": 43
+    }
+  },
+  "props": {
+    "gavel": {
+      "file": "props/gavel.png",
+      "attach": "handR",
+      "z": 26
+    },
+    "flag": {
+      "file": "props/flag.png",
+      "attach": "handR",
+      "z": 26
+    },
+    "notebook": {
+      "file": "props/notebook.png",
+      "attach": "chest",
+      "z": 26
+    },
+    "magnifier": {
+      "file": "props/magnifier.png",
+      "attach": "handR",
+      "z": 26
+    },
+    "redpen": {
+      "file": "props/redpen.png",
+      "attach": "handR",
+      "z": 26
+    },
+    "scoreboard": {
+      "file": "props/scoreboard.png",
+      "attach": "handR",
+      "z": 26
+    },
+    "wrench": {
+      "file": "props/wrench.png",
+      "attach": "handR",
+      "z": 26
+    },
+    "screwdriver": {
+      "file": "props/screwdriver.png",
+      "attach": "handR",
+      "z": 26
+    },
+    "toolbelt": {
+      "file": "props/toolbelt.png",
+      "attach": "chest",
+      "z": 27
+    },
+    "checklist": {
+      "file": "props/checklist.png",
+      "attach": "handR",
+      "z": 26
+    },
+    "stamp": {
+      "file": "props/stamp.png",
+      "attach": "handR",
+      "z": 26
+    },
+    "coffee": {
+      "file": "props/coffee.png",
+      "attach": "handL",
+      "z": 26
+    }
+  },
+  "roles": {
+    "decisionMaker": {
+      "label": "主导",
+      "color": "#22c55e",
+      "defaultPose": "leader_sit",
+      "idlePose": "leader_listen",
+      "actingPose": "leader_point",
+      "donePose": "leader_nod",
+      "prop": "gavel",
+      "chair": "chair_leader_front"
+    },
+    "proposer": {
+      "label": "讨论",
+      "color": "#3b82f6",
+      "defaultPose": "proposer_lean",
+      "idlePose": "proposer_notes",
+      "actingPose": "proposer_flag",
+      "donePose": "proposer_lean",
+      "prop": "flag",
+      "chair": "stool_front"
+    },
+    "reviewer": {
+      "label": "评审",
+      "color": "#a855f7",
+      "defaultPose": "reviewer_inspect",
+      "idlePose": "reviewer_note",
+      "actingPose": "reviewer_mark",
+      "donePose": "reviewer_inspect",
+      "prop": "magnifier",
+      "chair": "stool_front"
+    },
+    "executor": {
+      "label": "执行",
+      "color": "#f59e0b",
+      "defaultPose": "executor_ready",
+      "idlePose": "executor_ready",
+      "actingPose": "executor_work",
+      "donePose": "executor_report",
+      "prop": "wrench",
+      "chair": "stool_front"
+    },
+    "verifier": {
+      "label": "验证",
+      "color": "#06b6d4",
+      "defaultPose": "verifier_check",
+      "idlePose": "verifier_scan",
+      "actingPose": "verifier_check",
+      "donePose": "verifier_pass",
+      "prop": "checklist",
+      "chair": "stool_front"
+    }
+  },
+  "states": {
+    "idle": {
+      "eyes": "normal",
+      "brow": "flat",
+      "mouth": "small",
+      "pose": "idlePose",
+      "anim": "breath",
+      "icon": null
+    },
+    "ready": {
+      "eyes": "wide",
+      "brow": "flat",
+      "mouth": "flat",
+      "pose": "defaultPose",
+      "anim": "breath",
+      "icon": "hourglass"
+    },
+    "thinking": {
+      "eyes": "squint",
+      "brow": "think",
+      "mouth": "wave",
+      "pose": "idlePose",
+      "anim": "sway",
+      "icon": "dots"
+    },
+    "speaking": {
+      "eyes": "wide",
+      "brow": "flat",
+      "mouth": "open",
+      "pose": "actingPose",
+      "anim": "talk",
+      "icon": null
+    },
+    "done": {
+      "eyes": "happy",
+      "brow": "flat",
+      "mouth": "laugh",
+      "pose": "donePose",
+      "anim": "pop",
+      "icon": "check"
+    },
+    "doubt": {
+      "eyes": "side",
+      "brow": "angry",
+      "mouth": "pout",
+      "pose": "idlePose",
+      "anim": "shake",
+      "icon": "warn",
+      "extra": "anger"
+    },
+    "approval": {
+      "eyes": "wide",
+      "brow": "flat",
+      "mouth": "small",
+      "pose": "idlePose",
+      "anim": "breath",
+      "icon": "bang"
+    },
+    "executing": {
+      "eyes": "focus",
+      "brow": "angry",
+      "mouth": "flat",
+      "pose": "actingPose",
+      "anim": "work",
+      "icon": "gear"
+    },
+    "error": {
+      "eyes": "dizzy",
+      "brow": "sad",
+      "mouth": "wave",
+      "pose": "idlePose",
+      "anim": "shake",
+      "icon": "cross",
+      "extra": "sweat"
+    },
+    "aborted": {
+      "eyes": "closed",
+      "brow": "sad",
+      "mouth": "flat",
+      "pose": "idlePose",
+      "anim": null,
+      "icon": "dash"
+    },
+    "celebrate": {
+      "eyes": "happy",
+      "brow": "flat",
+      "mouth": "laugh",
+      "pose": "donePose",
+      "anim": "pop",
+      "icon": "confetti"
+    }
+  },
+  "furniture": {
+    "tableTop": {
+      "file": "furniture/table_top.png",
+      "z": 60
+    },
+    "tableRim": {
+      "file": "furniture/table_rim.png",
+      "z": 59
+    },
+    "tableGloss": {
+      "file": "furniture/table_gloss.png",
+      "z": 61
+    },
+    "chair_leader_front": {
+      "file": "furniture/chair_leader_front.png",
+      "z": 8
+    },
+    "chair_leader_side": {
+      "file": "furniture/chair_leader_side.png",
+      "z": 8
+    },
+    "stool_front": {
+      "file": "furniture/stool_front.png",
+      "z": 8
+    },
+    "stool_side": {
+      "file": "furniture/stool_side.png",
+      "z": 8
+    }
+  },
+  "icons": {
+    "dots": "icons/dots.png",
+    "hourglass": "icons/hourglass.png",
+    "bang": "icons/bang.png",
+    "check": "icons/check.png",
+    "cross": "icons/cross.png",
+    "warn": "icons/warn.png",
+    "gear": "icons/gear.png",
+    "confetti": "icons/confetti.png",
+    "dash": "icons/dash.png"
+  },
+  "bubbles": {
+    "say": "bubbles/say_9slice.png",
+    "think": "bubbles/think_9slice.png",
+    "slice": {
+      "top": 16,
+      "right": 16,
+      "bottom": 22,
+      "left": 16
+    }
+  }
+}

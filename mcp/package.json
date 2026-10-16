@@ -1,0 +1,7 @@
+{
+  "name": "mmd-mcp-servers",
+  "private": true,
+  "dependencies": {
+    "@wonderwhy-er/desktop-commander": "^0.3.0"
+  }
+}

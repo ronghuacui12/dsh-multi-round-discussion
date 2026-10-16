@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>多模型研讨 · 圆桌视图（交互原型）</title>
+<style>
+:root{
+  --bg:#0f1420; --bg2:#151c2c; --fg:#e8edf7; --muted:#93a0b8; --line:rgba(255,255,255,.10);
+  --accent:#3b82f6; --lead:#22c55e; --prop:#3b82f6; --rev:#a855f7; --exec:#f59e0b; --ver:#06b6d4;
+  --shadow:0 10px 30px -12px rgba(0,0,0,.75);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(1200px 700px at 50% -10%,#1b2740,#0b0f18 60%);color:var(--fg);
+  font:13px/1.6 "Segoe UI","Microsoft YaHei",system-ui,sans-serif;overflow:hidden}
+button,select,input,textarea{font:inherit;color:inherit}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,255,255,.05),transparent);flex-wrap:wrap}
+.bar h1{font-size:14px;margin:0 8px 0 0;font-weight:700;letter-spacing:.3px}
+.chip{font-size:11.5px;padding:2px 10px;border-radius:999px;background:rgba(59,130,246,.16);
+  color:#93c5fd;border:1px solid rgba(59,130,246,.35)}
+.spacer{flex:1}
+.btn{border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:9px;padding:5px 12px;
+  cursor:pointer;font-size:12.5px;transition:.15s}
+.btn:hover{background:rgba(255,255,255,.10)}
+.btn.primary{background:linear-gradient(180deg,#3b82f6,#2563eb);border-color:#2563eb;font-weight:600}
+.btn.danger{border-color:rgba(239,68,68,.45);color:#fca5a5}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:5px 11px;cursor:pointer;font-size:12px}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:rgba(59,130,246,.28)}
+.app{display:flex;flex-direction:column;height:calc(100% - 47px)}
+.stageWrap{position:relative;flex:0 0 46%;min-height:180px;overflow:hidden}
+.split{height:7px;cursor:ns-resize;background:linear-gradient(180deg,transparent,rgba(255,255,255,.10));
+  border-top:1px solid var(--line);flex:0 0 auto;display:flex;align-items:center;justify-content:center}
+.split::after{content:"";width:56px;height:3px;border-radius:2px;background:var(--line)}
+.stage{position:absolute;inset:0}
+.floor{position:absolute;left:50%;bottom:2%;width:92%;height:44%;transform:translateX(-50%);
+  background:radial-gradient(ellipse at 50% 40%,rgba(120,160,255,.10),transparent 70%);border-radius:50%}
+.table{position:absolute;left:50%;top:55%;width:62%;height:30%;transform:translate(-50%,-50%);
+  border-radius:50%;z-index:60;
+  background:radial-gradient(ellipse at 50% 30%,#3b4a63,#242f42 65%,#1a2231);
+  box-shadow:0 26px 40px -22px rgba(0,0,0,.95),inset 0 2px 0 rgba(255,255,255,.12),0 0 0 8px rgba(255,255,255,.03)}
+.table::after{content:"";position:absolute;left:3%;right:3%;bottom:-7%;height:18%;border-radius:50%;
+  background:linear-gradient(180deg,#33405a,#1b2434);box-shadow:0 12px 22px -12px #000}
+.table::before{content:"";position:absolute;inset:8% 10%;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 25%,rgba(255,255,255,.10),transparent 60%)}
+.seat{position:absolute;width:78px;height:64px;transform:translate(-50%,-50%);border-radius:14px;z-index:60;
+  display:flex;align-items:flex-end;justify-content:center;transition:box-shadow .15s,background .15s}
+.seat.occupied{pointer-events:none}
+.seat.hot{box-shadow:0 0 0 2px rgba(59,130,246,.85) inset;background:rgba(59,130,246,.10)}
+.seat.bad{box-shadow:0 0 0 2px rgba(239,68,68,.85) inset;background:rgba(239,68,68,.10)}
+.seat .vac{width:34px;height:34px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.35);
+  display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:17px;margin-bottom:6px;cursor:pointer}
+.seat .vac:hover{border-color:#93c5fd;color:#93c5fd}
+.actor{position:absolute;transform:translate(-50%,-100%);z-index:70;cursor:grab;touch-action:none;
+  transition:filter .2s,opacity .2s;will-change:transform}
+.actor svg{display:block;filter:drop-shadow(0 10px 10px rgba(0,0,0,.55))}
+.actor.dragging{cursor:grabbing;z-index:200;filter:brightness(1.12);pointer-events:none}
+.actor.dim{filter:grayscale(.65) brightness(.8);opacity:.85}
+.actor.hl svg{filter:drop-shadow(0 0 10px rgba(96,165,250,.95))}
+.actor .cap{position:absolute;left:50%;transform:translateX(-50%);bottom:-15px;white-space:nowrap;
+  font-size:10.5px;color:#cbd5e1;background:rgba(9,13,20,.75);padding:1px 7px;border-radius:999px;
+  border:1px solid var(--line)}
+.actor .badge{position:absolute;left:50%;transform:translateX(-50%);top:-16px;font-size:13px}
+.bubbles{position:absolute;inset:0;z-index:150;pointer-events:none}
+.bubble{position:absolute;transform:translate(-50%,-100%);max-width:260px;min-width:78px;
+  background:#f8fafc;color:#0f172a;border-radius:12px;padding:7px 10px;font-size:12px;line-height:1.5;
+  box-shadow:0 10px 24px -10px rgba(0,0,0,.8);pointer-events:auto;animation:bub .22s ease both}
+.bubble b{display:block;font-size:11px;color:#475569;margin-bottom:2px}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);
+  border:7px solid transparent;border-top-color:#f8fafc;border-bottom:0}
+.bubble.think{background:#eef2ff}
+.bubble.think::after{border-top-color:#eef2ff}
+.bubble.think .dots i{display:inline-block;width:5px;height:5px;border-radius:50%;background:#6366f1;margin-right:3px;animation:bl 1s infinite}
+.bubble.think .dots i:nth-child(2){animation-delay:.15s}
+.bubble.think .dots i:nth-child(3){animation-delay:.3s}
+.rail{position:absolute;left:14px;top:12px;display:flex;align-items:center;gap:0;z-index:80;flex-wrap:wrap}
+.rail .st{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.rail .st i{width:17px;height:17px;border-radius:50%;border:1.5px solid rgba(255,255,255,.28);
+  display:flex;align-items:center;justify-content:center;font-style:normal;font-size:9.5px}
+.rail .st.done i{background:var(--lead);border-color:var(--lead);color:#04120a}
+.rail .st.now i{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 4px rgba(59,130,246,.22)}
+.rail .st.now{color:#fff;font-weight:600}
+.rail .ln{width:16px;height:1.5px;background:rgba(255,255,255,.18);margin:0 6px}
+.dock{position:absolute;left:0;right:0;bottom:0;z-index:160;padding:8px 14px 10px;display:flex;gap:8px;
+  align-items:center;background:linear-gradient(180deg,transparent,rgba(5,8,14,.92) 45%)}
+.approve{display:flex;align-items:center;gap:10px;width:100%;border:1px solid rgba(245,158,11,.5);
+  background:linear-gradient(180deg,rgba(245,158,11,.20),rgba(245,158,11,.08));border-radius:12px;padding:9px 12px}
+.approve .ic{width:30px;height:30px;border-radius:9px;background:rgba(245,158,11,.28);display:flex;
+  align-items:center;justify-content:center}
+.approve .tx b{display:block;font-size:12.5px}
+.approve .tx span{font-size:11px;color:var(--muted)}
+.stream{flex:1;min-height:0;overflow-y:auto;padding:14px 18px 90px}
+.msg{display:flex;gap:10px;margin-bottom:14px;animation:in .22s ease both}
+.msg .av{width:32px;height:32px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:#fff;font-size:13px}
+.msg .who{font-weight:700;font-size:12.5px}
+.msg .tg{font-size:11px;color:var(--muted);margin-left:6px}
+.msg .bd{margin-top:3px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;
+  padding:8px 11px;white-space:pre-wrap;max-width:760px}
+.msg.me{flex-direction:row-reverse}
+.msg.me .bd{background:rgba(59,130,246,.16);border-color:rgba(59,130,246,.35)}
+.msg.sys .bd{border-style:dashed;color:var(--muted);background:transparent}
+.divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:11px;margin:18px 0 12px}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.menu{position:fixed;z-index:400;background:#151d2c;border:1px solid var(--line);border-radius:10px;
+  padding:5px;box-shadow:var(--shadow);min-width:168px;display:none}
+.menu b{display:block;font-size:11px;color:var(--muted);padding:5px 9px 3px}
+.menu button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:6px 9px;
+  border-radius:7px;cursor:pointer;font-size:12.5px}
+.menu button:hover{background:rgba(59,130,246,.22)}
+.menu button.danger{color:#fca5a5}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:320px;background:#131a28;border-left:1px solid var(--line);
+  z-index:420;transform:translateX(102%);transition:transform .22s ease;display:flex;flex-direction:column;box-shadow:var(--shadow)}
+.drawer.open{transform:none}
+.drawer header{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.drawer .body{padding:12px 14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld span{font-size:11px;color:var(--muted);font-weight:600}
+.fld input,.fld select,.fld textarea{background:#0d131f;border:1px solid var(--line);border-radius:8px;
+  padding:6px 9px;font-size:12.5px;color:var(--fg)}
+.drawer footer{padding:12px 14px;border-top:1px solid var(--line);display:flex;gap:8px}
+.picker{position:fixed;z-index:410;background:#151d2c;border:1px solid var(--line);border-radius:12px;
+  padding:10px;box-shadow:var(--shadow);width:290px;display:none}
+.picker h4{margin:2px 0 8px;font-size:12.5px}
+.picker .row{display:flex;align-items:center;gap:8px;padding:6px;border-radius:9px;cursor:pointer}
+.picker .row:hover{background:rgba(59,130,246,.18)}
+.picker .mini{width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.06);overflow:hidden;
+  display:flex;align-items:center;justify-content:center}
+.picker .mini svg{width:26px;height:32px}
+.picker .sub{font-size:11px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#1f2a3d;
+  border:1px solid var(--line);padding:8px 16px;border-radius:999px;font-size:12.5px;opacity:0;
+  transition:.22s;z-index:500;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+@keyframes bub{from{opacity:0;transform:translate(-50%,-90%) scale(.96)}to{opacity:1;transform:translate(-50%,-100%) scale(1)}}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes bl{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+@keyframes breath{0%,100%{transform:scale(1)}50%{transform:scale(1.022)}}
+@keyframes sway{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg)}}
+@keyframes talk{0%,100%{transform:translateY(0) rotate(-.8deg)}50%{transform:translateY(-2px) rotate(.8deg)}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.10) translateY(-4px)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+@keyframes work{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1.6deg) translateY(-1px)}}
+.actor.a-breath{animation:breath 2.4s infinite ease-in-out}
+.actor.a-sway{animation:sway 3.2s infinite ease-in-out}
+.actor.a-talk{animation:talk 1.1s infinite ease-in-out}
+.actor.a-pop{animation:pop .6s ease-out}
+.actor.a-shake{animation:shake .5s ease-in-out}
+.actor.a-work{animation:work 1.4s infinite ease-in-out}
+@media (prefers-reduced-motion:reduce){.actor{animation:none!important}.bubble{animation:none}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <h1>多模型研讨 · 圆桌视图</h1>
+  <span class="chip" id="phaseChip">空闲</span>
+  <span class="spacer"></span>
+  <div class="seg" id="modeSeg">
+    <button data-mode="chibi" class="on">Q 版形象</button>
+    <button data-mode="sticker">头像贴纸</button>
+    <button data-mode="photo">照片模式</button>
+  </div>
+  <button class="btn" id="toggleStream">隐藏对话流</button>
+  <button class="btn primary" id="playBtn">▶ 播放一轮研讨</button>
+  <button class="btn" id="resetBtn">重置</button>
+</div>
+<div class="app">
+  <div class="stageWrap" id="stageWrap">
+    <div class="stage" id="stage">
+      <div class="floor"></div>
+      <div class="table"></div>
+      <div class="rail" id="rail"></div>
+      <div id="seats"></div>
+      <div id="actors"></div>
+      <div class="bubbles" id="bubbles"></div>
+      <div class="dock" id="dock"></div>
+    </div>
+  </div>
+  <div class="split" id="split"></div>
+  <div class="stream" id="stream"></div>
+</div>
+<div class="menu" id="menu"></div>
+<div class="picker" id="picker"></div>
+<div class="drawer" id="drawer">
+  <header><b id="drawerTitle">编辑模型信息</b><span class="spacer"></span>
+    <button class="btn" id="drawerClose">关闭</button></header>
+  <div class="body" id="drawerBody"></div>
+  <footer><button class="btn primary" id="drawerSave">保存</button>
+    <button class="btn danger" id="drawerRemove">移出座位</button></footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+/* ============================================================================
+   1. 数据：座位表 / 模型 / 角色容量 / 视觉状态表
+   ========================================================================== */
+var SEATS = [
+  {id:"S1", role:"decisionMaker", x:50, y:88, s:1.16, name:"主导位"},
+  {id:"S2", role:"proposer",      x:26, y:78, s:1.06, name:"讨论位 1"},
+  {id:"S3", role:"proposer",      x:74, y:78, s:1.06, name:"讨论位 2"},
+  {id:"S4", role:"proposer",      x:10, y:66, s:0.99, name:"讨论位 3"},
+  {id:"S5", role:"proposer",      x:90, y:66, s:0.99, name:"讨论位 4"},
+  {id:"S6", role:"proposer",      x:23, y:58, s:0.95, name:"讨论位 5"},
+  {id:"S7", role:"reviewer",      x:77, y:58, s:0.95, name:"评审位 1"},
+  {id:"S8", role:"reviewer",      x:11, y:52, s:0.90, name:"评审位 2"},
+  {id:"S9", role:"reviewer",      x:89, y:52, s:0.90, name:"评审位 3"},
+  {id:"S10",role:"executor",      x:50, y:46, s:1.04, name:"执行位"},
+  {id:"S11",role:"verifier",      x:33, y:50, s:0.90, name:"验证位 1"},
+  {id:"S12",role:"verifier",      x:67, y:50, s:0.90, name:"验证位 2"}
+];
+var ROLE_CAP = {decisionMaker:1, proposer:5, reviewer:3, executor:1, verifier:2};
+var ROLE_TEXT = {decisionMaker:"主导", proposer:"讨论", reviewer:"评审", executor:"执行", verifier:"验证"};
+var ROLE_COLOR = {decisionMaker:"#22c55e", proposer:"#3b82f6", reviewer:"#a855f7", executor:"#f59e0b", verifier:"#06b6d4"};
+var PROVIDERS = [
+  {id:"deepseek-official", name:"DeepSeek 官方", models:["deepseek-v4-pro","deepseek-v4-flash","deepseek-flash"]},
+  {id:"zai", name:"Z.AI", models:["glm-4.7","glm-4.6"]},
+  {id:"gemini", name:"Gemini（本地代理）", models:["gemini-3.8-flash-high"]}
+];
+/* 初始阵容：8 个模型，6 个入座，2 个待入座（用来演示"点空座位添加模型"） */
+var MODELS = {
+  lead:        {id:"lead",       label:"主导模型 · leader", provider:"deepseek-official", model:"deepseek-v4-pro",   temp:0.4, prompt:"你是技术负责人，负责拍板和最终答复。", enabled:true},
+  "proposer-a":{id:"proposer-a", label:"提案 A · 交付优先", provider:"deepseek-official", model:"deepseek-v4-flash", temp:0.8, prompt:"你偏好最短路径落地。", enabled:true},
+  "proposer-b":{id:"proposer-b", label:"提案 B · 运维优先", provider:"deepseek-official", model:"deepseek-v4-flash", temp:0.8, prompt:"你会主动指出长期维护成本。", enabled:true},
+  "proposer-c":{id:"proposer-c", label:"提案 C · 反方",     provider:"zai",               model:"glm-4.7",          temp:0.9, prompt:"你的任务是论证需求可能提错了。", enabled:true},
+  "reviewer-1":{id:"reviewer-1", label:"评审 · 挑刺",       provider:"deepseek-official", model:"deepseek-v4-flash", temp:0.3, prompt:"你只找提案在什么条件下会失效。", enabled:true},
+  executor:    {id:"executor",   label:"执行模型",          provider:"deepseek-official", model:"deepseek-v4-flash", temp:0.1, prompt:"严格按批准的计划动手。", enabled:true},
+  "proposer-d":{id:"proposer-d", label:"提案 D · 备选",     provider:"deepseek-official", model:"deepseek-v4-pro",   temp:0.6, prompt:"你偏好结构化、可扩展的设计。", enabled:true},
+  "verifier-1":{id:"verifier-1", label:"验证模型",          provider:"deepseek-official", model:"deepseek-v4-flash", temp:0.2, prompt:"按验收标准检查执行结果。", enabled:true}
+};
+var INITIAL_SEATED = {S1:"lead", S2:"proposer-a", S3:"proposer-b", S4:"proposer-c", S7:"reviewer-1", S10:"executor", S11:"verifier-1"};
+/* 视觉状态表：状态 -> 眼睛/眉毛/嘴/手臂/头顶图标/动画 */
+var VIS = {
+  idle:      {eyes:"open",   brow:"normal", mouth:"small", arm:"rest",  badge:"",   anim:"breath"},
+  ready:     {eyes:"wide",   brow:"normal", mouth:"flat",  arm:"rest",  badge:"⏳", anim:"breath"},
+  thinking:  {eyes:"squint", brow:"think",  mouth:"wave",  arm:"chin",  badge:"",   anim:"sway"},
+  speaking:  {eyes:"wide",   brow:"normal", mouth:"open",  arm:"raise", badge:"",   anim:"talk"},
+  done:      {eyes:"happy",  brow:"normal", mouth:"laugh", arm:"both",  badge:"✓",  anim:"pop"},
+  doubt:     {eyes:"side",   brow:"angry",  mouth:"pout",  arm:"cross", badge:"⚠",  anim:"shake"},
+  waiting:   {eyes:"half",   brow:"normal", mouth:"small", arm:"chin",  badge:"",   anim:"breath"},
+  approval:  {eyes:"wide",   brow:"normal", mouth:"small", arm:"rest",  badge:"❗", anim:"breath"},
+  executing: {eyes:"focus",  brow:"angry",  mouth:"flat",  arm:"tool",  badge:"🔧", anim:"work"},
+  error:     {eyes:"dizzy",  brow:"sad",    mouth:"wave",  arm:"back",  badge:"✕",  anim:"shake"},
+  aborted:   {eyes:"closed", brow:"sad",    mouth:"flat",  arm:"rest",  badge:"—",  anim:""},
+  celebrate: {eyes:"happy",  brow:"normal", mouth:"laugh", arm:"both",  badge:"🎉", anim:"pop"}
+};
+var SKINS = ["#ffd9b3","#f7c9a3","#e8b48c"];
+var HAIRS = ["#2b2b2b","#4b3621","#6b4f2a","#1f2937","#7c3aed"];
+var CLOTHS = ["#1f6feb","#0e7490","#7c3aed","#b45309","#15803d"];
+
+/* ============================================================================
+   2. 参数化 Q 版 SVG
+   ========================================================================== */
+function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=(h*16777619)>>>0;}return h;}
+function lookOf(m){
+  var h = hash(m.id);
+  return {skin:SKINS[h%3], hair:HAIRS[(h>>3)%5], hairStyle:(h>>6)%6, cloth:CLOTHS[(h>>9)%5], body:1+((h>>12)%2)};
+}
+function eyes(kind){
+  var L=46,R=74,Y=57;
+  function pair(inner){return '<g transform="translate('+L+','+Y+')">'+inner+'</g><g transform="translate('+R+','+Y+')">'+inner+'</g>';}
+  if(kind==="open")  return pair('<circle r="5.2" fill="#20242c"/><circle cx="-1.6" cy="-1.8" r="1.7" fill="#fff" opacity=".9"/>');
+  if(kind==="wide")  return pair('<circle r="6.4" fill="#fff"/><circle r="5.2" fill="#20242c"/><circle cx="-1.8" cy="-2" r="1.9" fill="#fff" opacity=".95"/>');
+  if(kind==="squint")return pair('<path d="M-5 1 q5 -4 10 0" stroke="#20242c" stroke-width="2.4" fill="none" stroke-linecap="round"/>');
+  if(kind==="happy") return pair('<path d="M-5.5 2 q5.5 -6 11 0" stroke="#20242c" stroke-width="2.6" fill="none" stroke-linecap="round"/>');
+  if(kind==="half")  return pair('<path d="M-5.5 -1 h11" stroke="#20242c" stroke-width="2.6" stroke-linecap="round"/><circle cy="3" r="3.4" fill="#20242c"/>');
+  if(kind==="side")  return pair('<circle r="5" fill="#20242c"/><circle cx="2" cy="-1.6" r="1.5" fill="#fff" opacity=".8"/>');
+  if(kind==="focus") return pair('<ellipse rx="5.4" ry="3.6" fill="#20242c"/><circle cx="-1.4" cy="-1" r="1.3" fill="#fff" opacity=".85"/>');
+  if(kind==="dizzy") return pair('<path d="M-5 0 a5 5 0 1 1 4 5" stroke="#20242c" stroke-width="2" fill="none"/><path d="M4 2 a3 3 0 1 1-2 2" stroke="#20242c" stroke-width="1.8" fill="none"/>');
+  return pair('<path d="M-5 0 q5 4 10 0" stroke="#20242c" stroke-width="2.4" fill="none" stroke-linecap="round"/>');
+}
+function brows(kind){
+  var L=46,R=74,Y=45;
+  function pair(d){return '<g transform="translate('+L+','+Y+')">'+d+'</g><g transform="translate('+R+','+Y+')">'+d+'</g>';}
+  if(kind==="angry") return pair('<path d="M-6 -2 l11 4" stroke="#3b2f2a" stroke-width="2.4" stroke-linecap="round"/>');
+  if(kind==="sad")   return pair('<path d="M-6 3 l11 -4" stroke="#3b2f2a" stroke-width="2.4" stroke-linecap="round"/>');
+  if(kind==="think") return pair('<path d="M-6 0 h11" stroke="#3b2f2a" stroke-width="2.2" stroke-linecap="round"/>');
+  return pair('<path d="M-6 1 h11" stroke="#3b2f2a" stroke-width="2.2" stroke-linecap="round"/>');
+}
+function mouth(kind){
+  var X=60,Y=73;
+  if(kind==="small") return '<circle cx="'+X+'" cy="'+Y+'" r="2.6" fill="#a34a3a"/>';
+  if(kind==="flat")  return '<path d="M'+(X-6)+' '+Y+' h12" stroke="#a34a3a" stroke-width="2.4" stroke-linecap="round"/>';
+  if(kind==="wave")  return '<path d="M'+(X-7)+' '+Y+' q3.5 -3.5 7 0 q3.5 3.5 7 0" stroke="#a34a3a" stroke-width="2.3" fill="none" stroke-linecap="round"/>';
+  if(kind==="open")  return '<ellipse cx="'+X+'" cy="'+(Y+1)+'" rx="5.6" ry="7" fill="#8f3b2c"/><ellipse cx="'+X+'" cy="'+(Y+4)+'" rx="3.4" ry="2.6" fill="#e2726a"/>';
+  if(kind==="laugh") return '<path d="M'+(X-10)+' '+(Y-2)+' q10 12 20 0 z" fill="#8f3b2c"/><path d="M'+(X-10)+' '+(Y-2)+' q10 4 20 0" stroke="#8f3b2c" stroke-width="1.6" fill="none"/>';
+  return '<path d="M'+(X-6)+' '+(Y+2)+' q6 -5 12 0" stroke="#a34a3a" stroke-width="2.3" fill="none" stroke-linecap="round"/>';
+}
+function arm(side, pose, cloth, skin){
+  var sx = side==="l" ? 44 : 76;
+  var rot = {rest:(side==="l"?-10:10), chin:(side==="l"?-6:-118), raise:(side==="l"?-14:-148),
+             both:(side==="l"?-150:150), cross:(side==="l"?34:-34), tool:(side==="l"?-8:-58), back:(side==="l"?26:-26)}[pose] || 0;
+  return '<g transform="rotate('+rot+' '+sx+' 96)">'+
+    '<rect x="'+(sx-6)+'" y="92" width="12" height="30" rx="6" fill="'+cloth+'"/>'+
+    '<circle cx="'+sx+'" cy="122" r="6" fill="'+skin+'"/></g>';
+}
+function prop(role, pose, c){
+  if(role==="decisionMaker") return '<g transform="rotate(-24 76 122)"><rect x="74" y="86" width="4" height="34" rx="2" fill="#e2b04a"/><circle cx="76" cy="86" r="4" fill="#facc15"/></g>';
+  if(role==="proposer")      return '<g transform="rotate(-16 84 118)"><rect x="82" y="76" width="2.6" height="44" rx="1.3" fill="#cbd5e1"/><path d="M84 78 l18 5 l-18 6 z" fill="'+c+'"/></g>';
+  if(role==="reviewer")      return '<g transform="translate(88 104)"><circle r="9" fill="none" stroke="#e2e8f0" stroke-width="3"/><circle r="8" fill="rgba(147,197,253,.35)"/><rect x="6" y="6" width="12" height="3.4" rx="1.7" transform="rotate(40 6 6)" fill="#cbd5e1"/></g>';
+  if(role==="executor")      return '<g transform="translate(30 118)"><path d="M0 0 a6 6 0 1 0 9 -4 l8 8 -3 3 -8 -8 a6 6 0 0 0-6 1z" fill="#cbd5e1"/></g>';
+  if(role==="verifier")      return '<g transform="translate(86 100)"><rect x="0" y="0" width="20" height="26" rx="3" fill="#e5e7eb"/><path d="M5 13 l4 4 7 -9" stroke="#16a34a" stroke-width="2.6" fill="none" stroke-linecap="round"/></g>';
+  return "";
+}
+function chair(role){
+  if(role==="decisionMaker") return '<path d="M28 150 v-58 a32 20 0 0 1 64 0 v58 z" fill="#2a3446"/><rect x="22" y="86" width="76" height="9" rx="4.5" fill="#3b4a63"/>';
+  return '<path d="M34 150 v-34 a26 14 0 0 1 52 0 v34 z" fill="#26303f"/>';
+}
+function chibiSVG(m, vis, px, mode){
+  var L = lookOf(m);
+  var v = VIS[vis] || VIS.idle;
+  var cloth = ROLE_COLOR[m.role] || L.cloth;
+  var dark = "rgba(0,0,0,.28)";
+  var inner = "";
+  inner += '<ellipse cx="60" cy="148" rx="30" ry="6.5" fill="rgba(0,0,0,.42)"/>';
+  inner += chair(m.role);
+  inner += arm("l", v.arm, cloth, L.skin) + arm("r", v.arm, cloth, L.skin);
+  inner += '<rect x="40" y="84" width="40" height="46" rx="15" fill="'+cloth+'"/>';
+  inner += '<rect x="40" y="84" width="40" height="46" rx="15" fill="none" stroke="'+dark+'" stroke-width="1"/>';
+  inner += '<path d="M50 86 q10 8 20 0" stroke="rgba(255,255,255,.35)" stroke-width="2" fill="none"/>';
+  inner += prop(m.role, v.arm, cloth);
+  inner += '<circle cx="60" cy="56" r="34" fill="'+L.skin+'"/>';
+  inner += '<circle cx="26" cy="58" r="5" fill="'+L.skin+'"/><circle cx="94" cy="58" r="5" fill="'+L.skin+'"/>';
+  inner += hair(L.hairStyle, L.hair);
+  inner += brows(v.brow);
+  inner += eyes(v.eyes);
+  inner += '<circle cx="36" cy="65" r="5" fill="#f08a8a" opacity=".35"/><circle cx="84" cy="65" r="5" fill="#f08a8a" opacity=".35"/>';
+  inner += mouth(v.mouth);
+  if(mode==="sticker"){
+    inner += '<clipPath id="fc'+m.id+'"><circle cx="60" cy="56" r="30"/></clipPath>';
+    inner += '<g clip-path="url(#fc'+m.id+')"><rect x="30" y="26" width="60" height="60" fill="'+L.skin+'"/>'+
+             '<circle cx="60" cy="52" r="13" fill="#fff" opacity=".92"/><circle cx="60" cy="72" r="16" fill="#fff" opacity=".92"/></g>';
+  }
+  if(mode==="photo"){
+    inner += '<circle cx="60" cy="56" r="30" fill="#0f172a" stroke="'+cloth+'" stroke-width="3"/>'+
+             '<text x="60" y="66" text-anchor="middle" font-size="22" fill="#93c5fd">'+(m.label||m.id).slice(0,1)+'</text>';
+  }
+  return '<svg viewBox="0 0 120 156" width="'+px+'" height="'+Math.round(px*1.3)+'">'+inner+'</svg>';
+}
+function hair(style, color){
+  if(style===0) return '<path d="M26 58 a34 34 0 0 1 68 0 q-10 -10 -34 -10 q-24 0 -34 10z" fill="'+color+'"/>';
+  if(style===1) return '<path d="M26 56 l6 -16 8 10 8 -16 8 15 8 -14 10 17 8 -9 4 13 a34 34 0 0 0 -60 0z" fill="'+color+'"/>';
+  if(style===2) return '<path d="M27 56 a33 33 0 0 1 66 0 q-16 -12 -40 -8 q-14 2 -26 8z" fill="'+color+'"/><path d="M78 34 q16 -6 18 8 q-10 -2 -18 4z" fill="'+color+'"/>';
+  if(style===3) return '<path d="M27 56 a33 33 0 0 1 66 0 q-14 -10 -33 -10 q-19 0 -33 10z" fill="'+color+'"/><ellipse cx="97" cy="70" rx="10" ry="18" fill="'+color+'"/>';
+  if(style===4) return '<path d="M32 50 a30 30 0 0 1 56 0 q-14 -8 -28 -8 q-14 0 -28 8z" fill="'+color+'"/><circle cx="60" cy="24" r="9" fill="'+color+'"/>';
+  return '<path d="M30 54 a32 32 0 0 1 60 0 q-12 -6 -30 -6 q-18 0 -30 6z" fill="'+color+'"/>';
+}
+
+/* ============================================================================
+   3. 状态
+   ========================================================================== */
+var state = {
+  seated: Object.assign({}, INITIAL_SEATED),
+  phase: "idle",
+  vis: {},            /* seatId -> 视觉状态键（VIS 的键） */
+  bubbles: {},        /* seatId -> {text, kind} */
+  messages: [],
+  mode: "chibi",
+  showStream: true,
+  pendingSeat: null,
+  editingModel: null,
+  timers: []
+};
+var RAIL = ["提案","互评","决策","计划","等待批准","执行","验证","汇总"];
+var PHASE_INDEX = {idle:-1, proposing:0, reviewing:1, deciding:2, planning:3, approval:4, executing:5, verifying:6, finalizing:7, completed:8};
+var PHASE_TEXT = {idle:"空闲", proposing:"讨论者独立提案中", reviewing:"互相评议中", deciding:"主导模型决策中",
+  planning:"生成执行计划", approval:"等你批准", executing:"执行中", verifying:"验证中", finalizing:"汇总答复", completed:"已完成"};
+
+function el(id){ return document.getElementById(id); }
+function seatOf(id){ for(var i=0;i<SEATS.length;i++) if(SEATS[i].id===id) return SEATS[i]; return null; }
+function modelAt(seatId){ var m=state.seated[seatId]; return m ? MODELS[m] : null; }
+function roleCounts(){ var c={}; for(var k in state.seated){ var s=seatOf(k); if(s) c[s.role]=(c[s.role]||0)+1; } return c; }
+function assignRolesBySeat(){ for(var k in state.seated){ var s=seatOf(k); if(s&&MODELS[state.seated[k]]) MODELS[state.seated[k]].role=s.role; } }
+function visOf(seatId){ return state.vis[seatId] || "idle"; }
+function setVis(seatId,v){ state.vis[seatId]=v; }
+function pushMessage(kind,who,role,text){
+  state.messages.push({kind:kind,who:who,role:role,text:text});
+}
+
+/* ============================================================================
+   4. 渲染
+   ========================================================================== */
+function updateChip(){ el("phaseChip").textContent = PHASE_TEXT[state.phase] || state.phase; }
+function renderRail(){
+  var idx = PHASE_INDEX[state.phase]; var h = "";
+  for(var i=0;i<RAIL.length;i++){
+    var cls = i<idx ? "st done" : (i===idx ? "st now" : "st");
+    h += '<div class="'+cls+'"><i>'+(i<idx?"✓":(i+1))+'</i><span>'+RAIL[i]+'</span></div>';
+    if(i<RAIL.length-1) h += '<div class="ln"></div>';
+  }
+  el("rail").innerHTML = h;
+}
+function renderSeats(){
+  var h = "";
+  for(var i=0;i<SEATS.length;i++){
+    var s = SEATS[i];
+    var occupied = !!state.seated[s.id];
+    h += '<div class="seat'+(occupied?' occupied':'')+'" data-seat="'+s.id+'" style="left:'+s.x+'%;top:'+s.y+'%;z-index:'+Math.round(s.y)+'">';
+    if(!occupied) h += '<div class="vac" title="点击添加模型到「'+s.name+'」">＋</div>';
+    h += '</div>';
+  }
+  el("seats").innerHTML = h;
+}
+function renderActors(){
+  var stageH = el("stage").clientHeight || 420;
+  var base = Math.max(44, Math.min(96, stageH * 0.19));
+  var h = "";
+  for(var i=0;i<SEATS.length;i++){
+    var s = SEATS[i];
+    var m = modelAt(s.id);
+    if(!m) continue;
+    var px = Math.round(base * s.s);
+    var v = visOf(s.id);
+    var vv = VIS[v] || VIS.idle;
+    var animCls = vv.anim ? " a-"+vv.anim : "";
+    var dim = m.enabled === false ? " dim" : "";
+    h += '<div class="actor'+animCls+dim+'" data-seat="'+s.id+'" data-model="'+m.id+'" '+
+         'style="left:'+s.x+'%;top:'+s.y+'%;z-index:'+Math.round(s.y)+'" title="拖动换角色 · 右键改信息">'+
+         chibiSVG(m, v, px, state.mode)+
+         (vv.badge ? '<span class="badge">'+vv.badge+'</span>' : '')+
+         '<span class="cap" style="border-color:'+ROLE_COLOR[m.role]+'55">'+ROLE_TEXT[m.role]+' · '+(m.label||m.id)+'</span>'+
+         '</div>';
+  }
+  el("actors").innerHTML = h;
+  bindActors();
+}
+function renderBubbles(){
+  var h = "";
+  for(var seatId in state.bubbles){
+    var b = state.bubbles[seatId]; if(!b || !b.text) continue;
+    var s = seatOf(seatId); if(!s) continue;
+    var shift = 0;
+    if(s.x < 20) shift = 86; else if(s.x > 80) shift = -86;
+    var transform = shift === 0 ? "translate(-50%,-100%)" : "translate(calc(-50% + " + shift + "px),-100%)";
+    h += '<div class="bubble'+(b.kind==="think"?" think":"")+'" style="left:'+s.x+'%;top:'+(s.y-2)+'%;transform:'+transform+'">'+
+         '<b>'+b.who+'</b>'+(b.kind==="think" ? '<span class="dots"><i></i><i></i><i></i></span> '+b.text : b.text)+'</div>';
+  }
+  el("bubbles").innerHTML = h;
+}
+function renderDock(){
+  if(state.phase === "approval"){
+    el("dock").innerHTML = '<div class="approve"><div class="ic">⏸</div>'+
+      '<div class="tx"><b>计划已生成，等你批准</b><span>批准后执行模型才会动手；不批准则什么都不改。</span></div>'+
+      '<span class="spacer"></span>'+
+      '<button class="btn primary" onclick="__rt.approve()">✓ 批准并执行</button>'+
+      '<button class="btn">✎ 改一下计划</button>'+
+      '<button class="btn danger" onclick="__rt.stopRun()">✕ 不执行</button></div>';
+  } else { el("dock").innerHTML = ""; }
+}
+function renderStream(){
+  var h = "";
+  for(var i=0;i<state.messages.length;i++){
+    var m = state.messages[i];
+    if(m.kind === "divider"){ h += '<div class="divider">'+m.text+'</div>'; continue; }
+    var color = ROLE_COLOR[m.role] || "#64748b";
+    h += '<div class="msg'+(m.kind==="me"?" me":"")+(m.kind==="sys"?" sys":"")+'" data-model="'+(m.model||"")+'">'+
+      (m.kind==="sys" ? "" : '<div class="av" style="background:'+color+'">'+(m.who||"?")[0]+'</div>')+
+      '<div><span class="who">'+(m.who||"系统")+'</span><span class="tg">'+m.tag+'</span>'+
+      '<div class="bd">'+m.text+'</div></div></div>';
+  }
+  el("stream").innerHTML = h || '<div style="color:#93a0b8;padding:20px">还没有研讨记录。点右上角「▶ 播放一轮研讨」看完整流程。</div>';
+  el("stream").scrollTop = el("stream").scrollHeight;
+}
+function renderAll(){ renderRail(); renderSeats(); renderActors(); renderBubbles(); renderDock(); renderStream(); updateChip(); }
+
+/* ============================================================================
+   5. 交互：拖拽换角色 / 空位添加 / 右键菜单 / 编辑抽屉
+   ========================================================================== */
+var drag = null;
+function seatUnder(x,y){
+  var node = document.elementFromPoint(x,y);
+  while(node && node !== document.body){ if(node.classList && node.classList.contains("seat")) return node.getAttribute("data-seat"); node = node.parentNode; }
+  return null;
+}
+function clearHot(){ var hs=document.querySelectorAll(".seat.hot,.seat.bad"); for(var i=0;i<hs.length;i++) hs[i].classList.remove("hot","bad"); }
+function highlightTarget(x,y){
+  clearHot();
+  var id = seatUnder(x,y); if(!id) return;
+  var node = document.querySelector('.seat[data-seat="'+id+'"]'); if(!node) return;
+  var target = seatOf(id);
+  var m = modelAt(drag.seatId); if(!m) return;
+  var counts = roleCounts();
+  var legal = !!state.seated[id] || (counts[target.role]||0) < ROLE_CAP[target.role];
+  node.classList.add(legal ? "hot" : "bad");
+}
+function bindActors(){
+  var nodes = document.querySelectorAll(".actor");
+  for(var i=0;i<nodes.length;i++){
+    var n = nodes[i];
+    n.addEventListener("pointerdown", onActorDown);
+    n.addEventListener("contextmenu", onActorMenu);
+    n.addEventListener("click", onActorClick);
+  }
+}
+function onActorDown(e){
+  if(e.button !== 0) return;
+  drag = {seatId: e.currentTarget.getAttribute("data-seat"), el: e.currentTarget, x0: e.clientX, y0: e.clientY, moved:false};
+  e.currentTarget.classList.add("dragging");
+  e.currentTarget.setPointerCapture(e.pointerId);
+  e.preventDefault();
+}
+document.addEventListener("pointermove", function(e){
+  if(!drag) return;
+  var dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+  if(Math.abs(dx)+Math.abs(dy) > 4) drag.moved = true;
+  drag.el.style.transform = "translate(-50%,-100%) translate("+dx+"px,"+dy+"px)";
+  highlightTarget(e.clientX, e.clientY);
+});
+document.addEventListener("pointerup", function(e){
+  if(!drag) return;
+  var d = drag; drag = null;
+  d.el.classList.remove("dragging"); d.el.style.transform = "";
+  clearHot();
+  var target = seatUnder(e.clientX, e.clientY);
+  if(target && target !== d.seatId) tryMove(d.seatId, target);
+});
+function tryMove(from, to){
+  var ms = modelAt(from);
+  if(!ms) return;
+  var other = state.seated[to];
+  if(other){                                   /* 交换角色：数量守恒，永远合法 */
+    state.seated[to] = state.seated[from];
+    state.seated[from] = other;
+    assignRolesBySeat(); renderAll(); hideMenu();
+    toast("「"+(ms.label||ms.id)+"」和「"+(MODELS[other].label||other)+"」换了角色");
+    return;
+  }
+  var counts = roleCounts(); var role = seatOf(to).role;
+  if((counts[role]||0) >= ROLE_CAP[role]){
+    toast("「"+ROLE_TEXT[role]+"」最多 "+ROLE_CAP[role]+" 个，放不下了");
+    return;
+  }
+  state.seated[to] = state.seated[from]; delete state.seated[from];
+  assignRolesBySeat(); renderAll(); hideMenu();
+  toast("「"+(ms.label||ms.id)+"」坐到了"+seatOf(to).name+"（"+ROLE_TEXT[role]+"）");
+}
+function onActorClick(e){
+  if(drag && drag.moved) return;
+  var seatId = e.currentTarget.getAttribute("data-seat");
+  var m = modelAt(seatId); if(!m) return;
+  highlightModel(m.id);
+  scrollToModel(m.id);
+}
+function onActorMenu(e){
+  e.preventDefault();
+  var seatId = e.currentTarget.getAttribute("data-seat");
+  openMenu(e.clientX, e.clientY, seatId);
+}
+function highlightModel(id){
+  var actors = document.querySelectorAll(".actor");
+  for(var i=0;i<actors.length;i++) actors[i].classList.toggle("hl", actors[i].getAttribute("data-model")===id);
+  setTimeout(function(){ var a=document.querySelectorAll(".actor.hl"); for(var i=0;i<a.length;i++) a[i].classList.remove("hl"); }, 2200);
+}
+function scrollToModel(id){
+  var msgs = document.querySelectorAll('.msg[data-model="'+id+'"]');
+  if(msgs.length){ var last = msgs[msgs.length-1]; last.scrollIntoView({block:"center",behavior:"smooth"}); }
+}
+/* ---- 右键菜单 ---- */
+function openMenu(x,y,seatId){
+  var m = modelAt(seatId); var menu = el("menu"); var h = "";
+  if(m){
+    h += '<b>'+ (m.label||m.id) +' · '+ROLE_TEXT[m.role] +'</b>';
+    h += '<button onclick="__rt.edit(\''+seatId+'\')">编辑模型信息…</button>';
+    h += '<button onclick="__rt.toast(\'（原型）这里会直接打开头像上传\')">更换头像…</button>';
+    h += '<button onclick="__rt.toast(\'（原型）重新掷一次发型/发色/体型\')">换个造型</button>';
+    h += '<button onclick="__rt.duplicate(\''+seatId+'\')">复制座位</button>';
+    h += '<button onclick="__rt.toggleSeat(\''+seatId+'\')">'+(m.enabled===false?"入席":"暂时离席")+'</button>';
+    h += '<button onclick="__rt.jump(\''+seatId+'\')">查看最近发言</button>';
+    h += '<button class="danger" onclick="__rt.removeSeat(\''+seatId+'\')">移出座位</button>';
+  } else {
+    h += '<b>空座位 · '+seatOf(seatId).name+'（'+ROLE_TEXT[seatOf(seatId).role]+'）</b>';
+    h += '<button onclick="__rt.picker(\''+seatId+'\')">添加模型…</button>';
+    h += '<button onclick="__rt.toast(\'（原型）可以在这里调整座位朝向/缩进\')">调整座位…</button>';
+  }
+  menu.innerHTML = h; menu.style.display = "block";
+  var w = menu.offsetWidth, hh = menu.offsetHeight;
+  menu.style.left = Math.min(x, window.innerWidth - w - 8) + "px";
+  menu.style.top = Math.min(y, window.innerHeight - hh - 8) + "px";
+}
+function hideMenu(){ el("menu").style.display = "none"; }
+document.addEventListener("click", function(e){
+  if(!e.target.closest || !e.target.closest(".menu")) hideMenu();
+  if(!e.target.closest || !e.target.closest(".picker")) hidePicker();
+});
+/* ---- 空座位选择器 ---- */
+function openPicker(seatId){
+  state.pendingSeat = seatId;
+  var free = [];
+  for(var id in MODELS){
+    var used = false;
+    for(var k in state.seated) if(state.seated[k]===id) used = true;
+    if(!used) free.push(MODELS[id]);
+  }
+  var h = '<h4>选谁坐「'+seatOf(seatId).name+'」（'+ROLE_TEXT[seatOf(seatId).role]+'）</h4>';
+  if(free.length===0) h += '<div class="sub" style="padding:6px">没有空闲模型了，先新建一个。</div>';
+  for(var i=0;i<free.length;i++){
+    var m = free[i];
+    h += '<div class="row" onclick="__rt.assign(\''+m.id+'\')"><div class="mini">'+chibiSVG(m,"idle",30,"chibi")+'</div>'+
+         '<div><div>'+m.label+'</div><div class="sub">'+m.provider+' / '+m.model+' · 温度 '+m.temp+'</div></div></div>';
+  }
+  h += '<div class="row" onclick="__rt.newModel()" style="border-top:1px solid var(--line);margin-top:6px">'+
+       '<div class="mini" style="font-size:18px">＋</div><div><div>新建模型</div><div class="sub">选一个宿主已注册的 provider 路由</div></div></div>';
+  var p = el("picker"); p.innerHTML = h; p.style.display = "block";
+  var r = document.querySelector('.seat[data-seat="'+seatId+'"]').getBoundingClientRect();
+  p.style.left = Math.min(Math.max(8, r.left - 90), window.innerWidth - p.offsetWidth - 8) + "px";
+  p.style.top = Math.min(Math.max(8, r.top - p.offsetHeight - 8), window.innerHeight - p.offsetHeight - 8) + "px";
+}
+function hidePicker(){ el("picker").style.display = "none"; state.pendingSeat = null; }
+/* ---- 编辑抽屉 ---- */
+function openDrawer(seatId){
+  var m = modelAt(seatId); if(!m) return;
+  state.editingModel = m.id;
+  el("drawerTitle").textContent = "编辑模型信息 · " + seatOf(seatId).name;
+  var provs = "";
+  for(var i=0;i<PROVIDERS.length;i++){
+    var p = PROVIDERS[i];
+    provs += '<option value="'+p.id+'"'+(p.id===m.provider?" selected":"")+'>'+p.name+'</option>';
+  }
+  var models = "";
+  var cur = null;
+  for(var i=0;i<PROVIDERS.length;i++) if(PROVIDERS[i].id===m.provider) cur = PROVIDERS[i];
+  var list = cur ? cur.models : [m.model];
+  for(var i=0;i<list.length;i++) models += '<option value="'+list[i]+'"'+(list[i]===m.model?" selected":"")+'>'+list[i]+'</option>';
+  el("drawerBody").innerHTML =
+    '<div class="fld"><span>显示名</span><input id="f_label" value="'+m.label+'"></div>'+
+    '<div class="fld"><span>Provider 路由</span><select id="f_prov">'+provs+'</select></div>'+
+    '<div class="fld"><span>模型</span><select id="f_model">'+models+'</select></div>'+
+    '<div class="fld"><span>温度</span><input id="f_temp" type="number" min="0" max="2" step="0.1" value="'+m.temp+'"></div>'+
+    '<div class="fld"><span>角色提示词</span><textarea id="f_prompt" rows="5">'+(m.prompt||"")+'</textarea></div>'+
+    '<div class="fld"><span>角色（由座位决定，拖拽或换座位来改）</span><input value="'+ROLE_TEXT[m.role]+'" disabled></div>';
+  el("drawer").classList.add("open");
+}
+function saveDrawer(){
+  var m = MODELS[state.editingModel]; if(!m) return;
+  m.label = el("f_label").value;
+  m.provider = el("f_prov").value;
+  var sel = el("f_model"); m.model = sel.options[sel.selectedIndex].value;
+  m.temp = Number(el("f_temp").value);
+  m.prompt = el("f_prompt").value;
+  el("drawer").classList.remove("open");
+  renderAll();
+  toast("已保存「"+m.label+"」");
+}
+/* ---- toast ---- */
+var toastTimer = null;
+function toast(msg){
+  var t = el("toast"); t.textContent = msg; t.classList.add("on");
+  clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove("on"); }, 2200);
+}
+
+/* ============================================================================
+   6. 演示时间线（模拟一次真实 run，用来定视觉与交互）
+   ========================================================================== */
+function msg(kind,who,role,text,tag,model){ state.messages.push({kind:kind,who:who,role:role,text:text,tag:tag||"",model:model||""}); renderStream(); }
+function say(seatId, text, kind){ var m = modelAt(seatId); if(!m) return; state.bubbles[seatId] = {text:text, who:(m.label||m.id)+" · "+ROLE_TEXT[m.role], kind:kind||"say"}; renderBubbles(); }
+function quiet(seatId){ delete state.bubbles[seatId]; renderBubbles(); }
+function setv(seatId,v){ state.vis[seatId]=v; renderActors(); }
+function setvAll(v){ for(var k in state.seated) state.vis[k]=v; renderActors(); }
+function clearTimers(){ for(var i=0;i<state.timers.length;i++) clearTimeout(state.timers[i]); state.timers = []; }
+function later(ms, fn){ state.timers.push(setTimeout(fn, ms)); }
+function setPhase(p){ state.phase = p; renderRail(); updateChip(); renderDock(); }
+
+function resetAll(){
+  clearTimers();
+  state.seated = Object.assign({}, INITIAL_SEATED);
+  state.phase = "idle"; state.vis = {}; state.bubbles = {}; state.messages = [];
+  assignRolesBySeat(); renderAll();
+}
+function playDemo(){
+  resetAll();
+  var A = "先抽取文本再排版", B = "先转成 Markdown 再统一渲染", C = "这个需求的前提可能站不住";
+  later(60, function(){
+    setPhase("proposing");
+    msg("me","我","", "把 D:/1 里的实验报告整理成一份 PDF，并附上数据表。", "提问");
+    msg("divider","","", "第 1 轮 · 独立提案");
+    setv("S10","ready"); setv("S1","ready");
+    setv("S2","thinking"); setv("S3","thinking"); setv("S4","thinking");
+    say("S2","正在独立提案…","think"); say("S3","正在独立提案…","think"); say("S4","正在独立提案…","think");
+  });
+  later(1000, function(){
+    setv("S2","speaking"); say("S2","我倾向 "+A+"：docx→文本→reStructuredText→PDF，链路最短，格式风险集中在最后的渲染一步。");
+  });
+  later(2900, function(){
+    quiet("S2"); setv("S2","done");
+    msg("proposer","提案 A","proposer","方案："+A+"\n理由：链路最短，依赖最少\n风险：复杂表格在转换中可能错位","独立提案","proposer-a");
+    setv("S3","speaking"); say("S3","我倾向 "+B+"：先把内容归一化成 Markdown，再用同一套模板渲染，后续换样式不用重跑抽取。");
+  });
+  later(5000, function(){
+    quiet("S3"); setv("S3","done");
+    msg("proposer","提案 B","proposer","方案："+B+"\n理由：样式与内容解耦，可复用\n风险：多一步转换，图片位置可能漂移","独立提案","proposer-b");
+    setv("S4","speaking"); say("S4","先问一句：这份报告是要交给谁看？如果只是内部归档，没必要做一整套渲染链路。");
+  });
+  later(7100, function(){
+    quiet("S4"); setv("S4","done");
+    msg("proposer","提案 C","proposer","方案："+C+"\n理由：需求边界不清，可能过度工程\n风险：如果确实要交付，反方意见会拖慢进度","独立提案","proposer-c");
+    setv("S2","waiting"); setv("S3","waiting"); setv("S4","waiting");
+    setv("S1","thinking"); say("S1","正在阅读三份提案…","think");
+  });
+  later(8600, function(){
+    msg("divider","","", "第 1 轮 · 互相评议");
+    setv("S7","thinking"); say("S7","正在逐条核对三个方案…","think");
+  });
+  later(9500, function(){
+    setv("S7","speaking"); say("S7","A 的表格风险确实存在；B 的解耦值得保留；C 提出的受众问题应该写进计划的前提里。");
+  });
+  later(11100, function(){
+    quiet("S7"); setv("S7","done");
+    msg("reviewer","评审 · 挑刺","reviewer","认可：B 的解耦\n质疑：A 的表格转换缺少回退方案\n建议：把「受众」写成计划的第 0 步","评议 P1/P2/P3","reviewer-1");
+    quiet("S1"); setPhase("deciding"); setv("S1","speaking");
+    say("S1","我采纳 A 的抽取链路 + B 的模板层，并加上 C 要求确认受众的第 0 步。");
+  });
+  later(12600, function(){
+    msg("decision","主导模型","decisionMaker","结论方向：抽取用 A，渲染用 B，前置一步确认交付对象。\n取舍理由：链路最短同时保留可复用性，反方意见转化为计划前置条件。","拍板","lead");
+    quiet("S1"); setPhase("planning"); setv("S1","speaking");
+    say("S1","正在生成执行计划…","think");
+  });
+  later(14200, function(){
+    quiet("S1");
+    msg("plan","主导模型","decisionMaker","执行计划（3 步）\n1. 读取 D:/1 下的报告源文件（read）\n2. 生成 Markdown 中间稿并人工确认受众（write）\n3. 渲染 PDF 并核对表格（write）","执行计划 · 会改变系统状态","lead");
+    setPhase("approval"); setvAll("waiting"); setv("S1","approval");
+    msg("sys","系统","","计划已生成，等待你批准","");
+  });
+  later(16200, function(){
+    setPhase("executing"); setv("S1","idle"); setv("S10","executing");
+    say("S10","第 1 步：读取源文件…");
+    msg("executor","执行模型","executor","第 1 步 · 完成：拿到 3 个源文件，共 12 页","执行结果","executor");
+  });
+  later(18000, function(){
+    say("S10","第 2 步：生成 Markdown 中间稿…");
+    msg("executor","执行模型","executor","第 2 步 · 完成：中间稿 8.4 KB，表格 2 个","执行结果","executor");
+  });
+  later(19600, function(){
+    quiet("S10"); setv("S10","done");
+    msg("executor","执行模型","executor","第 3 步 · 完成：result.pdf 已生成（6 页，表格无损）","执行结果","executor");
+    setPhase("verifying"); setv("S11","thinking"); say("S11","按验收标准检查…","think");
+  });
+  later(21200, function(){
+    quiet("S11"); setv("S11","speaking"); say("S11","逐页核对通过，表格与源文件一致。");
+  });
+  later(22800, function(){
+    quiet("S11"); setv("S11","done");
+    msg("verification","验证模型","verifier","通过：页数、表格、图片位置均与源文件一致；建议交付前再确认一次受众。","验证通过","verifier-1");
+    setPhase("finalizing");
+  });
+  later(24200, function(){
+    setPhase("completed"); setvAll("celebrate");
+    msg("answer","主导模型","decisionMaker","已完成：D:/1/result.pdf（6 页）。\n过程：3 个提案 → 1 轮互评 → 主导拍板 → 你批准 → 3 步执行 → 验证通过。","最终答复","lead");
+    toast("一轮研讨演示结束 🎉");
+  });
+}
+
+/* ============================================================================
+   7. 事件绑定与启动
+   ========================================================================== */
+window.__rt = {
+  state: state,
+  renderAll: renderAll,
+  play: playDemo,
+  reset: resetAll,
+  swap: tryMove,
+  approve: function(){ hideMenu(); setPhase("executing"); setv("S1","idle"); setv("S10","executing"); toast("已批准，开始执行"); },
+  stopRun: function(){ hideMenu(); setPhase("idle"); setvAll("aborted"); toast("已取消，不会改动任何东西"); },
+  edit: function(seatId){ hideMenu(); openDrawer(seatId); },
+  picker: function(seatId){ hideMenu(); openPicker(seatId); },
+  assign: function(modelId){
+    var seat = state.pendingSeat; if(!seat) return;
+    var counts = roleCounts(); var role = seatOf(seat).role;
+    if((counts[role]||0) >= ROLE_CAP[role]){ toast("「"+ROLE_TEXT[role]+"」已经满了"); return; }
+    state.seated[seat] = modelId; hidePicker(); assignRolesBySeat(); renderAll();
+    toast("「"+(MODELS[modelId].label||modelId)+"」入座 "+seatOf(seat).name);
+  },
+  newModel: function(){
+    hidePicker();
+    var id = "custom-" + (Object.keys(MODELS).length + 1);
+    MODELS[id] = {id:id, label:"新模型 "+(Object.keys(MODELS).length+1), provider:PROVIDERS[0].id, model:PROVIDERS[0].models[0], temp:0.5, prompt:"", enabled:true};
+    toast("已新建模型（原型）："+MODELS[id].label+"，请在抽屉里改成你要的 provider/模型");
+  },
+  duplicate: function(seatId){
+    var m = modelAt(seatId); if(!m) return; hideMenu();
+    var id = m.id + "-copy-" + (Object.keys(MODELS).length + 1);
+    MODELS[id] = Object.assign({}, m, {id:id, label:m.label+" · 副本"});
+    toast("已复制为「"+MODELS[id].label+"」，找个空座位点一下放进去");
+  },
+  toggleSeat: function(seatId){
+    var m = modelAt(seatId); if(!m) return; hideMenu();
+    m.enabled = m.enabled === false; renderAll();
+    toast("「"+m.label+"」"+(m.enabled?"已入席":"已离席（不参与研讨）"));
+  },
+  jump: function(seatId){ var m = modelAt(seatId); hideMenu(); if(m){ highlightModel(m.id); scrollToModel(m.id); } },
+  removeSeat: function(seatId){
+    var m = modelAt(seatId); if(!m) return; hideMenu();
+    delete state.seated[seatId]; renderAll(); toast("已把「"+m.label+"」移出座位（模型本身还在 roster 里）");
+  },
+  toast: function(t){ toast(t); },
+  modelCounts: function(){ return roleCounts(); }
+};
+/* 座位区：点空位 -> 选择器；右键 -> 菜单 */
+el("seats").addEventListener("click", function(e){
+  var vac = e.target.closest ? e.target.closest(".vac") : null;
+  if(vac) openPicker(vac.parentNode.getAttribute("data-seat"));
+});
+el("seats").addEventListener("contextmenu", function(e){
+  var seatNode = e.target.closest ? e.target.closest(".seat") : null;
+  if(!seatNode) return;
+  e.preventDefault();
+  openMenu(e.clientX, e.clientY, seatNode.getAttribute("data-seat"));
+});
+/* 顶部按钮 */
+el("playBtn").addEventListener("click", playDemo);
+el("resetBtn").addEventListener("click", resetAll);
+el("toggleStream").addEventListener("click", function(){
+  state.showStream = !state.showStream;
+  el("stream").style.display = state.showStream ? "" : "none";
+  this.textContent = state.showStream ? "隐藏对话流" : "显示对话流";
+});
+var segs = document.querySelectorAll("#modeSeg button");
+for(var i=0;i<segs.length;i++){
+  segs[i].addEventListener("click", function(){
+    for(var j=0;j<segs.length;j++) segs[j].classList.remove("on");
+    this.classList.add("on");
+    state.mode = this.getAttribute("data-mode");
+    renderActors();
+  });
+}
+/* 分隔条：拖动改舞台高度 */
+(function(){
+  var bar = el("split"), dragging = false, y0 = 0, h0 = 0;
+  bar.addEventListener("pointerdown", function(e){ dragging = true; y0 = e.clientY; h0 = el("stageWrap").offsetHeight; bar.setPointerCapture(e.pointerId); });
+  bar.addEventListener("pointermove", function(e){
+    if(!dragging) return;
+    var next = Math.max(150, Math.min(window.innerHeight - 220, h0 + (e.clientY - y0)));
+    el("stageWrap").style.flex = "0 0 " + next + "px";
+    renderActors(); renderBubbles();
+  });
+  bar.addEventListener("pointerup", function(){ dragging = false; });
+})();
+/* 抽屉按钮 */
+el("drawerClose").addEventListener("click", function(){ el("drawer").classList.remove("open"); });
+el("drawerSave").addEventListener("click", saveDrawer);
+el("drawerRemove").addEventListener("click", function(){
+  var id = state.editingModel;
+  for(var k in state.seated) if(state.seated[k] === id) delete state.seated[k];
+  el("drawer").classList.remove("open"); assignRolesBySeat(); renderAll(); toast("已移出座位");
+});
+window.addEventListener("resize", function(){ renderActors(); renderBubbles(); });
+drag = null;
+assignRolesBySeat();
+renderAll();
+</script>
+</body>
+</html>

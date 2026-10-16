@@ -1,0 +1,2628 @@
+{
+  "version": 6,
+  "tool": "built-in image_gen",
+  "date": "2026-10-16",
+  "logicalAssetCount": 152,
+  "formatCopies": [
+    "png",
+    "webp"
+  ],
+  "states": [
+    "idle",
+    "ready",
+    "thinking",
+    "waiting",
+    "done",
+    "approval",
+    "executing",
+    "error",
+    "aborted",
+    "celebrate",
+    "speaking"
+  ],
+  "characters": {
+    "chatgpt": {
+      "name": "chatgpt",
+      "identityReference": "art/references/apprentice-ai-girls-chibis/ChatGPT-Chibi.png",
+      "source": "sources/chatgpt-atlas.png",
+      "assets": {
+        "idle": {
+          "png": "png/characters/chatgpt/idle.png",
+          "webp": "webp/characters/chatgpt/idle.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 27,
+            "top": 3,
+            "width": 340,
+            "height": 368
+          },
+          "scale": 1.2258064516129032
+        },
+        "ready": {
+          "png": "png/characters/chatgpt/ready.png",
+          "webp": "webp/characters/chatgpt/ready.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 379,
+            "top": 2,
+            "width": 357,
+            "height": 367
+          },
+          "scale": 1.2258064516129032
+        },
+        "thinking": {
+          "png": "png/characters/chatgpt/thinking.png",
+          "webp": "webp/characters/chatgpt/thinking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 740,
+            "top": 11,
+            "width": 348,
+            "height": 359
+          },
+          "scale": 1.2258064516129032
+        },
+        "waiting": {
+          "png": "png/characters/chatgpt/waiting.png",
+          "webp": "webp/characters/chatgpt/waiting.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1112,
+            "top": 9,
+            "width": 315,
+            "height": 360
+          },
+          "scale": 1.2258064516129032
+        },
+        "done": {
+          "png": "png/characters/chatgpt/done.png",
+          "webp": "webp/characters/chatgpt/done.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 29,
+            "top": 371,
+            "width": 342,
+            "height": 356
+          },
+          "scale": 1.2258064516129032
+        },
+        "approval": {
+          "png": "png/characters/chatgpt/approval.png",
+          "webp": "webp/characters/chatgpt/approval.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 393,
+            "top": 367,
+            "width": 345,
+            "height": 357
+          },
+          "scale": 1.2258064516129032
+        },
+        "executing": {
+          "png": "png/characters/chatgpt/executing.png",
+          "webp": "webp/characters/chatgpt/executing.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 746,
+            "top": 370,
+            "width": 330,
+            "height": 372
+          },
+          "scale": 1.2258064516129032
+        },
+        "error": {
+          "png": "png/characters/chatgpt/error.png",
+          "webp": "webp/characters/chatgpt/error.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1091,
+            "top": 370,
+            "width": 348,
+            "height": 355
+          },
+          "scale": 1.2258064516129032
+        },
+        "aborted": {
+          "png": "png/characters/chatgpt/aborted.png",
+          "webp": "webp/characters/chatgpt/aborted.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 16,
+            "top": 725,
+            "width": 352,
+            "height": 348
+          },
+          "scale": 1.2258064516129032
+        },
+        "celebrate": {
+          "png": "png/characters/chatgpt/celebrate.png",
+          "webp": "webp/characters/chatgpt/celebrate.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 383,
+            "top": 716,
+            "width": 358,
+            "height": 357
+          },
+          "scale": 1.2258064516129032
+        },
+        "speaking": {
+          "png": "png/characters/chatgpt/speaking.png",
+          "webp": "webp/characters/chatgpt/speaking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 748,
+            "top": 719,
+            "width": 333,
+            "height": 355
+          },
+          "scale": 1.2258064516129032
+        },
+        "portrait": {
+          "png": "png/portraits/chatgpt.png",
+          "webp": "webp/portraits/chatgpt.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            256
+          ],
+          "sourceBounds": {
+            "left": 1089,
+            "top": 725,
+            "width": 355,
+            "height": 349
+          },
+          "scale": 1.3295774647887324
+        }
+      }
+    },
+    "claude": {
+      "name": "claude",
+      "identityReference": "art/references/apprentice-ai-girls-chibis/Claude-Chibi.png",
+      "source": "sources/claude-atlas.png",
+      "assets": {
+        "idle": {
+          "png": "png/characters/claude/idle.png",
+          "webp": "webp/characters/claude/idle.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 10,
+            "top": 16,
+            "width": 345,
+            "height": 351
+          },
+          "scale": 1.2527472527472527
+        },
+        "ready": {
+          "png": "png/characters/claude/ready.png",
+          "webp": "webp/characters/claude/ready.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 367,
+            "top": 15,
+            "width": 359,
+            "height": 349
+          },
+          "scale": 1.2527472527472527
+        },
+        "thinking": {
+          "png": "png/characters/claude/thinking.png",
+          "webp": "webp/characters/claude/thinking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 738,
+            "top": 16,
+            "width": 348,
+            "height": 351
+          },
+          "scale": 1.2527472527472527
+        },
+        "waiting": {
+          "png": "png/characters/claude/waiting.png",
+          "webp": "webp/characters/claude/waiting.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1094,
+            "top": 13,
+            "width": 350,
+            "height": 353
+          },
+          "scale": 1.2527472527472527
+        },
+        "done": {
+          "png": "png/characters/claude/done.png",
+          "webp": "webp/characters/claude/done.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 5,
+            "top": 378,
+            "width": 356,
+            "height": 349
+          },
+          "scale": 1.2527472527472527
+        },
+        "approval": {
+          "png": "png/characters/claude/approval.png",
+          "webp": "webp/characters/claude/approval.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 365,
+            "top": 378,
+            "width": 364,
+            "height": 350
+          },
+          "scale": 1.2527472527472527
+        },
+        "executing": {
+          "png": "png/characters/claude/executing.png",
+          "webp": "webp/characters/claude/executing.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 734,
+            "top": 379,
+            "width": 352,
+            "height": 349
+          },
+          "scale": 1.2527472527472527
+        },
+        "error": {
+          "png": "png/characters/claude/error.png",
+          "webp": "webp/characters/claude/error.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1091,
+            "top": 378,
+            "width": 353,
+            "height": 349
+          },
+          "scale": 1.2527472527472527
+        },
+        "aborted": {
+          "png": "png/characters/claude/aborted.png",
+          "webp": "webp/characters/claude/aborted.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 12,
+            "top": 736,
+            "width": 347,
+            "height": 339
+          },
+          "scale": 1.2527472527472527
+        },
+        "celebrate": {
+          "png": "png/characters/claude/celebrate.png",
+          "webp": "webp/characters/claude/celebrate.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 365,
+            "top": 733,
+            "width": 363,
+            "height": 344
+          },
+          "scale": 1.2527472527472527
+        },
+        "speaking": {
+          "png": "png/characters/claude/speaking.png",
+          "webp": "webp/characters/claude/speaking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 733,
+            "top": 736,
+            "width": 344,
+            "height": 341
+          },
+          "scale": 1.2527472527472527
+        },
+        "portrait": {
+          "png": "png/portraits/claude.png",
+          "webp": "webp/portraits/claude.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            256
+          ],
+          "sourceBounds": {
+            "left": 1080,
+            "top": 730,
+            "width": 361,
+            "height": 346
+          },
+          "scale": 1.3074792243767313
+        }
+      }
+    },
+    "gemini": {
+      "name": "gemini",
+      "identityReference": "art/references/apprentice-ai-girls-chibis/Gemini-Chibi.png",
+      "source": "sources/gemini-atlas.png",
+      "assets": {
+        "idle": {
+          "png": "png/characters/gemini/idle.png",
+          "webp": "webp/characters/gemini/idle.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 20,
+            "top": 10,
+            "width": 344,
+            "height": 361
+          },
+          "scale": 1.256198347107438
+        },
+        "ready": {
+          "png": "png/characters/gemini/ready.png",
+          "webp": "webp/characters/gemini/ready.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 383,
+            "top": 12,
+            "width": 340,
+            "height": 359
+          },
+          "scale": 1.256198347107438
+        },
+        "thinking": {
+          "png": "png/characters/gemini/thinking.png",
+          "webp": "webp/characters/gemini/thinking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 743,
+            "top": 8,
+            "width": 335,
+            "height": 363
+          },
+          "scale": 1.256198347107438
+        },
+        "waiting": {
+          "png": "png/characters/gemini/waiting.png",
+          "webp": "webp/characters/gemini/waiting.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1100,
+            "top": 9,
+            "width": 340,
+            "height": 362
+          },
+          "scale": 1.256198347107438
+        },
+        "done": {
+          "png": "png/characters/gemini/done.png",
+          "webp": "webp/characters/gemini/done.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 24,
+            "top": 377,
+            "width": 343,
+            "height": 358
+          },
+          "scale": 1.256198347107438
+        },
+        "approval": {
+          "png": "png/characters/gemini/approval.png",
+          "webp": "webp/characters/gemini/approval.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 388,
+            "top": 375,
+            "width": 337,
+            "height": 356
+          },
+          "scale": 1.256198347107438
+        },
+        "executing": {
+          "png": "png/characters/gemini/executing.png",
+          "webp": "webp/characters/gemini/executing.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 736,
+            "top": 384,
+            "width": 344,
+            "height": 348
+          },
+          "scale": 1.256198347107438
+        },
+        "error": {
+          "png": "png/characters/gemini/error.png",
+          "webp": "webp/characters/gemini/error.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1101,
+            "top": 380,
+            "width": 338,
+            "height": 352
+          },
+          "scale": 1.256198347107438
+        },
+        "aborted": {
+          "png": "png/characters/gemini/aborted.png",
+          "webp": "webp/characters/gemini/aborted.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 22,
+            "top": 735,
+            "width": 341,
+            "height": 339
+          },
+          "scale": 1.256198347107438
+        },
+        "celebrate": {
+          "png": "png/characters/gemini/celebrate.png",
+          "webp": "webp/characters/gemini/celebrate.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 379,
+            "top": 732,
+            "width": 349,
+            "height": 342
+          },
+          "scale": 1.256198347107438
+        },
+        "speaking": {
+          "png": "png/characters/gemini/speaking.png",
+          "webp": "webp/characters/gemini/speaking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 742,
+            "top": 731,
+            "width": 339,
+            "height": 343
+          },
+          "scale": 1.256198347107438
+        },
+        "portrait": {
+          "png": "png/portraits/gemini.png",
+          "webp": "webp/portraits/gemini.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            256
+          ],
+          "sourceBounds": {
+            "left": 1092,
+            "top": 727,
+            "width": 349,
+            "height": 347
+          },
+          "scale": 1.3524355300859598
+        }
+      }
+    },
+    "grok": {
+      "name": "grok",
+      "identityReference": "art/references/apprentice-ai-girls-chibis/Grok-Chibi.png",
+      "source": "sources/grok-atlas.png",
+      "assets": {
+        "idle": {
+          "png": "png/characters/grok/idle.png",
+          "webp": "webp/characters/grok/idle.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 17,
+            "top": 11,
+            "width": 336,
+            "height": 358
+          },
+          "scale": 1.2666666666666666
+        },
+        "ready": {
+          "png": "png/characters/grok/ready.png",
+          "webp": "webp/characters/grok/ready.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 375,
+            "top": 11,
+            "width": 341,
+            "height": 359
+          },
+          "scale": 1.2666666666666666
+        },
+        "thinking": {
+          "png": "png/characters/grok/thinking.png",
+          "webp": "webp/characters/grok/thinking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 734,
+            "top": 10,
+            "width": 343,
+            "height": 360
+          },
+          "scale": 1.2666666666666666
+        },
+        "waiting": {
+          "png": "png/characters/grok/waiting.png",
+          "webp": "webp/characters/grok/waiting.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1102,
+            "top": 11,
+            "width": 339,
+            "height": 359
+          },
+          "scale": 1.2666666666666666
+        },
+        "done": {
+          "png": "png/characters/grok/done.png",
+          "webp": "webp/characters/grok/done.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 14,
+            "top": 372,
+            "width": 342,
+            "height": 355
+          },
+          "scale": 1.2666666666666666
+        },
+        "approval": {
+          "png": "png/characters/grok/approval.png",
+          "webp": "webp/characters/grok/approval.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 375,
+            "top": 372,
+            "width": 338,
+            "height": 355
+          },
+          "scale": 1.2666666666666666
+        },
+        "executing": {
+          "png": "png/characters/grok/executing.png",
+          "webp": "webp/characters/grok/executing.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 735,
+            "top": 372,
+            "width": 348,
+            "height": 355
+          },
+          "scale": 1.2666666666666666
+        },
+        "error": {
+          "png": "png/characters/grok/error.png",
+          "webp": "webp/characters/grok/error.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1097,
+            "top": 372,
+            "width": 345,
+            "height": 355
+          },
+          "scale": 1.2666666666666666
+        },
+        "aborted": {
+          "png": "png/characters/grok/aborted.png",
+          "webp": "webp/characters/grok/aborted.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 14,
+            "top": 729,
+            "width": 338,
+            "height": 348
+          },
+          "scale": 1.2666666666666666
+        },
+        "celebrate": {
+          "png": "png/characters/grok/celebrate.png",
+          "webp": "webp/characters/grok/celebrate.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 376,
+            "top": 726,
+            "width": 341,
+            "height": 352
+          },
+          "scale": 1.2666666666666666
+        },
+        "speaking": {
+          "png": "png/characters/grok/speaking.png",
+          "webp": "webp/characters/grok/speaking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 735,
+            "top": 729,
+            "width": 343,
+            "height": 349
+          },
+          "scale": 1.2666666666666666
+        },
+        "portrait": {
+          "png": "png/portraits/grok.png",
+          "webp": "webp/portraits/grok.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            256
+          ],
+          "sourceBounds": {
+            "left": 1087,
+            "top": 720,
+            "width": 357,
+            "height": 352
+          },
+          "scale": 1.3221288515406162
+        }
+      }
+    },
+    "deepseek": {
+      "name": "deepseek",
+      "identityReference": "art/references/apprentice-ai-girls-chibis/DeepSeek-Chibi.png",
+      "source": "sources/deepseek-atlas.png",
+      "assets": {
+        "idle": {
+          "png": "png/characters/deepseek/idle.png",
+          "webp": "webp/characters/deepseek/idle.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 21,
+            "top": 8,
+            "width": 333,
+            "height": 369
+          },
+          "scale": 1.2324324324324325
+        },
+        "ready": {
+          "png": "png/characters/deepseek/ready.png",
+          "webp": "webp/characters/deepseek/ready.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 373,
+            "top": 8,
+            "width": 350,
+            "height": 370
+          },
+          "scale": 1.2324324324324325
+        },
+        "thinking": {
+          "png": "png/characters/deepseek/thinking.png",
+          "webp": "webp/characters/deepseek/thinking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 737,
+            "top": 11,
+            "width": 343,
+            "height": 368
+          },
+          "scale": 1.2324324324324325
+        },
+        "waiting": {
+          "png": "png/characters/deepseek/waiting.png",
+          "webp": "webp/characters/deepseek/waiting.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1106,
+            "top": 17,
+            "width": 325,
+            "height": 362
+          },
+          "scale": 1.2324324324324325
+        },
+        "done": {
+          "png": "png/characters/deepseek/done.png",
+          "webp": "webp/characters/deepseek/done.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 24,
+            "top": 377,
+            "width": 331,
+            "height": 359
+          },
+          "scale": 1.2324324324324325
+        },
+        "approval": {
+          "png": "png/characters/deepseek/approval.png",
+          "webp": "webp/characters/deepseek/approval.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 384,
+            "top": 381,
+            "width": 338,
+            "height": 360
+          },
+          "scale": 1.2324324324324325
+        },
+        "executing": {
+          "png": "png/characters/deepseek/executing.png",
+          "webp": "webp/characters/deepseek/executing.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 744,
+            "top": 383,
+            "width": 336,
+            "height": 354
+          },
+          "scale": 1.2324324324324325
+        },
+        "error": {
+          "png": "png/characters/deepseek/error.png",
+          "webp": "webp/characters/deepseek/error.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1107,
+            "top": 388,
+            "width": 336,
+            "height": 351
+          },
+          "scale": 1.2324324324324325
+        },
+        "aborted": {
+          "png": "png/characters/deepseek/aborted.png",
+          "webp": "webp/characters/deepseek/aborted.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 28,
+            "top": 728,
+            "width": 326,
+            "height": 350
+          },
+          "scale": 1.2324324324324325
+        },
+        "celebrate": {
+          "png": "png/characters/deepseek/celebrate.png",
+          "webp": "webp/characters/deepseek/celebrate.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 378,
+            "top": 738,
+            "width": 341,
+            "height": 339
+          },
+          "scale": 1.2324324324324325
+        },
+        "speaking": {
+          "png": "png/characters/deepseek/speaking.png",
+          "webp": "webp/characters/deepseek/speaking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 742,
+            "top": 737,
+            "width": 340,
+            "height": 347
+          },
+          "scale": 1.2324324324324325
+        },
+        "portrait": {
+          "png": "png/portraits/deepseek.png",
+          "webp": "webp/portraits/deepseek.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            256
+          ],
+          "sourceBounds": {
+            "left": 1099,
+            "top": 738,
+            "width": 344,
+            "height": 336
+          },
+          "scale": 1.372093023255814
+        }
+      }
+    },
+    "glm": {
+      "name": "glm",
+      "identityReference": "art/references/apprentice-ai-girls-chibis/GLM-Chibi.png",
+      "source": "sources/glm-atlas.png",
+      "assets": {
+        "idle": {
+          "png": "png/characters/glm/idle.png",
+          "webp": "webp/characters/glm/idle.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 17,
+            "top": 10,
+            "width": 359,
+            "height": 367
+          },
+          "scale": 1.2425068119891007
+        },
+        "ready": {
+          "png": "png/characters/glm/ready.png",
+          "webp": "webp/characters/glm/ready.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 384,
+            "top": 17,
+            "width": 350,
+            "height": 360
+          },
+          "scale": 1.2425068119891007
+        },
+        "thinking": {
+          "png": "png/characters/glm/thinking.png",
+          "webp": "webp/characters/glm/thinking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 745,
+            "top": 18,
+            "width": 341,
+            "height": 360
+          },
+          "scale": 1.2425068119891007
+        },
+        "waiting": {
+          "png": "png/characters/glm/waiting.png",
+          "webp": "webp/characters/glm/waiting.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1100,
+            "top": 23,
+            "width": 344,
+            "height": 357
+          },
+          "scale": 1.2425068119891007
+        },
+        "done": {
+          "png": "png/characters/glm/done.png",
+          "webp": "webp/characters/glm/done.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 13,
+            "top": 377,
+            "width": 357,
+            "height": 361
+          },
+          "scale": 1.2425068119891007
+        },
+        "approval": {
+          "png": "png/characters/glm/approval.png",
+          "webp": "webp/characters/glm/approval.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 381,
+            "top": 381,
+            "width": 346,
+            "height": 357
+          },
+          "scale": 1.2425068119891007
+        },
+        "executing": {
+          "png": "png/characters/glm/executing.png",
+          "webp": "webp/characters/glm/executing.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 733,
+            "top": 387,
+            "width": 358,
+            "height": 353
+          },
+          "scale": 1.2425068119891007
+        },
+        "error": {
+          "png": "png/characters/glm/error.png",
+          "webp": "webp/characters/glm/error.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1099,
+            "top": 386,
+            "width": 340,
+            "height": 353
+          },
+          "scale": 1.2425068119891007
+        },
+        "aborted": {
+          "png": "png/characters/glm/aborted.png",
+          "webp": "webp/characters/glm/aborted.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 15,
+            "top": 741,
+            "width": 347,
+            "height": 341
+          },
+          "scale": 1.2425068119891007
+        },
+        "celebrate": {
+          "png": "png/characters/glm/celebrate.png",
+          "webp": "webp/characters/glm/celebrate.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 380,
+            "top": 736,
+            "width": 352,
+            "height": 344
+          },
+          "scale": 1.2425068119891007
+        },
+        "speaking": {
+          "png": "png/characters/glm/speaking.png",
+          "webp": "webp/characters/glm/speaking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 740,
+            "top": 738,
+            "width": 341,
+            "height": 347
+          },
+          "scale": 1.2425068119891007
+        },
+        "portrait": {
+          "png": "png/portraits/glm.png",
+          "webp": "webp/portraits/glm.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            256
+          ],
+          "sourceBounds": {
+            "left": 1080,
+            "top": 737,
+            "width": 363,
+            "height": 339
+          },
+          "scale": 1.300275482093664
+        }
+      }
+    },
+    "minimax": {
+      "name": "minimax",
+      "identityReference": "art/references/apprentice-ai-girls-chibis/MiniMax-Chibi.png",
+      "source": "sources/minimax-atlas.png",
+      "assets": {
+        "idle": {
+          "png": "png/characters/minimax/idle.png",
+          "webp": "webp/characters/minimax/idle.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 50,
+            "top": 8,
+            "width": 278,
+            "height": 367
+          },
+          "scale": 1.2425068119891007
+        },
+        "ready": {
+          "png": "png/characters/minimax/ready.png",
+          "webp": "webp/characters/minimax/ready.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 409,
+            "top": 9,
+            "width": 284,
+            "height": 365
+          },
+          "scale": 1.2425068119891007
+        },
+        "thinking": {
+          "png": "png/characters/minimax/thinking.png",
+          "webp": "webp/characters/minimax/thinking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 765,
+            "top": 12,
+            "width": 283,
+            "height": 362
+          },
+          "scale": 1.2425068119891007
+        },
+        "waiting": {
+          "png": "png/characters/minimax/waiting.png",
+          "webp": "webp/characters/minimax/waiting.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1130,
+            "top": 18,
+            "width": 275,
+            "height": 356
+          },
+          "scale": 1.2425068119891007
+        },
+        "done": {
+          "png": "png/characters/minimax/done.png",
+          "webp": "webp/characters/minimax/done.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 51,
+            "top": 379,
+            "width": 285,
+            "height": 351
+          },
+          "scale": 1.2425068119891007
+        },
+        "approval": {
+          "png": "png/characters/minimax/approval.png",
+          "webp": "webp/characters/minimax/approval.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 407,
+            "top": 378,
+            "width": 284,
+            "height": 352
+          },
+          "scale": 1.2425068119891007
+        },
+        "executing": {
+          "png": "png/characters/minimax/executing.png",
+          "webp": "webp/characters/minimax/executing.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 767,
+            "top": 380,
+            "width": 285,
+            "height": 350
+          },
+          "scale": 1.2425068119891007
+        },
+        "error": {
+          "png": "png/characters/minimax/error.png",
+          "webp": "webp/characters/minimax/error.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1126,
+            "top": 378,
+            "width": 286,
+            "height": 352
+          },
+          "scale": 1.2425068119891007
+        },
+        "aborted": {
+          "png": "png/characters/minimax/aborted.png",
+          "webp": "webp/characters/minimax/aborted.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 49,
+            "top": 733,
+            "width": 283,
+            "height": 345
+          },
+          "scale": 1.2425068119891007
+        },
+        "celebrate": {
+          "png": "png/characters/minimax/celebrate.png",
+          "webp": "webp/characters/minimax/celebrate.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 403,
+            "top": 729,
+            "width": 301,
+            "height": 347
+          },
+          "scale": 1.2425068119891007
+        },
+        "speaking": {
+          "png": "png/characters/minimax/speaking.png",
+          "webp": "webp/characters/minimax/speaking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 759,
+            "top": 731,
+            "width": 299,
+            "height": 347
+          },
+          "scale": 1.2425068119891007
+        },
+        "portrait": {
+          "png": "png/portraits/minimax.png",
+          "webp": "webp/portraits/minimax.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            256
+          ],
+          "sourceBounds": {
+            "left": 1086,
+            "top": 732,
+            "width": 349,
+            "height": 340
+          },
+          "scale": 1.3524355300859598
+        }
+      }
+    },
+    "kimi": {
+      "name": "kimi",
+      "identityReference": "art/references/apprentice-ai-girls-chibis/Kimi-Chibi.png",
+      "source": "sources/kimi-atlas.png",
+      "assets": {
+        "idle": {
+          "png": "png/characters/kimi/idle.png",
+          "webp": "webp/characters/kimi/idle.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 19,
+            "top": 11,
+            "width": 336,
+            "height": 356
+          },
+          "scale": 1.2808988764044944
+        },
+        "ready": {
+          "png": "png/characters/kimi/ready.png",
+          "webp": "webp/characters/kimi/ready.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 379,
+            "top": 12,
+            "width": 336,
+            "height": 354
+          },
+          "scale": 1.2808988764044944
+        },
+        "thinking": {
+          "png": "png/characters/kimi/thinking.png",
+          "webp": "webp/characters/kimi/thinking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 744,
+            "top": 12,
+            "width": 337,
+            "height": 355
+          },
+          "scale": 1.2808988764044944
+        },
+        "waiting": {
+          "png": "png/characters/kimi/waiting.png",
+          "webp": "webp/characters/kimi/waiting.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1108,
+            "top": 13,
+            "width": 329,
+            "height": 354
+          },
+          "scale": 1.2808988764044944
+        },
+        "done": {
+          "png": "png/characters/kimi/done.png",
+          "webp": "webp/characters/kimi/done.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 19,
+            "top": 373,
+            "width": 338,
+            "height": 350
+          },
+          "scale": 1.2808988764044944
+        },
+        "approval": {
+          "png": "png/characters/kimi/approval.png",
+          "webp": "webp/characters/kimi/approval.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 386,
+            "top": 375,
+            "width": 337,
+            "height": 349
+          },
+          "scale": 1.2808988764044944
+        },
+        "executing": {
+          "png": "png/characters/kimi/executing.png",
+          "webp": "webp/characters/kimi/executing.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 747,
+            "top": 375,
+            "width": 330,
+            "height": 348
+          },
+          "scale": 1.2808988764044944
+        },
+        "error": {
+          "png": "png/characters/kimi/error.png",
+          "webp": "webp/characters/kimi/error.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1106,
+            "top": 372,
+            "width": 334,
+            "height": 351
+          },
+          "scale": 1.2808988764044944
+        },
+        "aborted": {
+          "png": "png/characters/kimi/aborted.png",
+          "webp": "webp/characters/kimi/aborted.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 18,
+            "top": 727,
+            "width": 336,
+            "height": 348
+          },
+          "scale": 1.2808988764044944
+        },
+        "celebrate": {
+          "png": "png/characters/kimi/celebrate.png",
+          "webp": "webp/characters/kimi/celebrate.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 374,
+            "top": 726,
+            "width": 349,
+            "height": 350
+          },
+          "scale": 1.2808988764044944
+        },
+        "speaking": {
+          "png": "png/characters/kimi/speaking.png",
+          "webp": "webp/characters/kimi/speaking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 741,
+            "top": 727,
+            "width": 331,
+            "height": 352
+          },
+          "scale": 1.2808988764044944
+        },
+        "portrait": {
+          "png": "png/portraits/kimi.png",
+          "webp": "webp/portraits/kimi.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            256
+          ],
+          "sourceBounds": {
+            "left": 1083,
+            "top": 724,
+            "width": 356,
+            "height": 350
+          },
+          "scale": 1.3258426966292134
+        }
+      }
+    },
+    "step": {
+      "name": "step",
+      "identityReference": "art/references/additional-models/step-source.png",
+      "source": "sources/step-atlas.png",
+      "assets": {
+        "idle": {
+          "png": "png/characters/step/idle.png",
+          "webp": "webp/characters/step/idle.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 26,
+            "top": 8,
+            "width": 343,
+            "height": 371
+          },
+          "scale": 1.2192513368983957
+        },
+        "ready": {
+          "png": "png/characters/step/ready.png",
+          "webp": "webp/characters/step/ready.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 391,
+            "top": 5,
+            "width": 339,
+            "height": 374
+          },
+          "scale": 1.2192513368983957
+        },
+        "thinking": {
+          "png": "png/characters/step/thinking.png",
+          "webp": "webp/characters/step/thinking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 743,
+            "top": 7,
+            "width": 347,
+            "height": 372
+          },
+          "scale": 1.2192513368983957
+        },
+        "waiting": {
+          "png": "png/characters/step/waiting.png",
+          "webp": "webp/characters/step/waiting.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1112,
+            "top": 6,
+            "width": 330,
+            "height": 373
+          },
+          "scale": 1.2192513368983957
+        },
+        "done": {
+          "png": "png/characters/step/done.png",
+          "webp": "webp/characters/step/done.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 23,
+            "top": 381,
+            "width": 349,
+            "height": 357
+          },
+          "scale": 1.2192513368983957
+        },
+        "approval": {
+          "png": "png/characters/step/approval.png",
+          "webp": "webp/characters/step/approval.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 392,
+            "top": 380,
+            "width": 340,
+            "height": 358
+          },
+          "scale": 1.2192513368983957
+        },
+        "executing": {
+          "png": "png/characters/step/executing.png",
+          "webp": "webp/characters/step/executing.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 745,
+            "top": 388,
+            "width": 346,
+            "height": 350
+          },
+          "scale": 1.2192513368983957
+        },
+        "error": {
+          "png": "png/characters/step/error.png",
+          "webp": "webp/characters/step/error.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1109,
+            "top": 383,
+            "width": 334,
+            "height": 372
+          },
+          "scale": 1.2192513368983957
+        },
+        "aborted": {
+          "png": "png/characters/step/aborted.png",
+          "webp": "webp/characters/step/aborted.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 24,
+            "top": 740,
+            "width": 349,
+            "height": 338
+          },
+          "scale": 1.2192513368983957
+        },
+        "celebrate": {
+          "png": "png/characters/step/celebrate.png",
+          "webp": "webp/characters/step/celebrate.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 390,
+            "top": 738,
+            "width": 342,
+            "height": 340
+          },
+          "scale": 1.2192513368983957
+        },
+        "speaking": {
+          "png": "png/characters/step/speaking.png",
+          "webp": "webp/characters/step/speaking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 750,
+            "top": 739,
+            "width": 333,
+            "height": 340
+          },
+          "scale": 1.2192513368983957
+        },
+        "portrait": {
+          "png": "png/portraits/step.png",
+          "webp": "webp/portraits/step.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            256
+          ],
+          "sourceBounds": {
+            "left": 1091,
+            "top": 731,
+            "width": 347,
+            "height": 348
+          },
+          "scale": 1.3563218390804597
+        }
+      }
+    },
+    "mimo": {
+      "name": "mimo",
+      "identityReference": "art/references/additional-models/mimo-rabbit-three-view.png",
+      "source": "sources/mimo-atlas.png",
+      "assets": {
+        "idle": {
+          "png": "png/characters/mimo/idle.png",
+          "webp": "webp/characters/mimo/idle.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 35,
+            "top": 5,
+            "width": 344,
+            "height": 379
+          },
+          "scale": 1.2031662269129288
+        },
+        "ready": {
+          "png": "png/characters/mimo/ready.png",
+          "webp": "webp/characters/mimo/ready.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 396,
+            "top": 8,
+            "width": 337,
+            "height": 375
+          },
+          "scale": 1.2031662269129288
+        },
+        "thinking": {
+          "png": "png/characters/mimo/thinking.png",
+          "webp": "webp/characters/mimo/thinking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 749,
+            "top": 13,
+            "width": 348,
+            "height": 370
+          },
+          "scale": 1.2031662269129288
+        },
+        "waiting": {
+          "png": "png/characters/mimo/waiting.png",
+          "webp": "webp/characters/mimo/waiting.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1111,
+            "top": 17,
+            "width": 333,
+            "height": 366
+          },
+          "scale": 1.2031662269129288
+        },
+        "done": {
+          "png": "png/characters/mimo/done.png",
+          "webp": "webp/characters/mimo/done.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 32,
+            "top": 384,
+            "width": 344,
+            "height": 359
+          },
+          "scale": 1.2031662269129288
+        },
+        "approval": {
+          "png": "png/characters/mimo/approval.png",
+          "webp": "webp/characters/mimo/approval.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 399,
+            "top": 385,
+            "width": 338,
+            "height": 357
+          },
+          "scale": 1.2031662269129288
+        },
+        "executing": {
+          "png": "png/characters/mimo/executing.png",
+          "webp": "webp/characters/mimo/executing.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 754,
+            "top": 391,
+            "width": 336,
+            "height": 350
+          },
+          "scale": 1.2031662269129288
+        },
+        "error": {
+          "png": "png/characters/mimo/error.png",
+          "webp": "webp/characters/mimo/error.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1106,
+            "top": 388,
+            "width": 333,
+            "height": 354
+          },
+          "scale": 1.2031662269129288
+        },
+        "aborted": {
+          "png": "png/characters/mimo/aborted.png",
+          "webp": "webp/characters/mimo/aborted.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 34,
+            "top": 745,
+            "width": 349,
+            "height": 338
+          },
+          "scale": 1.2031662269129288
+        },
+        "celebrate": {
+          "png": "png/characters/mimo/celebrate.png",
+          "webp": "webp/characters/mimo/celebrate.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 404,
+            "top": 734,
+            "width": 333,
+            "height": 349
+          },
+          "scale": 1.2031662269129288
+        },
+        "speaking": {
+          "png": "png/characters/mimo/speaking.png",
+          "webp": "webp/characters/mimo/speaking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 745,
+            "top": 739,
+            "width": 337,
+            "height": 344
+          },
+          "scale": 1.2031662269129288
+        },
+        "portrait": {
+          "png": "png/portraits/mimo.png",
+          "webp": "webp/portraits/mimo.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            256
+          ],
+          "sourceBounds": {
+            "left": 1087,
+            "top": 739,
+            "width": 350,
+            "height": 330
+          },
+          "scale": 1.3485714285714285
+        }
+      }
+    },
+    "qwen": {
+      "name": "qwen",
+      "identityReference": "art/references/apprentice-ai-girls-chibis/Qwen-Chibi.png",
+      "source": "sources/qwen-atlas.png",
+      "assets": {
+        "idle": {
+          "png": "png/characters/qwen/idle.png",
+          "webp": "webp/characters/qwen/idle.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 30,
+            "top": 15,
+            "width": 328,
+            "height": 356
+          },
+          "scale": 1.2773109243697478
+        },
+        "ready": {
+          "png": "png/characters/qwen/ready.png",
+          "webp": "webp/characters/qwen/ready.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 394,
+            "top": 16,
+            "width": 334,
+            "height": 356
+          },
+          "scale": 1.2773109243697478
+        },
+        "thinking": {
+          "png": "png/characters/qwen/thinking.png",
+          "webp": "webp/characters/qwen/thinking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 756,
+            "top": 14,
+            "width": 328,
+            "height": 353
+          },
+          "scale": 1.2773109243697478
+        },
+        "waiting": {
+          "png": "png/characters/qwen/waiting.png",
+          "webp": "webp/characters/qwen/waiting.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1124,
+            "top": 15,
+            "width": 307,
+            "height": 357
+          },
+          "scale": 1.2773109243697478
+        },
+        "done": {
+          "png": "png/characters/qwen/done.png",
+          "webp": "webp/characters/qwen/done.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 41,
+            "top": 375,
+            "width": 319,
+            "height": 349
+          },
+          "scale": 1.2773109243697478
+        },
+        "approval": {
+          "png": "png/characters/qwen/approval.png",
+          "webp": "webp/characters/qwen/approval.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 403,
+            "top": 378,
+            "width": 318,
+            "height": 347
+          },
+          "scale": 1.2773109243697478
+        },
+        "executing": {
+          "png": "png/characters/qwen/executing.png",
+          "webp": "webp/characters/qwen/executing.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 755,
+            "top": 378,
+            "width": 327,
+            "height": 349
+          },
+          "scale": 1.2773109243697478
+        },
+        "error": {
+          "png": "png/characters/qwen/error.png",
+          "webp": "webp/characters/qwen/error.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1118,
+            "top": 377,
+            "width": 316,
+            "height": 349
+          },
+          "scale": 1.2773109243697478
+        },
+        "aborted": {
+          "png": "png/characters/qwen/aborted.png",
+          "webp": "webp/characters/qwen/aborted.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 46,
+            "top": 729,
+            "width": 318,
+            "height": 347
+          },
+          "scale": 1.2773109243697478
+        },
+        "celebrate": {
+          "png": "png/characters/qwen/celebrate.png",
+          "webp": "webp/characters/qwen/celebrate.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 397,
+            "top": 730,
+            "width": 322,
+            "height": 344
+          },
+          "scale": 1.2773109243697478
+        },
+        "speaking": {
+          "png": "png/characters/qwen/speaking.png",
+          "webp": "webp/characters/qwen/speaking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 745,
+            "top": 728,
+            "width": 327,
+            "height": 346
+          },
+          "scale": 1.2773109243697478
+        },
+        "portrait": {
+          "png": "png/portraits/qwen.png",
+          "webp": "webp/portraits/qwen.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            256
+          ],
+          "sourceBounds": {
+            "left": 1080,
+            "top": 726,
+            "width": 358,
+            "height": 349
+          },
+          "scale": 1.318435754189944
+        }
+      }
+    },
+    "doubao": {
+      "name": "doubao",
+      "identityReference": "art/references/additional-models/doubao-source.png",
+      "source": "sources/doubao-atlas.png",
+      "assets": {
+        "idle": {
+          "png": "png/characters/doubao/idle.png",
+          "webp": "webp/characters/doubao/idle.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 66,
+            "top": 4,
+            "width": 282,
+            "height": 379
+          },
+          "scale": 1.2031662269129288
+        },
+        "ready": {
+          "png": "png/characters/doubao/ready.png",
+          "webp": "webp/characters/doubao/ready.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 413,
+            "top": 6,
+            "width": 295,
+            "height": 378
+          },
+          "scale": 1.2031662269129288
+        },
+        "thinking": {
+          "png": "png/characters/doubao/thinking.png",
+          "webp": "webp/characters/doubao/thinking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 755,
+            "top": 7,
+            "width": 293,
+            "height": 377
+          },
+          "scale": 1.2031662269129288
+        },
+        "waiting": {
+          "png": "png/characters/doubao/waiting.png",
+          "webp": "webp/characters/doubao/waiting.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1120,
+            "top": 8,
+            "width": 293,
+            "height": 377
+          },
+          "scale": 1.2031662269129288
+        },
+        "done": {
+          "png": "png/characters/doubao/done.png",
+          "webp": "webp/characters/doubao/done.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 63,
+            "top": 382,
+            "width": 298,
+            "height": 364
+          },
+          "scale": 1.2031662269129288
+        },
+        "approval": {
+          "png": "png/characters/doubao/approval.png",
+          "webp": "webp/characters/doubao/approval.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 421,
+            "top": 382,
+            "width": 291,
+            "height": 364
+          },
+          "scale": 1.2031662269129288
+        },
+        "executing": {
+          "png": "png/characters/doubao/executing.png",
+          "webp": "webp/characters/doubao/executing.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 766,
+            "top": 384,
+            "width": 290,
+            "height": 362
+          },
+          "scale": 1.2031662269129288
+        },
+        "error": {
+          "png": "png/characters/doubao/error.png",
+          "webp": "webp/characters/doubao/error.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 1126,
+            "top": 386,
+            "width": 295,
+            "height": 360
+          },
+          "scale": 1.2031662269129288
+        },
+        "aborted": {
+          "png": "png/characters/doubao/aborted.png",
+          "webp": "webp/characters/doubao/aborted.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 68,
+            "top": 743,
+            "width": 279,
+            "height": 340
+          },
+          "scale": 1.2031662269129288
+        },
+        "celebrate": {
+          "png": "png/characters/doubao/celebrate.png",
+          "webp": "webp/characters/doubao/celebrate.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 413,
+            "top": 742,
+            "width": 296,
+            "height": 343
+          },
+          "scale": 1.2031662269129288
+        },
+        "speaking": {
+          "png": "png/characters/doubao/speaking.png",
+          "webp": "webp/characters/doubao/speaking.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            484
+          ],
+          "sourceBounds": {
+            "left": 767,
+            "top": 742,
+            "width": 288,
+            "height": 343
+          },
+          "scale": 1.2031662269129288
+        },
+        "portrait": {
+          "png": "png/portraits/doubao.png",
+          "webp": "webp/portraits/doubao.webp",
+          "width": 512,
+          "height": 512,
+          "anchor": [
+            256,
+            256
+          ],
+          "sourceBounds": {
+            "left": 1103,
+            "top": 742,
+            "width": 341,
+            "height": 334
+          },
+          "scale": 1.3841642228739004
+        }
+      }
+    }
+  },
+  "scene": {
+    "room": {
+      "png": "png/scene/room.png",
+      "webp": "webp/scene/room.webp",
+      "source": "sources/room.png",
+      "width": 2172,
+      "height": 724,
+      "transparent": false
+    },
+    "wood-long": {
+      "png": "png/scene/wood-long.png",
+      "webp": "webp/scene/wood-long.webp",
+      "source": "sources/wood-long.png",
+      "width": 2048,
+      "height": 348,
+      "transparent": true
+    },
+    "wood-short": {
+      "png": "png/scene/wood-short.png",
+      "webp": "webp/scene/wood-short.webp",
+      "source": "sources/wood-short.png",
+      "width": 2048,
+      "height": 540,
+      "transparent": true
+    },
+    "chair": {
+      "png": "png/scene/chair.png",
+      "webp": "webp/scene/chair.webp",
+      "source": "sources/chair.png",
+      "width": 768,
+      "height": 768,
+      "transparent": true
+    },
+    "notebook": {
+      "png": "png/scene/notebook.png",
+      "webp": "webp/scene/notebook.webp",
+      "source": "sources/notebook.png",
+      "width": 768,
+      "height": 768,
+      "transparent": true
+    },
+    "cup": {
+      "png": "png/scene/cup.png",
+      "webp": "webp/scene/cup.webp",
+      "source": "sources/cup.png",
+      "width": 768,
+      "height": 768,
+      "transparent": true
+    },
+    "folder": {
+      "png": "png/scene/folder.png",
+      "webp": "webp/scene/folder.webp",
+      "source": "sources/folder.png",
+      "width": 768,
+      "height": 768,
+      "transparent": true
+    },
+    "plant": {
+      "png": "png/scene/plant.png",
+      "webp": "webp/scene/plant.webp",
+      "source": "sources/plant.png",
+      "width": 768,
+      "height": 768,
+      "transparent": true
+    }
+  },
+  "notes": [
+    "Static pose assets; no frame-by-frame lip sync or skeletal layers.",
+    "Art generation and asset export only; not installed in application.",
+    "Native atlas 1448x1086; individual cell content about 300–380px, normalized to 512px transparent canvases."
+  ]
+}

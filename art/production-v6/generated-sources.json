@@ -1,0 +1,22 @@
+{
+  "chatgpt": "sources/chatgpt-atlas.png",
+  "claude": "sources/claude-atlas.png",
+  "gemini": "sources/gemini-atlas.png",
+  "grok": "sources/grok-atlas.png",
+  "deepseek": "sources/deepseek-atlas.png",
+  "glm": "sources/glm-atlas.png",
+  "minimax": "sources/minimax-atlas.png",
+  "kimi": "sources/kimi-atlas.png",
+  "step": "sources/step-atlas.png",
+  "mimo": "sources/mimo-atlas.png",
+  "qwen": "sources/qwen-atlas.png",
+  "doubao": "sources/doubao-atlas.png",
+  "chair": "sources/chair.png",
+  "notebook": "sources/notebook.png",
+  "cup": "sources/cup.png",
+  "folder": "sources/folder.png",
+  "plant": "sources/plant.png",
+  "room": "sources/room.png",
+  "wood-long": "sources/wood-long.png",
+  "wood-short": "sources/wood-short.png"
+}

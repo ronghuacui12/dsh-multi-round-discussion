@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "characters": {
+    "chatgpt": {
+      "file": "chatgpt.webp",
+      "width": 320,
+      "height": 360,
+      "sourceBounds": {
+        "left": 57,
+        "top": 3,
+        "width": 322,
+        "height": 367
+      }
+    },
+    "claude": {
+      "file": "claude.webp",
+      "width": 320,
+      "height": 360,
+      "sourceBounds": {
+        "left": 398,
+        "top": 18,
+        "width": 293,
+        "height": 354
+      }
+    },
+    "gemini": {
+      "file": "gemini.webp",
+      "width": 320,
+      "height": 360,
+      "sourceBounds": {
+        "left": 740,
+        "top": 13,
+        "width": 299,
+        "height": 360
+      }
+    },
+    "grok": {
+      "file": "grok.webp",
+      "width": 320,
+      "height": 360,
+      "sourceBounds": {
+        "left": 1085,
+        "top": 6,
+        "width": 306,
+        "height": 362
+      }
+    },
+    "deepseek": {
+      "file": "deepseek.webp",
+      "width": 320,
+      "height": 360,
+      "sourceBounds": {
+        "left": 77,
+        "top": 367,
+        "width": 317,
+        "height": 347
+      }
+    },
+    "glm": {
+      "file": "glm.webp",
+      "width": 320,
+      "height": 360,
+      "sourceBounds": {
+        "left": 404,
+        "top": 368,
+        "width": 311,
+        "height": 346
+      }
+    },
+    "minimax": {
+      "file": "minimax.webp",
+      "width": 320,
+      "height": 360,
+      "sourceBounds": {
+        "left": 778,
+        "top": 370,
+        "width": 252,
+        "height": 345
+      }
+    },
+    "kimi": {
+      "file": "kimi.webp",
+      "width": 320,
+      "height": 360,
+      "sourceBounds": {
+        "left": 1106,
+        "top": 367,
+        "width": 289,
+        "height": 347
+      }
+    },
+    "step": {
+      "file": "step.webp",
+      "width": 320,
+      "height": 360,
+      "sourceBounds": {
+        "left": 71,
+        "top": 714,
+        "width": 301,
+        "height": 360
+      }
+    },
+    "mimo": {
+      "file": "mimo.webp",
+      "width": 320,
+      "height": 360,
+      "sourceBounds": {
+        "left": 392,
+        "top": 708,
+        "width": 320,
+        "height": 366
+      }
+    },
+    "qwen": {
+      "file": "qwen.webp",
+      "width": 320,
+      "height": 360,
+      "sourceBounds": {
+        "left": 764,
+        "top": 716,
+        "width": 295,
+        "height": 363
+      }
+    },
+    "doubao": {
+      "file": "doubao.webp",
+      "width": 320,
+      "height": 360,
+      "sourceBounds": {
+        "left": 1125,
+        "top": 712,
+        "width": 259,
+        "height": 367
+      }
+    }
+  },
+  "table": "longtable.webp"
+}

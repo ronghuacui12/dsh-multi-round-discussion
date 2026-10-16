@@ -1,0 +1,22 @@
+{
+  "chatgpt": "exec-3b07d38d-bb57-451d-afff-5a98b9f0810b.png",
+  "claude": "exec-c367a360-6155-4c2d-9634-3d1765af6a51.png",
+  "gemini": "exec-71ef4b9e-f8f6-4765-9236-235e4c68e6d0.png",
+  "grok": "exec-2c65e968-8850-42b9-a3b6-c21eeb65da4f.png",
+  "deepseek": "exec-2dd8cc60-ebf3-4720-927e-e1eea8b5b321.png",
+  "glm": "exec-bdc7b00c-7aea-4b4b-b0af-c1d24842d194.png",
+  "minimax": "exec-efc737ba-69df-49ec-8548-567090814b2c.png",
+  "kimi": "exec-fb6f1b39-2b4d-4295-b3d8-210d7f654f49.png",
+  "step": "exec-d127fb9f-2e65-470b-9ef9-56125a102202.png",
+  "mimo": "exec-6c431d32-cb7c-419c-abc0-382bd5897375.png",
+  "qwen": "exec-67919b55-80b4-4fde-9879-dafc80e1c564.png",
+  "doubao": "exec-8a46e198-c17a-4076-a0a5-a5798ef2fe10.png",
+  "chair": "exec-90e7da0f-8a38-4298-befe-d3776f983b46.png",
+  "notebook": "exec-364392e0-b405-4461-9479-528eca3659a2.png",
+  "cup": "exec-cb11a815-bdc0-41e7-b149-af849d5e44e1.png",
+  "folder": "exec-6c3e255e-3701-4dca-a791-5346f7ef7e45.png",
+  "plant": "exec-3a221236-33bb-4350-827f-cc84836f8937.png",
+  "room": "exec-83080dd6-1e77-438b-83ee-355a921fe687.png",
+  "wood-long": "exec-3cedc96d-3fef-47d5-97b7-4f11872d7281.png",
+  "wood-short": "exec-da0726c9-ee6f-40cb-ab13-11a0da13f853.png"
+}
