@@ -81,6 +81,7 @@ export function SettingsSection() {
   const [preset, setPreset] = useState('balanced');
   const [peerReview, setPeerReview] = useState(true);
   const [mode, setMode] = useState('confirm');
+  const [permissions, setPermissions] = useState('full');
   const [allowedTools, setAllowedTools] = useState<string[]>([]);
   const [maxSteps, setMaxSteps] = useState(12);
   const [avatars, setAvatars] = useState<Record<string, string>>({});
@@ -101,6 +102,7 @@ export function SettingsSection() {
       setPreset(data.preset ?? 'balanced');
       setPeerReview(data.peerReview !== false);
       setMode(data.execution?.mode ?? 'confirm');
+      setPermissions(data.execution?.permissions ?? 'full');
       setAllowedTools(data.execution?.allowedTools ?? []);
       setMaxSteps(data.execution?.maxSteps ?? 12);
       setAvatars(data.avatars ?? {});
@@ -171,7 +173,7 @@ export function SettingsSection() {
         profiles,
         preset,
         peerReview,
-        execution: { mode, allowedTools, maxSteps },
+        execution: { mode, permissions, allowedTools, maxSteps },
       });
       setSeats(toSeats(result.profiles));
       setAvatars(result.avatars ?? {});
@@ -400,6 +402,23 @@ export function SettingsSection() {
             <span>
               <b>直接执行</b>
               <span>计划生成后不再询问，立刻交给执行模型。</span>
+            </span>
+          </div>
+        </div>
+
+        <div className="mmd-mode-cards" style={{ marginTop: 10 }}>
+          <div className={'mmd-mode-card' + (permissions === 'full' ? ' is-on' : '')} onClick={() => { setPermissions('full'); setDirty(true); }}>
+            <input type="radio" name="mmd-perm" checked={permissions === 'full'} onChange={() => { setPermissions('full'); setDirty(true); }} style={{ marginTop: 3 }} />
+            <span>
+              <b>完全权限</b>
+              <span>执行模型的工具调用不受会话沙箱约束（profile 的 sandbox-policy 需为 danger-full-access）。</span>
+            </span>
+          </div>
+          <div className={'mmd-mode-card' + (permissions === 'session' ? ' is-on' : '')} onClick={() => { setPermissions('session'); setDirty(true); }}>
+            <input type="radio" name="mmd-perm" checked={permissions === 'session'} onChange={() => { setPermissions('session'); setDirty(true); }} style={{ marginTop: 3 }} />
+            <span>
+              <b>跟随当前会话</b>
+              <span>沿用发起研讨那个会话的权限；会话设为只读时，执行模型也只能读。</span>
             </span>
           </div>
         </div>

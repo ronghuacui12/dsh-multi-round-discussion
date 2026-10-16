@@ -142,6 +142,7 @@ export class Orchestrator {
                 registry: this.registry,
                 // Present only when the run was started from an agent session.
                 ...(options.agent ? { agent: options.agent } : {}),
+                permissions: this.config.executor?.permissions ?? 'full',
                 sandbox: new ToolSandbox(this.config.executor),
                 blackboard,
                 ...(this.logger ? { logger: this.logger } : {}),

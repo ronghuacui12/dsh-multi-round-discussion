@@ -74,6 +74,15 @@ async function modelCatalog(ctx) {
     return out;
 }
 
+/** The deployment's default sandbox mode, as the tools will resolve it. */
+function sandboxDefault(ctx) {
+    try {
+        return ctx.get('sandboxPolicy')?.resolve().mode ?? '(未挂载 sandboxPolicy)';
+    }
+    catch (cause) {
+        return `(读取失败：${cause instanceof Error ? cause.message : String(cause)})`;
+    }
+}
 /** Tool names the executor could be allowed to call. */
 function toolCatalog(ctx) {
     try {
@@ -168,6 +177,7 @@ export async function handleSettingsRoutes(req, res, requestPath, method, deps) 
             providers: await modelCatalog(ctx),
             tools: toolCatalog(ctx),
             mmdHome: mmdHome(),
+            sandboxDefaultMode: sandboxDefault(ctx),
         });
         return true;
     }
@@ -185,6 +195,7 @@ export async function handleSettingsRoutes(req, res, requestPath, method, deps) 
                 providers: await modelCatalog(ctx),
                 tools: toolCatalog(ctx),
                 mmdHome: mmdHome(),
+                sandboxDefaultMode: sandboxDefault(ctx),
                 warnings: result.warnings,
             });
         }

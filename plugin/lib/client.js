@@ -580,6 +580,7 @@ window.__ModuleLoader__.load({
       const [preset, setPreset] = (0, import_react2.useState)("balanced");
       const [peerReview, setPeerReview] = (0, import_react2.useState)(true);
       const [mode, setMode] = (0, import_react2.useState)("confirm");
+      const [permissions, setPermissions] = (0, import_react2.useState)("full");
       const [allowedTools, setAllowedTools] = (0, import_react2.useState)([]);
       const [maxSteps, setMaxSteps] = (0, import_react2.useState)(12);
       const [avatars, setAvatars] = (0, import_react2.useState)({});
@@ -599,6 +600,7 @@ window.__ModuleLoader__.load({
           setPreset(data.preset ?? "balanced");
           setPeerReview(data.peerReview !== false);
           setMode(data.execution?.mode ?? "confirm");
+          setPermissions(data.execution?.permissions ?? "full");
           setAllowedTools(data.execution?.allowedTools ?? []);
           setMaxSteps(data.execution?.maxSteps ?? 12);
           setAvatars(data.avatars ?? {});
@@ -663,7 +665,7 @@ window.__ModuleLoader__.load({
             profiles,
             preset,
             peerReview,
-            execution: { mode, allowedTools, maxSteps }
+            execution: { mode, permissions, allowedTools, maxSteps }
           });
           setSeats(toSeats(result.profiles));
           setAvatars(result.avatars ?? {});
@@ -909,6 +911,34 @@ window.__ModuleLoader__.load({
               /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { children: [
                 /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("b", { children: "直接执行" }),
                 /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "计划生成后不再询问，立刻交给执行模型。" })
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mmd-mode-cards", style: { marginTop: 10 }, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mmd-mode-card" + (permissions === "full" ? " is-on" : ""), onClick: () => {
+              setPermissions("full");
+              setDirty(true);
+            }, children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("input", { type: "radio", name: "mmd-perm", checked: permissions === "full", onChange: () => {
+                setPermissions("full");
+                setDirty(true);
+              }, style: { marginTop: 3 } }),
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { children: [
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("b", { children: "完全权限" }),
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "执行模型的工具调用不受会话沙箱约束（profile 的 sandbox-policy 需为 danger-full-access）。" })
+              ] })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mmd-mode-card" + (permissions === "session" ? " is-on" : ""), onClick: () => {
+              setPermissions("session");
+              setDirty(true);
+            }, children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("input", { type: "radio", name: "mmd-perm", checked: permissions === "session", onChange: () => {
+                setPermissions("session");
+                setDirty(true);
+              }, style: { marginTop: 3 } }),
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { children: [
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("b", { children: "跟随当前会话" }),
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "沿用发起研讨那个会话的权限；会话设为只读时，执行模型也只能读。" })
               ] })
             ] })
           ] }),

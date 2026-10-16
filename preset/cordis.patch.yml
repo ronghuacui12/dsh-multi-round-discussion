@@ -43,3 +43,13 @@
 
           - id: tool-skill
             name: '@deepseek-ai/dsh-tool-skill'
+
+# ── 执行模型完全权限 ────────────────────────────────────────────────────────
+# sandboxPolicy 的部署默认模式：没有会话上下文的工具调用（研讨的执行模型在
+# 「完全权限」策略下就是这种调用）按它解析。danger-full-access = 不受限。
+# 有自己权限预设的会话不受影响 —— 会话里的 sandbox/mode 事件始终优先于默认值。
+- id: sandbox-policy
+  name: '@deepseek-ai/dsh-sandbox-policy'
+  config:
+    mode: danger-full-access
+    workspaceRoot: !!js process.cwd()

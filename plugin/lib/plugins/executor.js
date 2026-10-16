@@ -21,6 +21,16 @@ export class Executor {
      * the discussion view's own HTTP route has no agent and keeps the default.
      */
     agent;
+    /**
+     * Whether tool calls carry {@link agent} into DSH's sandbox resolution.
+     *
+     * `full` (the default) omits it, so the call resolves against the deployment
+     * default the operator configured -- with `danger-full-access` that is the
+     * same reach a 完全权限 session has, and no session override can narrow it.
+     * `session` keeps the session's own mode, which is the conservative choice
+     * when a session runs read-only.
+     */
+    permissions;
     blackboard;
     logger;
     onParticipant;
@@ -31,6 +41,7 @@ export class Executor {
         this.registry = options.registry;
         this.sandbox = options.sandbox;
         this.agent = options.agent;
+        this.permissions = options.permissions === 'session' ? 'session' : 'full';
         this.blackboard = options.blackboard;
         this.logger = options.logger;
         this.onParticipant = options.onParticipant ?? (() => { });
@@ -236,7 +247,9 @@ export class Executor {
                 name: call.name,
                 arguments: args,
                 signal,
-                ...(this.agent ? { agent: this.agent } : {}),
+                // Only the conservative policy carries the session: it is what
+                // makes the session's sandbox mode win over the deployment default.
+                ...(this.agent && this.permissions === 'session' ? { agent: this.agent } : {}),
             });
             return { content: result.content, isError: result.isError };
         }

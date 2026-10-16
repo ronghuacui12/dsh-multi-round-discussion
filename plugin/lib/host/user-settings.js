@@ -24,6 +24,16 @@ export const ROLE_ORDER = ['decisionMaker', 'proposer', 'reviewer', 'executor', 
 export const REQUIRED_ROLES = ['decisionMaker', 'proposer', 'executor'];
 /** Execution policies. `confirm` parks the run before it touches anything. */
 export const EXECUTION_MODES = ['confirm', 'auto'];
+/**
+ * How the executor's tool calls are sandboxed.
+ *
+ * - `full`    -- run unconfined: the call carries no session, so DSH resolves the
+ *                deployment default the operator configured (danger-full-access
+ *                gives the executor the same reach as a 完全权限 session).
+ * - `session` -- carry the session that started the discussion, so the executor
+ *                inherits that session's sandbox mode and workspace root.
+ */
+export const PERMISSION_MODES = ['full', 'session'];
 
 /** Directory holding every user-editable artifact of this plugin. */
 export function mmdHome() {
@@ -127,6 +137,7 @@ export function normalizeProfiles(raw) {
 export function normalizeExecution(raw, fallback) {
     const base = {
         mode: fallback?.mode ?? 'confirm',
+        permissions: fallback?.permissions ?? 'full',
         allowedTools: Array.isArray(fallback?.allowedTools) ? [...fallback.allowedTools] : [],
         maxSteps: typeof fallback?.maxSteps === 'number' ? fallback.maxSteps : 12,
     };
@@ -138,6 +149,11 @@ export function normalizeExecution(raw, fallback) {
         if (!EXECUTION_MODES.includes(raw.mode))
             throw new Error(`execution.mode 必须是 ${EXECUTION_MODES.join(' 或 ')}。`);
         base.mode = raw.mode;
+    }
+    if (raw.permissions !== undefined) {
+        if (!PERMISSION_MODES.includes(raw.permissions))
+            throw new Error(`execution.permissions 必须是 ${PERMISSION_MODES.join(' 或 ')}。`);
+        base.permissions = raw.permissions;
     }
     if (raw.allowedTools !== undefined) {
         if (!Array.isArray(raw.allowedTools) || raw.allowedTools.some((tool) => typeof tool !== 'string'))
@@ -178,6 +194,7 @@ export class UserSettings {
             profiles: this.registry.listProfiles(),
             execution: {
                 mode: this.orchestratorConfig.executor?.requireConfirmationForWrites === false ? 'auto' : 'confirm',
+                permissions: this.orchestratorConfig.executor?.permissions ?? 'full',
                 allowedTools: [...(this.orchestratorConfig.executor?.allowedTools ?? [])],
                 maxSteps: this.orchestratorConfig.executor?.maxSteps ?? 12,
             },
@@ -210,6 +227,7 @@ export class UserSettings {
             const execution = normalizeExecution(patch.execution, this.snapshot().execution);
             this.orchestratorConfig.executor = {
                 ...(this.orchestratorConfig.executor ?? {}),
+                permissions: execution.permissions,
                 allowedTools: execution.allowedTools,
                 maxSteps: execution.maxSteps,
                 requireConfirmationForWrites: execution.mode === 'confirm',
