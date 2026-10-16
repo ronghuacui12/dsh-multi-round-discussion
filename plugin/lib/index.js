@@ -20,6 +20,7 @@
 import Schema from '@deepseek-ai/schemastery';
 import { ModelRegistry, MODEL_REGISTRY_SERVICE } from "./services/model-registry.js";
 import { RunStore, RUN_STORE_SERVICE } from "./services/run-store.js";
+import { RunHistory, runsDir } from "./services/run-history.js";
 import { Orchestrator } from "./plugins/orchestrator.js";
 import { Observability } from "./plugins/observability.js";
 import { registerApiRoutes } from "./host/api-routes.js";
@@ -197,6 +198,13 @@ export function apply(ctx, config) {
     // Published as a service so the client bridge, sibling plugins, and tests can
     // read run state without importing this module.
     ctx.provide(RUN_STORE_SERVICE, store);
+    // Discussions outlive the process: the in-memory registry is restored from
+    // disk here and mirrored back on every change.
+    const history = new RunHistory({ store, logger });
+    const restoredRuns = history.restore();
+    if (restoredRuns > 0)
+        logger.info('已从磁盘恢复 %d 条研讨记录（%s）', restoredRuns, runsDir());
+    ctx.effect(() => history.attach(), 'multi-model-discussion/run-history');
     const orchestratorConfig = {
         preset: config.preset,
         peerReview: config.peerReview,
@@ -248,6 +256,7 @@ export function apply(ctx, config) {
             registry,
             orchestrator,
             settings,
+            history,
             config: () => orchestratorConfig,
             version: VERSION,
             token: config.api?.token,

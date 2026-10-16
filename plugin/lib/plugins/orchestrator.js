@@ -140,6 +140,8 @@ export class Orchestrator {
             executor: new Executor({
                 ctx: this.ctx,
                 registry: this.registry,
+                // Present only when the run was started from an agent session.
+                ...(options.agent ? { agent: options.agent } : {}),
                 sandbox: new ToolSandbox(this.config.executor),
                 blackboard,
                 ...(this.logger ? { logger: this.logger } : {}),
@@ -461,7 +463,12 @@ export class Orchestrator {
         const adopted = decision.chosenProposalIds
             .map((id) => blackboard.findProposal(id))
             .filter((proposal) => proposal !== undefined);
-        let plan = await parts.lead.buildPlan(roster.lead, context.state.request, decision, adopted, signal);
+        // Plan against the tools the executor can actually dispatch: a plan that
+        // names tools nobody has is a plan that cannot run.
+        const availableTools = typeof parts.executor.availableToolNames === 'function'
+            ? parts.executor.availableToolNames()
+            : [];
+        let plan = await parts.lead.buildPlan(roster.lead, context.state.request, decision, adopted, signal, availableTools);
         blackboard.setPlan(plan);
         this.store.refreshCost(context.runId);
         if (this.aborted(context))

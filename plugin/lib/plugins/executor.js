@@ -13,6 +13,14 @@ export class Executor {
     ctx;
     registry;
     sandbox;
+    /**
+     * The agent session that started this run, when there was one.
+     *
+     * Tool calls carry it so the sandbox policy and workspace root resolve from
+     * that session rather than from the deployment default. A run started from
+     * the discussion view's own HTTP route has no agent and keeps the default.
+     */
+    agent;
     blackboard;
     logger;
     onParticipant;
@@ -22,6 +30,7 @@ export class Executor {
         this.ctx = options.ctx;
         this.registry = options.registry;
         this.sandbox = options.sandbox;
+        this.agent = options.agent;
         this.blackboard = options.blackboard;
         this.logger = options.logger;
         this.onParticipant = options.onParticipant ?? (() => { });
@@ -36,11 +45,28 @@ export class Executor {
      * @param signal - run cancellation.
      * @returns the execution result, also written to the blackboard.
      */
+    /**
+     * Tool names this executor could actually dispatch right now.
+     *
+     * Read by the plan builder so it plans against the real capability set
+     * instead of inventing tool names the dispatcher then rejects.
+     */
+    availableToolNames() {
+        try {
+            return this.sandbox.visibleTools(this.ctx.tools.schemas(this.agent)).map((tool) => tool.name);
+        }
+        catch {
+            return [];
+        }
+    }
     async execute(plan, profile, signal) {
         if (plan.steps.length === 0) {
             throw new ExecutionSetupError('Cannot execute a plan with no steps.');
         }
-        const visibleTools = this.sandbox.visibleTools(this.ctx.tools.schemas());
+        // Asking for the calling agent's view means the executor sees the same tools
+        // that session does (including tools a preset declared) instead of only the
+        // process-global ones.
+        const visibleTools = this.sandbox.visibleTools(this.ctx.tools.schemas(this.agent));
         const system = mergeSystem(profile.systemPrompt, buildExecutorSystem(visibleTools.map((tool) => tool.name), this.sandbox.maxSteps));
         if (plan.mutatesState && visibleTools.length === 0) {
             // Execute anyway — the model can still describe what a human should do.
@@ -210,6 +236,7 @@ export class Executor {
                 name: call.name,
                 arguments: args,
                 signal,
+                ...(this.agent ? { agent: this.agent } : {}),
             });
             return { content: result.content, isError: result.isError };
         }

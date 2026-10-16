@@ -25,6 +25,7 @@ export const api = {
   models: () => request<any>('/models'),
   runs: () => request<any>('/runs'),
   run: (id: string) => request<any>(`/runs/${encodeURIComponent(id)}`),
+  removeRun: (id: string) => request<any>(`/runs/${encodeURIComponent(id)}`, { method: 'DELETE' }),
   control: (id: string, control: any) =>
     request<any>(`/runs/${encodeURIComponent(id)}/control`, { method: 'POST', body: JSON.stringify({ control }) }),
   start: (payload: any) => request<any>('/runs', { method: 'POST', body: JSON.stringify(payload) }),

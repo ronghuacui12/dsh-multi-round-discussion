@@ -216,15 +216,26 @@ export const PLAN_SYSTEM = [
     JSON_RULE,
 ].join('\n');
 /** Build the plan-builder user turn from the decision. */
-export function buildPlanPrompt(originalRequest, decision, adopted) {
+export function buildPlanPrompt(originalRequest, decision, adopted, toolNames) {
     const rendered = adopted
         .map((proposal) => `### ${proposal.id}\n摘要：${proposal.summary}\n做法：${proposal.plan}`)
         .join('\n\n');
+    // The planner used to invent tool names ("http_request", "playwright") that the
+    // executor then could not dispatch, which produced a plan full of
+    // unexecutable steps. Naming the real set is what keeps a plan runnable.
+    const tools = Array.isArray(toolNames) ? toolNames.filter((name) => typeof name === 'string' && name !== '') : [];
+    const toolSection = tools.length > 0
+        ? `\n执行模型本次**只能**调用这些工具：${tools.join('、')}\n` +
+            '步骤里 tool 字段只能从这个列表里取。如果某一步需要的能力不在列表里，就把 tool 留空，' +
+            '并在 description 里写清楚"需要人工用什么完成"。**不要编造工具名。**'
+        : '\n执行模型本次**没有任何可用工具**（只能输出文字）。因此每个步骤的 tool 都留空，' +
+            'description 写成"人工可以照着执行的指令"，不要假设能自动执行。';
     return [
         `用户需求：\n${originalRequest}`,
         `\n最终方向：\n${decision.finalDirection}`,
         `\n采纳依据：\n${decision.rationale}`,
         adopted.length > 0 ? `\n被采纳方案的细节：\n${rendered}` : '',
+        toolSection,
         '\n请据此生成执行计划。',
     ]
         .filter((part) => part !== '')

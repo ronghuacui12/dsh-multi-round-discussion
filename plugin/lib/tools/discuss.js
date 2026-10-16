@@ -66,7 +66,11 @@ export function createDiscussTool(options) {
             schema: { type: 'string' },
             render: (_args, value) => [{ type: 'text', text: value }],
         },
-        async execute(args) {
+        // `exec.agent` is the calling session. Carrying it into the run is what
+        // lets the executor's tool calls inherit that session's sandbox mode and
+        // workspace root; without it they fall back to the deployment default and
+        // a "完全权限" session still executes inside the confined default.
+        async execute(args, exec) {
             const input = args;
             if (!config().enabled) {
                 return '多模型研讨插件当前被配置禁用（enabled=false），无法发起研讨。';
@@ -77,6 +81,7 @@ export function createDiscussTool(options) {
                 state = orchestrator.start({
                     request: input.request,
                     ...(preset ? { preset } : {}),
+                    ...(exec?.agent ? { agent: exec.agent } : {}),
                 });
             }
             catch (cause) {

@@ -142,9 +142,9 @@ export class LeadModel {
      * plan containing a non-read-only tool mutates state regardless of what the
      * model wrote, and that flag is what gates confirmation in the executor.
      */
-    async buildPlan(profile, originalRequest, decision, adopted, signal) {
+    async buildPlan(profile, originalRequest, decision, adopted, signal, toolNames) {
         const response = await this.registry.call(profile.id, {
-            prompt: buildPlanPrompt(originalRequest, decision, adopted),
+            prompt: buildPlanPrompt(originalRequest, decision, adopted, toolNames),
             system: mergeSystem(profile.systemPrompt, PLAN_SYSTEM),
             signal,
             onUsage: this.onUsage,

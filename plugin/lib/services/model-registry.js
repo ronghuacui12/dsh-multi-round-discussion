@@ -33,6 +33,16 @@ function toolCallsOf(blocks) {
 export class ModelRegistry {
     ctx;
     profiles = new Map();
+    /**
+     * Profiles removed from the roster but still referenced by a run that is
+     * already in flight.
+     *
+     * Editing the roster in the settings panel used to make the next model call
+     * of every live run fail with "Unknown ModelProfile". A retired profile is
+     * invisible to role lookup (so new runs cannot pick it) but still resolvable
+     * by id (so a run that already chose it can finish).
+     */
+    retired = new Map();
     pricing;
     usageObservers = new Set();
     constructor(ctx, config) {
@@ -51,6 +61,9 @@ export class ModelRegistry {
     /** Add or replace a profile at runtime. */
     registerProfile(profile) {
         const previous = this.profiles.get(profile.id);
+        // Re-registering an id revives it: the same id must never be resolvable
+        // as both live and retired.
+        this.retired.delete(profile.id);
         this.profiles.set(profile.id, profile);
         return () => {
             if (previous)
@@ -61,7 +74,7 @@ export class ModelRegistry {
     }
     /** Look up one profile. */
     getProfile(id) {
-        return this.profiles.get(id);
+        return this.profiles.get(id) ?? this.retired.get(id);
     }
     /** Every profile, in insertion order. */
     listProfiles() {
@@ -80,9 +93,24 @@ export class ModelRegistry {
     listEnabled() {
         return this.listProfiles().filter((profile) => profile.enabled !== false);
     }
-    /** Remove a profile. Returns whether it existed. */
+    /**
+     * Remove a profile from the roster.
+     *
+     * The definition is kept in {@link retired} so runs that already seated it
+     * can finish; it no longer participates in role lookup.
+     */
     removeProfile(id) {
-        return this.profiles.delete(id);
+        const existing = this.profiles.get(id);
+        if (!existing)
+            return false;
+        this.profiles.delete(id);
+        this.retired.set(id, existing);
+        if (this.retired.size > 200) {
+            // Bounded, oldest first: ids are stable, so this only ever trims
+            // genuinely abandoned seats.
+            this.retired.delete(this.retired.keys().next().value);
+        }
+        return true;
     }
     // ------------------------------------------------------------------ health
     /**
@@ -136,7 +164,7 @@ export class ModelRegistry {
      * sprinkling try/catch through every phase.
      */
     async call(profileId, request) {
-        const profile = this.profiles.get(profileId);
+        const profile = this.getProfile(profileId);
         if (!profile) {
             throw new Error(`Unknown ModelProfile "${profileId}". Register it before dispatching a run.`);
         }

@@ -102,7 +102,7 @@ async function dispatch(req, res, options) {
     const path = url.pathname.slice(API_PREFIX.length) || '/';
     const method = req.method ?? 'GET';
     // A read-only surface: everything below either observes or applies a control.
-    if (method !== 'GET' && method !== 'POST') {
+    if (method !== 'GET' && method !== 'POST' && method !== 'DELETE') {
         sendJson(res, 405, { error: `Method ${method} not allowed.` });
         return;
     }
@@ -205,11 +205,30 @@ async function dispatch(req, res, options) {
             sendJson(res, 400, { error: 'Field "control" is not a recognised control command.' });
             return;
         }
+        // A run restored from disk has no gate, budget or state machine behind it:
+        // driving it would half-apply a control to a record, so it is refused.
+        if (store.get(runId)?.restored) {
+            sendJson(res, 409, { error: '该研讨来自历史记录，已经结束，无法再下发指令。' });
+            return;
+        }
         if (!orchestrator.control(runId, control)) {
             sendJson(res, 404, { error: 'No such run, or it has already finished.' });
             return;
         }
         sendJson(res, 200, { ok: true, run: store.get(runId)?.state });
+        return;
+    }
+    // ------------------------------------------------------------------ history
+    if (method === 'DELETE' && runMatch) {
+        const runId = decodeURIComponent(runMatch[1]);
+        if (!store.get(runId)) {
+            sendJson(res, 404, { error: 'No such run.' });
+            return;
+        }
+        orchestrator.dispose?.(runId);
+        store.remove(runId);
+        options.history?.forget(runId);
+        sendJson(res, 200, { ok: true, runId });
         return;
     }
     sendJson(res, 404, { error: `No route for ${method} ${path}.` });
