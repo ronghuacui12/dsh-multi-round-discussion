@@ -29,6 +29,13 @@
 - 验证：`node build/continuation-smoke.mjs`（12/12）、`build/ui-smoke.mjs`、`build/table-smoke.mjs`（24/24）全部通过；宿主改动 `node --check` 通过。
 - 细节见 [docs/持续交互-实现说明.md](./docs/持续交互-实现说明.md)。
 
+## 本次新增：现场优先 + 不停手
+
+- 新增 `lib/core/workspace-brief.js`：每次运行自动采集工作目录摘要（顶层目录/文件/项目文档标题）注入所有模型的 prompt，杜绝「凭空发明 ep_book_workspace、har/、schema/」这类计划。
+- `PLAN_SYSTEM`：先勘察现场、不得发明路径、禁止「询问用户/等人工」步骤；缺东西走「自己找 → 自己装/起 → 降级继续」。
+- `buildExecutorSystem()`：绝不提问、绝不停手；降级时写 `blocked.md` / `progress.json`，有成功步骤时 `overall=partial`。
+- 本机补齐：PowerShell 7.4.7（PATH 已加）、项目自带 mock 邮件 8787（`/api/mailboxes`）、mock 站点 8790。
+- 细节见 docs/不停手-现场优先-实现说明.md。
 ## 本次新增：工具自举（缺依赖就自己装）
 
 - PLAN_SYSTEM 要求计划阶段**不得假设工具已装**：依赖命令/包/服务的步骤必须先安排「环境准备」步骤（检查 → 安装/启动 → 验证）。

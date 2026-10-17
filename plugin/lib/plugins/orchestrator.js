@@ -32,6 +32,7 @@ import { DiscussionEngine } from "./discussion-engine.js";
 import { LeadModel } from "./lead-model.js";
 import { Executor } from "./executor.js";
 import { Verifier } from "./verifier.js";
+import { buildWorkspaceBrief } from "../core/workspace-brief.js";
 /** How many times a failed verification may send the run back to decision. */
 const MAX_REPLANS = 1;
 /** How many times a failed verification may re-run the same plan. */
@@ -70,9 +71,16 @@ export class Orchestrator {
         // A follow-up run carries the earlier discussion in. The prompt request is
         // the context block plus the new question, while `state.request` stays the
         // user's own words so the UI bubble shows exactly what the user typed.
-        const promptRequest = typeof options.context === 'string' && options.context.trim() !== ''
-            ? `${options.context.trim()}\n\n${options.request}`
-            : options.request;
+        // Hand every model the real layout. Without it the proposal/plan phases
+        // invented directories that did not exist and the run failed for nothing.
+        const workspaceBrief = typeof options.workspaceBrief === 'string'
+            ? options.workspaceBrief
+            : buildWorkspaceBrief();
+        const promptRequest = [
+            typeof options.context === 'string' && options.context.trim() !== '' ? options.context.trim() : '',
+            options.request,
+            workspaceBrief,
+        ].filter((part) => part !== '').join('\n\n');
         const blackboard = new SharedBlackboard(runId, promptRequest);
         const abort = new AbortController();
         const participants = [

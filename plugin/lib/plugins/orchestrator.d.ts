@@ -24,6 +24,8 @@ export interface OrchestratorConfig {
 }
 export interface StartRunOptions {
     request: string;
+    /** Pre-built workspace map; when absent the orchestrator reads the cwd. */
+    workspaceBrief?: string;
     preset?: PresetName;
     overrides?: RosterOverrides;
 }
