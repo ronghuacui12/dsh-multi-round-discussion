@@ -39,7 +39,7 @@ export const inject = ['llm', 'tools'];
 /** The services other plugins may consume. */
 export const provide = [MODEL_REGISTRY_SERVICE, RUN_STORE_SERVICE];
 /** Reported by the HTTP handshake route. */
-export const VERSION = '0.1.0';
+export const VERSION = '0.2.1';
 /** One model instance, as declared in `cordis.yml`. */
 const ProfileSchema = Schema.object({
     id: Schema.string().required(),

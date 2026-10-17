@@ -81,6 +81,23 @@ export function extractJsonValue(text) {
             }
         }
     }
+    // Truncated at the token ceiling: recover the complete prefix rather than
+    // dropping the whole contribution.
+    const truncated = text.slice(start);
+    const closed = closeTruncatedJson(truncated);
+    if (closed !== truncated) {
+        try {
+            return JSON.parse(closeTruncatedJson(repairJsonText(truncated)));
+        }
+        catch {
+            try {
+                return JSON.parse(closed);
+            }
+            catch {
+                // Fall through to the honest failure.
+            }
+        }
+    }
     throw new StructuredOutputError('JSON value in the response is unterminated.', text);
 }
 
@@ -125,6 +142,17 @@ export function repairJsonText(input) {
                 continue;
             }
             if (ch === '\\') {
+                // A backslash must begin a legal JSON escape. Model output routinely
+                // carries raw Windows paths ("D:\\pachong" arrives as D:\pachong) where
+                // the escape is invalid, and JSON.parse rejects the whole document.
+                const nextCh = input[i + 1];
+                const simple = nextCh !== undefined && '"\\/bfnrt'.includes(nextCh);
+                const unicode = nextCh === 'u' && /^[0-9a-fA-F]{4}$/.test(input.slice(i + 2, i + 6));
+                if (!simple && !unicode) {
+                    out.push('\\\\');
+                    i++;
+                    continue;
+                }
                 out.push(ch);
                 escaped = true;
                 i++;
@@ -234,6 +262,99 @@ export function contextAround(text, position, radius = 70) {
     const from = Math.max(0, position - radius);
     const to = Math.min(text.length, position + radius);
     return '\n  ...' + text.slice(from, to).replace(/\s+/g, ' ') + '...';
+}
+
+
+/**
+ * Close a JSON value that the model stopped emitting early.
+ *
+ * Long structured replies are frequently cut at the provider's token ceiling,
+ * which used to be fatal ("JSON value ... is unterminated"). Closing the open
+ * string and the open brackets recovers the complete prefix, which for reviews
+ * and proposals is far more useful than nothing. Only ever applied after both
+ * the strict parse and the repair pass have failed.
+ *
+ * @param text - the truncated candidate, starting at its opening bracket.
+ * @returns the text with every open string/bracket closed.
+ */
+export function closeTruncatedJson(text) {
+    const stack = [];
+    let inString = false;
+    let escaped = false;
+    for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (inString) {
+            if (escaped)
+                escaped = false;
+            else if (ch === '\\')
+                escaped = true;
+            else if (ch === '"')
+                inString = false;
+            continue;
+        }
+        if (ch === '"')
+            inString = true;
+        else if (ch === '{' || ch === '[')
+            stack.push(ch);
+        else if (ch === '}' || ch === ']') {
+            if (stack.length > 0)
+                stack.pop();
+        }
+    }
+    if (!inString && stack.length === 0)
+        return text;
+    let repaired = text.replace(/\s+$/, '');
+    if (inString) {
+        if (escaped)
+            repaired += '\\';
+        repaired += '"';
+    }
+    // Cut almost always lands inside a member. Drop a dangling key (with or
+    // without its colon) so the closers below produce a valid document.
+    for (let guard = 0; guard < 6; guard++) {
+        const trimmed = repaired.replace(/\s+$/, '');
+        if (trimmed.endsWith(':')) {
+            const keyStart = stringStartBefore(trimmed, trimmed.length - 1);
+            if (keyStart === -1)
+                break;
+            repaired = trimTrailingComma(trimmed.slice(0, keyStart));
+            continue;
+        }
+        if (!trimmed.endsWith('"'))
+            break;
+        const keyStart = stringStartBefore(trimmed, trimmed.length - 1);
+        if (keyStart === -1)
+            break;
+        const before = trimmed.slice(0, keyStart).replace(/\s+$/, '');
+        if (before.endsWith(',') || before.endsWith('{')) {
+            repaired = trimTrailingComma(trimmed.slice(0, keyStart));
+            continue;
+        }
+        break;
+    }
+    repaired = trimTrailingComma(repaired);
+    for (let i = stack.length - 1; i >= 0; i--)
+        repaired += stack[i] === '{' ? '}' : ']';
+    return repaired;
+}
+
+/** Index of the quote opening the string that ends at \`end\` (exclusive), or -1. */
+function stringStartBefore(text, end) {
+    for (let i = end - 1; i >= 0; i--) {
+        if (text[i] !== '"')
+            continue;
+        let backslashes = 0;
+        for (let k = i - 1; k >= 0 && text[k] === '\\'; k--)
+            backslashes++;
+        if (backslashes % 2 === 0)
+            return i;
+    }
+    return -1;
+}
+
+/** Drop a trailing comma and surrounding whitespace. */
+function trimTrailingComma(text) {
+    return text.replace(/,\s*$/, '').replace(/\s+$/, '');
 }
 
 /** Index of the first `{` or `[` outside of a fenced code block's language tag, or -1. */

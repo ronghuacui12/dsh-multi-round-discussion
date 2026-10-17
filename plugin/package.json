@@ -1,7 +1,7 @@
 {
   "name": "dsh-multi-model-discussion",
-  "version": "0.1.0",
-  "description": "DSH plugin: role-separated multi-model discussion orchestration (propose -> decide -> plan -> execute -> verify).",
+  "version": "0.2.1",
+  "description": "DSH plugin + agent preset: multi-model discussion with role seats, peer review, approval gate, autonomous executor and a group-chat UI.",
   "type": "module",
   "license": "MIT",
   "main": "lib/index.js",
@@ -40,10 +40,10 @@
     "test": "node --test --experimental-transform-types --no-warnings test/*.test.ts"
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis": "~4.0.4",
-    "@deepseek-ai/dsh-llm": ">=0.0.1-rc.1 <0.3.0",
-    "@deepseek-ai/dsh-tools": ">=0.0.1-rc.1 <0.3.0",
-    "@deepseek-ai/schemastery": "~3.18.4",
+    "@deepseek-ai/cordis": ">=4.0.4 <5",
+    "@deepseek-ai/dsh-llm": ">=0.2.0 <0.3.0",
+    "@deepseek-ai/dsh-tools": ">=0.2.0 <0.3.0",
+    "@deepseek-ai/schemastery": ">=3.18.4 <4",
     "react": "^18.0.0 || ^19.0.0"
   },
   "peerDependenciesMeta": {
@@ -80,6 +80,9 @@
     "cordis",
     "plugin",
     "multi-model",
-    "orchestration"
+    "orchestration",
+    "dsh-agent-preset",
+    "peer-review",
+    "autonomous-executor"
   ]
 }

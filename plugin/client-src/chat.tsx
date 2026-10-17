@@ -111,6 +111,10 @@ export function DiscussionView() {
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState('');
   const [stick, setStick] = useState(true);
+  // Read by the scroll helper without being a dependency: a `stick` dependency
+  // recreates the callback on every scroll, which re-fired the effects below and
+  // yanked the view back to the bottom while the operator was scrolling up.
+  const stickRef = useRef(true);
   const bodyRef = useRef<HTMLDivElement | null>(null);
   const highlightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -210,23 +214,26 @@ export function DiscussionView() {
   const scrollToEnd = useCallback((force?: boolean) => {
     const node = bodyRef.current;
     if (!node) return;
-    if (force || stick) node.scrollTop = node.scrollHeight;
-  }, [stick]);
+    if (force || stickRef.current) node.scrollTop = node.scrollHeight;
+  }, []);
 
   useEffect(() => { scrollToEnd(); }, [messages.length, run?.phase, run?.revision, scrollToEnd]);
-  // A plan gate must be impossible to miss: pin to the bottom the moment it opens.
-  useEffect(() => { if (awaitingApproval || awaitingUser) scrollToEnd(true); }, [awaitingApproval, awaitingUser, scrollToEnd]);
+  // No forced pin when the plan gate opens: the approve bar is docked in the
+  // footer, so it is visible without scrolling. Forcing the scroll here is what
+  // made the transcript impossible to read while a plan waited for approval.
 
   const onScroll = () => {
     const node = bodyRef.current;
     if (!node) return;
     const distance = node.scrollHeight - node.scrollTop - node.clientHeight;
-    setStick(distance < 60);
+    const next = distance < 60;
+    stickRef.current = next;
+    setStick(next);
   };
 
   useEffect(() => () => { if (highlightTimer.current) clearTimeout(highlightTimer.current); }, []);
   const jumpToProfile = (profileId: string) => {
-    setViewMode('split'); saveViewMode('split'); setStick(false);
+    setViewMode('split'); saveViewMode('split'); stickRef.current = false; setStick(false);
     const jump = () => {
       const rows = [...(bodyRef.current?.querySelectorAll<HTMLElement>('[data-model]') ?? [])].filter((row) => row.dataset.model === profileId);
       const last = rows.at(-1); if (!last) return;
@@ -267,6 +274,7 @@ export function DiscussionView() {
       const continueFrom = run && settled ? run.runId : undefined;
       const created = await api.start({ request, ...(continueFrom ? { parentRunId: continueFrom } : {}) });
       setDraft('');
+      stickRef.current = true;
       setStick(true);
       await loadRuns(created.run?.runId);
     } catch (cause: any) {
@@ -574,7 +582,7 @@ export function DiscussionView() {
           ) : null}
 
           {!stick && messages.length > 0 ? (
-            <button type="button" className="mmd-fab" onClick={() => { setStick(true); scrollToEnd(true); }}>↓ 跳到最新</button>
+            <button type="button" className="mmd-fab" onClick={() => { stickRef.current = true; setStick(true); scrollToEnd(true); }}>↓ 跳到最新</button>
           ) : null}
         </div>
         </div>

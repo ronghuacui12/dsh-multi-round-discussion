@@ -52,9 +52,11 @@
       "read_image",
       "write",
       "edit",
-      "load_workspace_dependencies"
+      "load_workspace_dependencies",
+      "working_directory"
     ],
-    "maxSteps": 12
+    "maxSteps": 12,
+    "toolConfirmation": false
   },
   "peerReview": true,
   "preset": "balanced",

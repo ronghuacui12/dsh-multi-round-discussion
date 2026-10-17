@@ -2250,6 +2250,7 @@ window.__ModuleLoader__.load({
       const [editing, setEditing] = (0, import_react7.useState)(false);
       const [editText, setEditText] = (0, import_react7.useState)("");
       const [stick, setStick] = (0, import_react7.useState)(true);
+      const stickRef = (0, import_react7.useRef)(true);
       const bodyRef = (0, import_react7.useRef)(null);
       const highlightTimer = (0, import_react7.useRef)(null);
       const applyMetadata = (0, import_react7.useCallback)((data) => {
@@ -2361,19 +2362,18 @@ window.__ModuleLoader__.load({
       const scrollToEnd = (0, import_react7.useCallback)((force) => {
         const node = bodyRef.current;
         if (!node) return;
-        if (force || stick) node.scrollTop = node.scrollHeight;
-      }, [stick]);
+        if (force || stickRef.current) node.scrollTop = node.scrollHeight;
+      }, []);
       (0, import_react7.useEffect)(() => {
         scrollToEnd();
       }, [messages.length, run?.phase, run?.revision, scrollToEnd]);
-      (0, import_react7.useEffect)(() => {
-        if (awaitingApproval || awaitingUser) scrollToEnd(true);
-      }, [awaitingApproval, awaitingUser, scrollToEnd]);
       const onScroll = () => {
         const node = bodyRef.current;
         if (!node) return;
         const distance = node.scrollHeight - node.scrollTop - node.clientHeight;
-        setStick(distance < 60);
+        const next = distance < 60;
+        stickRef.current = next;
+        setStick(next);
       };
       (0, import_react7.useEffect)(() => () => {
         if (highlightTimer.current) clearTimeout(highlightTimer.current);
@@ -2381,6 +2381,7 @@ window.__ModuleLoader__.load({
       const jumpToProfile = (profileId) => {
         setViewMode("split");
         saveViewMode("split");
+        stickRef.current = false;
         setStick(false);
         const jump = () => {
           const rows = [...bodyRef.current?.querySelectorAll("[data-model]") ?? []].filter((row) => row.dataset.model === profileId);
@@ -2424,6 +2425,7 @@ window.__ModuleLoader__.load({
           const continueFrom = run && settled ? run.runId : void 0;
           const created = await api.start({ request: request2, ...continueFrom ? { parentRunId: continueFrom } : {} });
           setDraft("");
+          stickRef.current = true;
           setStick(true);
           await loadRuns(created.run?.runId);
         } catch (cause) {
@@ -2707,6 +2709,7 @@ window.__ModuleLoader__.load({
                 ] }) })
               ] }) : null,
               !stick && messages.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("button", { type: "button", className: "mmd-fab", onClick: () => {
+                stickRef.current = true;
                 setStick(true);
                 scrollToEnd(true);
               }, children: "↓ 跳到最新" }) : null
