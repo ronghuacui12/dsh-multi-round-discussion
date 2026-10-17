@@ -192,7 +192,10 @@ export const PLAN_SYSTEM = [
     '- 只要步骤会调用工具，就必须写 acceptance（如何判断这步成功）。',
     '- 只要步骤会修改任何状态（文件、配置、外部系统），就必须写 rollback（如何撤销）。',
     '- dependsOn 用步骤 id 表示前置依赖。',
-    '- 步骤数量控制在 3 到 10 步之间。',
+    '- 步骤数量控制在 3 到 10 步之间（如果任务需要先装环境，允许到 12 步）。',
+    '- **不要假设工具已经装好**：任何一步如果依赖某个命令 / 包 / 服务（python 包、npm 包、浏览器、邮件捕获服务、编译器…），必须在计划里先安排「环境准备」步骤：用 pwsh 检查 → 安装或启动 → 再检查验证。不要把“环境里没有”写成任务失败。',
+    '- 安装 / 启动类步骤的 acceptance 写成“命令退出码为 0 且 <检查命令> 输出符合预期”。',
+    '- 安装优先用国内镜像：pip 加 -i https://pypi.tuna.tsinghua.edu.cn/simple，npm 加 --registry=https://registry.npmmirror.com，playwright 浏览器设 PLAYWRIGHT_DOWNLOAD_HOST=https://cdn.npmmirror.com/binaries/playwright。',
     '- mutatesState 表示整个计划是否会改变系统状态。',
     '',
     '输出 JSON：',
@@ -347,7 +350,10 @@ export function buildExecutorSystem(permittedTools, maxSteps) {
         '硬性约束：',
         '- 你**不得**重新规划、不得改变计划方向、不得添加计划中没有的步骤。',
         '- 你必须按计划给出的顺序推进，前一步未完成不要跳到后一步。',
-        '- 如果某一步无法完成，如实记录失败原因，**继续**推进其它不受影响的步骤，然后在收尾时汇报。',
+        '- 如果某一步**缺少依赖**（命令不存在 / 模块未安装 / 服务没起）而无法执行，先自己修：用 pwsh 安装或启动（python -m pip install …、npm i …、下载二进制、起本地服务），装好之后**重试该步骤**；只有安装也失败才记为 failed，并在汇报里写清装了什么、卡在哪一步。',
+        '- 安装 / 启动依赖不算“新增计划外步骤”，它是当前步骤的一部分；但不得借机改变计划方向或做与步骤无关的事。',
+        '- 如果某一步因其它原因无法完成，如实记录失败原因，**继续**推进其它不受影响的步骤，然后在收尾时汇报。',
+        '- 下载优先用国内镜像：pip 用 -i https://pypi.tuna.tsinghua.edu.cn/simple，npm 用 --registry=https://registry.npmmirror.com，playwright 浏览器设 PLAYWRIGHT_DOWNLOAD_HOST=https://cdn.npmmirror.com/binaries/playwright。',
         '- 如果一个步骤失败了，不要尝试用别的方式绕过它并假装成功。',
         Number.isFinite(maxSteps)
             ? `- 你最多可以执行 ${maxSteps} 轮工具调用。`

@@ -29,6 +29,14 @@
 - 验证：`node build/continuation-smoke.mjs`（12/12）、`build/ui-smoke.mjs`、`build/table-smoke.mjs`（24/24）全部通过；宿主改动 `node --check` 通过。
 - 细节见 [docs/持续交互-实现说明.md](./docs/持续交互-实现说明.md)。
 
+## 本次新增：工具自举（缺依赖就自己装）
+
+- PLAN_SYSTEM 要求计划阶段**不得假设工具已装**：依赖命令/包/服务的步骤必须先安排「环境准备」步骤（检查 → 安装/启动 → 验证）。
+- buildExecutorSystem() 允许执行器**缺依赖时自己装**（pip / npm / 下载二进制 / 起本地服务），装好重试该步骤；安装不算计划外新增步骤，失败才记 failed。
+- 提示词内置国内镜像，避免下载卡住。
+- 已实测：pip 26.1.1、npm/npx 11.12.1、Invoke-WebRequest 200、mcp__playwright__* 25 个浏览器工具、mailpit 8787/1025 在跑。
+- 细节见 docs/工具自举-实现说明.md。
+
 ## 本次新增：通配白名单与不限步数
 
 - 白名单支持通配 `*`（`allowedTools: ["*"]`）：宿主当前与**以后新增**的工具（含新挂的 MCP）全部允许，不用每次回来勾。
