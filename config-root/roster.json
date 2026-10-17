@@ -44,17 +44,9 @@
     "mode": "confirm",
     "permissions": "full",
     "allowedTools": [
-      "read",
-      "glob",
-      "grep",
-      "multi_model_discuss",
-      "pwsh",
-      "read_image",
-      "write",
-      "edit",
-      "load_workspace_dependencies"
+      "*"
     ],
-    "maxSteps": 12
+    "maxSteps": 0
   },
   "peerReview": true,
   "preset": "balanced",

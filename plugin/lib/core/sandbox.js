@@ -39,6 +39,12 @@ export const DEFAULT_SANDBOX = {
     requireConfirmationForWrites: false,
     maxSteps: 12,
 };
+/**
+ * Allow-list entry that permits every tool the host exposes, including tools
+ * registered later (a newly mounted MCP server, a new built-in). Preferred over
+ * listing every name, which silently excludes whatever appears next.
+ */
+export const ALL_TOOLS = '*';
 /** Heuristic: is this tool name one of the well-known observers? */
 export function isReadOnlyTool(toolName) {
     const normalized = toolName.toLowerCase();
@@ -47,17 +53,33 @@ export function isReadOnlyTool(toolName) {
 export class ToolSandbox {
     config;
     allowed;
+    /** True when the allow-list carries {@link ALL_TOOLS}. */
+    allowAll;
     constructor(config = {}) {
         this.config = { ...DEFAULT_SANDBOX, ...config };
         this.allowed = new Set(this.config.allowedTools);
+        this.allowAll = this.allowed.has(ALL_TOOLS);
     }
-    /** Configured step ceiling. */
+    /**
+     * Configured step ceiling.
+     *
+     * 0 / undefined / negative means *unlimited*: the executor keeps calling
+     * tools until the plan is done or the run is aborted. The run's budget guard
+     * and abort signal still bound it.
+     */
     get maxSteps() {
-        return this.config.maxSteps;
+        const steps = this.config.maxSteps;
+        if (typeof steps !== 'number' || !Number.isFinite(steps) || steps <= 0)
+            return Number.POSITIVE_INFINITY;
+        return steps;
     }
     /** Tools currently permitted, as a sorted list (for reporting). */
     get permitted() {
-        return [...this.allowed].sort();
+        return this.allowAll ? [ALL_TOOLS] : [...this.allowed].sort();
+    }
+    /** Whether one tool name may be dispatched. */
+    allows(toolName) {
+        return this.allowAll || this.allowed.has(toolName);
     }
     /**
      * Pre-filter the tool schemas handed to the executor model.
@@ -67,11 +89,11 @@ export class ToolSandbox {
      * the approval step happens at dispatch time.
      */
     visibleTools(all) {
-        return all.filter((tool) => this.allowed.has(tool.name));
+        return all.filter((tool) => this.allows(tool.name));
     }
     /** Rule on one concrete call. */
     decide(toolName) {
-        if (!this.allowed.has(toolName)) {
+        if (!this.allows(toolName)) {
             return {
                 kind: 'deny',
                 reason: `Tool "${toolName}" is not on this run's allow-list. ` +
