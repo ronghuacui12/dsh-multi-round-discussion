@@ -76,6 +76,7 @@ export declare class Orchestrator {
     private runDiscussion;
     /** Build a decision record from a user's force-adopt instruction. */
     private applyForcedAdoption;
+    private fallbackDecision;
     /** Re-decide after a failed verification, with the verdict in view. */
     private redecide;
     /** Generate the plan, handling the optional approval park. */

@@ -18,6 +18,12 @@ import { isReadOnlyTool } from "../core/sandbox.js";
 import { CLARIFY_SYSTEM, DECISION_SYSTEM, FINAL_ANSWER_SYSTEM, PLAN_SYSTEM, buildClarifyPrompt, buildDecisionPrompt, buildFinalAnswerPrompt, buildPlanPrompt, } from "../core/prompts.js";
 import { mergeSystem } from "./discussion-engine.js";
 import { StructuredOutputError, optionalStringArray, parseStructured, requireString, salvageText, } from "../utils/json.js";
+
+/**
+ * Appended to a prompt when the previous reply could not be parsed as JSON.
+ * One repaired retry is far cheaper than failing a whole run at the planning step.
+ */
+const STRUCTURED_REPAIR_HINT = '\n\n【上一次的输出无法解析为 JSON】\n这次请只输出一个合法的 JSON 对象：不要代码围栏、不要任何解释文字；括号成对（[ 配 ]、{ 配 }）、字符串里的引号用 \\" 转义、属性之间用逗号分隔。';
 /** Raised when the lead model fails to produce a usable decision. */
 export class DecisionError extends Error {
     raw;
@@ -107,9 +113,9 @@ export class LeadModel {
             throw new DecisionError(`决策模型调用失败：${response.error ?? response.errorCode ?? 'unknown'}`, '');
         }
         const known = new Set((slice.proposals ?? []).map((p) => p.id));
-        const decision = parseStructured(response.text, (raw) => {
+        const parseDecision = (text) => parseStructured(text, (raw) => {
             if (typeof raw !== 'object' || raw === null) {
-                throw new DecisionError('Expected a JSON object for the decision.', response.text);
+                throw new DecisionError('Expected a JSON object for the decision.', text);
             }
             const o = raw;
             const chosen = optionalStringArray(o.chosenProposalIds).filter((id) => known.has(id));
@@ -127,6 +133,25 @@ export class LeadModel {
                 needsUserInput: o.needsUserInput === true,
             };
         });
+        // A single malformed reply used to fail the whole run. Retry the call once
+        // with an explicit repair instruction before giving up.
+        let decision;
+        try {
+            decision = parseDecision(response.text);
+        }
+        catch (cause) {
+            if (!(cause instanceof StructuredOutputError))
+                throw cause;
+            const retry = await this.registry.call(profile.id, {
+                prompt: buildDecisionPrompt(slice) + STRUCTURED_REPAIR_HINT,
+                system: mergeSystem(profile.systemPrompt, DECISION_SYSTEM),
+                signal,
+                onUsage: this.onUsage,
+            });
+            if (!retry.ok)
+                throw cause;
+            decision = parseDecision(retry.text);
+        }
         // Close the partition and report what had to be fixed.
         const accounted = new Set([...decision.chosenProposalIds, ...decision.rejectedProposalIds]);
         const autoRejected = [...known].filter((id) => !accounted.has(id));
@@ -153,14 +178,14 @@ export class LeadModel {
             throw new PlanError(`计划生成调用失败：${response.error ?? response.errorCode ?? 'unknown'}`, '');
         }
         const planId = `plan-${randomUUID().slice(0, 8)}`;
-        const plan = parseStructured(response.text, (raw) => {
+        const parsePlan = (text) => parseStructured(text, (raw) => {
             if (typeof raw !== 'object' || raw === null) {
-                throw new PlanError('Expected a JSON object for the plan.', response.text);
+                throw new PlanError('Expected a JSON object for the plan.', text);
             }
             const o = raw;
             const rawSteps = o.steps;
             if (!Array.isArray(rawSteps) || rawSteps.length === 0) {
-                throw new PlanError('Plan must contain a non-empty "steps" array.', response.text);
+                throw new PlanError('Plan must contain a non-empty "steps" array.', text);
             }
             const steps = [];
             const seen = new Set();
@@ -170,7 +195,7 @@ export class LeadModel {
                 const s = entry;
                 const id = typeof s.id === 'string' && s.id.trim() !== '' ? s.id.trim() : `s${steps.length + 1}`;
                 if (seen.has(id)) {
-                    throw new PlanError(`Duplicate step id "${id}" in plan.`, response.text);
+                    throw new PlanError(`Duplicate step id "${id}" in plan.`, text);
                 }
                 seen.add(id);
                 const tool = typeof s.tool === 'string' && s.tool.trim() !== '' ? s.tool.trim() : undefined;
@@ -191,7 +216,7 @@ export class LeadModel {
                 });
             }
             if (steps.length === 0) {
-                throw new PlanError('Plan contained no readable steps.', response.text);
+                throw new PlanError('Plan contained no readable steps.', text);
             }
             // Dependencies must resolve, or the executor's topological walk would
             // silently skip steps it cannot order.
@@ -199,7 +224,7 @@ export class LeadModel {
             for (const step of steps) {
                 for (const dep of step.dependsOn ?? []) {
                     if (!ids.has(dep)) {
-                        throw new PlanError(`Step "${step.id}" depends on unknown step "${dep}".`, response.text);
+                        throw new PlanError(`Step "${step.id}" depends on unknown step "${dep}".`, text);
                     }
                 }
             }
@@ -217,6 +242,25 @@ export class LeadModel {
                 planBuilderProfileId: profile.id,
             };
         });
+        // The plan is the artefact whose absence stops everything downstream, so a
+        // parse failure gets one repaired retry instead of ending the run.
+        let plan;
+        try {
+            plan = parsePlan(response.text);
+        }
+        catch (cause) {
+            if (!(cause instanceof StructuredOutputError))
+                throw cause;
+            const retry = await this.registry.call(profile.id, {
+                prompt: buildPlanPrompt(originalRequest, decision, adopted, toolNames) + STRUCTURED_REPAIR_HINT,
+                system: mergeSystem(profile.systemPrompt, PLAN_SYSTEM),
+                signal,
+                onUsage: this.onUsage,
+            });
+            if (!retry.ok)
+                throw cause;
+            plan = parsePlan(retry.text);
+        }
         return plan;
     }
     /**

@@ -28,13 +28,16 @@ export function extractJsonValue(text) {
     if (start === -1) {
         throw new StructuredOutputError('No JSON object or array found in the response.', text);
     }
-    // A stack, not a counter over one bracket kind: a truncated `{"a": [1, 2}`
-    // must report "unterminated" rather than "balanced but does not parse".
+    // Walk the span with a stack. A closer of the wrong kind is repaired in place
+    // instead of aborting the scan: long Chinese model output routinely answers
+    // `{"steps": [ ... ]` with a stray `]`, and losing the whole contribution is
+    // a much worse outcome than accepting the obvious intent.
+    const chars = text.slice(start).split('');
     const stack = [];
     let inString = false;
     let escaped = false;
-    for (let i = start; i < text.length; i++) {
-        const ch = text[i];
+    for (let i = 0; i < chars.length; i++) {
+        const ch = chars[i];
         if (inString) {
             if (escaped)
                 escaped = false;
@@ -44,44 +47,78 @@ export function extractJsonValue(text) {
                 inString = false;
             continue;
         }
-        if (ch === '"')
+        if (ch === '"') {
             inString = true;
-        else if (ch === '{' || ch === '[')
+            continue;
+        }
+        if (ch === '{' || ch === '[') {
             stack.push(ch);
-        else if (ch === '}' || ch === ']') {
-            const expected = stack[stack.length - 1];
-            if ((ch === '}' && expected !== '{') || (ch === ']' && expected !== '[')) {
-                throw new StructuredOutputError(`JSON is malformed: got "${ch}" while "${expected}" was open.`, text);
-            }
-            stack.pop();
-            if (stack.length === 0) {
-                const candidate = text.slice(start, i + 1);
-                try {
-                    return JSON.parse(candidate);
-                }
-                catch (cause) {
-                    // The span is balanced but not valid JSON: try the mechanical
-                    // repairs before giving up, because the alternative is losing
-                    // the whole contribution.
-                    const repaired = repairJsonText(candidate);
-                    if (repaired !== candidate) {
-                        try {
-                            return JSON.parse(repaired);
-                        }
-                        catch {
-                            // Fall through: report the original failure, which points at
-                            // the first real defect rather than at whatever the repair
-                            // shifted.
-                        }
-                    }
-                    const position = /position (\d+)/.exec(cause.message)?.[1];
-                    throw new StructuredOutputError(`Found a balanced JSON span but it does not parse: ${cause.message}` +
-                        contextAround(candidate, position === undefined ? undefined : Number(position)), text);
-                }
-            }
+            continue;
+        }
+        if (ch !== '}' && ch !== ']')
+            continue;
+        if (stack.length === 0) {
+            // A closer with nothing open: drop it and keep scanning.
+            chars[i] = '';
+            continue;
+        }
+        const top = stack[stack.length - 1];
+        const wanted = top === '{' ? '}' : ']';
+        if (ch !== wanted)
+            chars[i] = wanted;
+        stack.pop();
+        if (stack.length === 0) {
+            const span = chars.slice(0, i + 1).join('');
+            const value = tryParseJsonSpan(span);
+            if (value !== undefined)
+                return value;
+            throw new StructuredOutputError(`Found a balanced JSON span but it does not parse: ${describeJsonFailure(span)}`, text);
         }
     }
+    // Unterminated: models do get truncated at the token cap, so close the open
+    // string (if any) and the open brackets, then try once more.
+    if (stack.length > 0) {
+        let candidate = chars.join('');
+        if (inString)
+            candidate += '"';
+        for (let d = stack.length - 1; d >= 0; d--)
+            candidate += stack[d] === '{' ? '}' : ']';
+        const value = tryParseJsonSpan(candidate);
+        if (value !== undefined)
+            return value;
+    }
     throw new StructuredOutputError('JSON value in the response is unterminated.', text);
+}
+
+/** Parse one repaired span, or `undefined` when it still does not parse. */
+function tryParseJsonSpan(candidate) {
+    try {
+        return JSON.parse(candidate);
+    }
+    catch {
+        // Fall through to the mechanical repairs.
+    }
+    const repaired = repairJsonText(candidate);
+    if (repaired !== candidate) {
+        try {
+            return JSON.parse(repaired);
+        }
+        catch {
+            return undefined;
+        }
+    }
+    return undefined;
+}
+
+/** The first JSON.parse failure message for a span, for the error text. */
+function describeJsonFailure(candidate) {
+    try {
+        JSON.parse(candidate);
+        return 'unexpected success';
+    }
+    catch (cause) {
+        return cause instanceof Error ? cause.message : String(cause);
+    }
 }
 
 /**
