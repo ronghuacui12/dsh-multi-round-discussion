@@ -48,6 +48,11 @@ export class ModelRegistry {
     constructor(ctx, config) {
         this.ctx = ctx;
         this.pricing = config.pricing ?? {};
+        // A provider that never answers used to stall the whole run with nothing
+        // visible in the UI. Every call is now bounded.
+        this.callTimeoutMs = Number.isFinite(config.callTimeoutMs) && config.callTimeoutMs > 0
+            ? config.callTimeoutMs
+            : 300000;
         // Duplicate ids are a configuration error, not a last-write-wins: two
         // rows sharing an id would make role lookup non-deterministic.
         for (const profile of config.profiles) {
@@ -175,6 +180,23 @@ export class ModelRegistry {
         const system = request.system ?? profile.systemPrompt;
         const assembler = new BlockAssembler();
         const startedAt = Date.now();
+        const timeoutMs = Number.isFinite(request.timeoutMs) && request.timeoutMs > 0
+            ? request.timeoutMs
+            : this.callTimeoutMs;
+        // One abort controller covers both "the run was cancelled" and "the provider
+        // stopped answering", so the stream cannot outlive either.
+        const controller = new AbortController();
+        let timedOut = false;
+        const timer = setTimeout(() => {
+            timedOut = true;
+            controller.abort(new Error(`模型调用超时（${Math.round(timeoutMs / 1000)}s 无响应）：${profile.provider}/${profile.model}`));
+        }, timeoutMs);
+        timer.unref?.();
+        const onAbort = () => controller.abort(request.signal?.reason);
+        if (request.signal?.aborted === true)
+            controller.abort(request.signal.reason);
+        else
+            request.signal?.addEventListener('abort', onAbort, { once: true });
         let thrown;
         try {
             const stream = this.ctx.llm.stream({
@@ -185,7 +207,7 @@ export class ModelRegistry {
                 ...(profile.temperature != null ? { temperature: profile.temperature } : {}),
                 ...(profile.maxTokens != null ? { maxTokens: profile.maxTokens } : {}),
                 ...(request.tools != null && request.tools.length > 0 ? { tools: request.tools } : {}),
-                ...(request.signal != null ? { signal: request.signal } : {}),
+                signal: controller.signal,
             });
             for await (const chunk of stream)
                 assembler.push(chunk);
@@ -194,7 +216,13 @@ export class ModelRegistry {
             // `LlmService.stream` normalises adapter failures into a terminal chunk,
             // so anything reaching here is a consumer/middleware fault. Record it as
             // a failed call and let the caller decide.
-            thrown = cause;
+            thrown = timedOut
+                ? new Error(`模型调用超时（${Math.round(timeoutMs / 1000)}s 无响应）：${profile.provider}/${profile.model}`)
+                : cause;
+        }
+        finally {
+            clearTimeout(timer);
+            request.signal?.removeEventListener('abort', onAbort);
         }
         const durationMs = Date.now() - startedAt;
         const blocks = thrown ? [] : assembler.blocks();
@@ -203,6 +231,7 @@ export class ModelRegistry {
             ? { kind: 'error', failure: { message: thrown.message, code: 'CONSUMER_ERROR' } }
             : assembler.finish;
         const ok = finish.kind === 'stop' || finish.kind === 'tool-calls' || finish.kind === 'max-tokens';
+        const timedOutFailure = timedOut && !ok;
         const estimate = estimateCostUsd(usage, profile.model, this.pricing);
         const response = {
             profileId: profile.id,
@@ -221,7 +250,7 @@ export class ModelRegistry {
             finish,
             ok,
             ...(ok ? {} : { error: finishError(finish, thrown) }),
-            ...(ok ? {} : { errorCode: finishCode(finish) }),
+            ...(ok ? {} : { errorCode: timedOutFailure ? 'TIMEOUT' : finishCode(finish) }),
         };
         const usageRecord = {
             profileId: profile.id,

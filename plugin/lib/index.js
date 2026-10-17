@@ -145,6 +145,11 @@ export const Config = Schema.object({
         token: Schema.string(),
     }),
     pricing: Schema.dict(PriceSchema),
+    // Hard ceiling on one model call. A provider that never answers must not be
+    // able to stall a whole run.
+    timeouts: Schema.object({
+        modelCallMs: Schema.natural().default(300000),
+    }),
 });
 // ----------------------------------------------------------------------- apply
 export function apply(ctx, config) {
@@ -172,6 +177,7 @@ export function apply(ctx, config) {
         registry = new ModelRegistry(ctx, {
             profiles: effectiveProfiles,
             ...(config.pricing ? { pricing: config.pricing } : {}),
+            ...(config.timeouts?.modelCallMs ? { callTimeoutMs: config.timeouts.modelCallMs } : {}),
         });
     }
     catch (cause) {
