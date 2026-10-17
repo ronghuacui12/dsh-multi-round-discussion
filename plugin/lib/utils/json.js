@@ -28,9 +28,9 @@ export function extractJsonValue(text) {
     if (start === -1) {
         throw new StructuredOutputError('No JSON object or array found in the response.', text);
     }
-    const open = text[start];
-    const close = open === '{' ? '}' : ']';
-    let depth = 0;
+    // A stack, not a counter over one bracket kind: a truncated `{"a": [1, 2}`
+    // must report "unterminated" rather than "balanced but does not parse".
+    const stack = [];
     let inString = false;
     let escaped = false;
     for (let i = start; i < text.length; i++) {
@@ -46,23 +46,196 @@ export function extractJsonValue(text) {
         }
         if (ch === '"')
             inString = true;
-        else if (ch === open)
-            depth++;
-        else if (ch === close) {
-            depth--;
-            if (depth === 0) {
+        else if (ch === '{' || ch === '[')
+            stack.push(ch);
+        else if (ch === '}' || ch === ']') {
+            const expected = stack[stack.length - 1];
+            if ((ch === '}' && expected !== '{') || (ch === ']' && expected !== '[')) {
+                throw new StructuredOutputError(`JSON is malformed: got "${ch}" while "${expected}" was open.`, text);
+            }
+            stack.pop();
+            if (stack.length === 0) {
                 const candidate = text.slice(start, i + 1);
                 try {
                     return JSON.parse(candidate);
                 }
                 catch (cause) {
-                    throw new StructuredOutputError(`Found a balanced JSON span but it does not parse: ${cause.message}`, text);
+                    // The span is balanced but not valid JSON: try the mechanical
+                    // repairs before giving up, because the alternative is losing
+                    // the whole contribution.
+                    const repaired = repairJsonText(candidate);
+                    if (repaired !== candidate) {
+                        try {
+                            return JSON.parse(repaired);
+                        }
+                        catch {
+                            // Fall through: report the original failure, which points at
+                            // the first real defect rather than at whatever the repair
+                            // shifted.
+                        }
+                    }
+                    const position = /position (\d+)/.exec(cause.message)?.[1];
+                    throw new StructuredOutputError(`Found a balanced JSON span but it does not parse: ${cause.message}` +
+                        contextAround(candidate, position === undefined ? undefined : Number(position)), text);
                 }
             }
         }
     }
     throw new StructuredOutputError('JSON value in the response is unterminated.', text);
 }
+
+/**
+ * Best-effort repair of a balanced-but-invalid JSON span.
+ *
+ * Only ever called after \`JSON.parse\` has already rejected the text, so a
+ * successful repair cannot mask a valid input. The three defects below cover
+ * what long Chinese model output actually produces:
+ *
+ *   1. **Unescaped ASCII quotes inside a string.** \`"summary": "使用 "缓存" 策略"\`
+ *      makes the parser end the string early and then report
+ *      \`Expected ',' or '}' after property value\` -- the error this exists to fix.
+ *   2. **Missing comma between properties** (\`{"a": 1 "b": 2}\`).
+ *   3. **Raw control characters in a string** -- a literal newline or tab where
+ *      JSON requires \`\\n\` / \`\\t\`.
+ * Plus the two cheap ones: trailing commas and \`True/False/None\`.
+ *
+ * @param input - the candidate JSON text.
+ * @returns the repaired text (which may equal the input).
+ */
+export function repairJsonText(input) {
+    const out = [];
+    let i = 0;
+    let inString = false;
+    let escaped = false;
+    // Last non-space character emitted outside a string: decides whether a comma
+    // is missing before the next token.
+    let lastSignificant = '';
+    const emit = (ch) => {
+        out.push(ch);
+        if (!/\s/.test(ch))
+            lastSignificant = ch;
+    };
+    while (i < input.length) {
+        const ch = input[i];
+        if (inString) {
+            if (escaped) {
+                out.push(ch);
+                escaped = false;
+                i++;
+                continue;
+            }
+            if (ch === '\\') {
+                out.push(ch);
+                escaped = true;
+                i++;
+                continue;
+            }
+            if (ch === '"') {
+                // A real closing quote is followed by , } ] : or end of text.
+                // Anything else means the model quoted a term inside the value.
+                let j = i + 1;
+                while (j < input.length && /\s/.test(input[j]))
+                    j++;
+                const next = input[j];
+                // `next === '"'` means a new string starts right here, so this one
+                // must be closing: an inner quote is followed by content, not by a quote.
+                if (next === undefined || next === ',' || next === '}' || next === ']' || next === ':' || next === '"') {
+                    out.push('"');
+                    inString = false;
+                    lastSignificant = '"';
+                    i++;
+                    continue;
+                }
+                out.push('\\"');
+                i++;
+                continue;
+            }
+            if (ch === '\n') {
+                out.push('\\n');
+                i++;
+                continue;
+            }
+            if (ch === '\r') {
+                out.push('\\r');
+                i++;
+                continue;
+            }
+            if (ch === '\t') {
+                out.push('\\t');
+                i++;
+                continue;
+            }
+            out.push(ch);
+            i++;
+            continue;
+        }
+        // ---- outside a string
+        if (ch === '/' && input[i + 1] === '/') {
+            while (i < input.length && input[i] !== '\n')
+                i++;
+            continue;
+        }
+        if (ch === '/' && input[i + 1] === '*') {
+            const end = input.indexOf('*/', i + 2);
+            i = end === -1 ? input.length : end + 2;
+            continue;
+        }
+        if (ch === ',') {
+            let j = i + 1;
+            while (j < input.length && /\s/.test(input[j]))
+                j++;
+            if (input[j] === '}' || input[j] === ']') {
+                i++;
+                continue;
+            }
+            emit(',');
+            i++;
+            continue;
+        }
+        if (ch === '"') {
+            if (lastSignificant !== '' && lastSignificant !== ',' && lastSignificant !== '{' && lastSignificant !== '[' && lastSignificant !== ':') {
+                emit(',');
+            }
+            out.push('"');
+            inString = true;
+            escaped = false;
+            i++;
+            continue;
+        }
+        if (input.startsWith('True', i)) {
+            out.push('true');
+            lastSignificant = 'e';
+            i += 4;
+            continue;
+        }
+        if (input.startsWith('False', i)) {
+            out.push('false');
+            lastSignificant = 'e';
+            i += 5;
+            continue;
+        }
+        if (input.startsWith('None', i)) {
+            out.push('null');
+            lastSignificant = 'l';
+            i += 4;
+            continue;
+        }
+        emit(ch);
+        i++;
+    }
+    return out.join('');
+}
+
+/** A short window of \`text\` around \`position\`, for a diagnosable error message. */
+/** A short window of `text` around `position`, for a diagnosable error message. */
+export function contextAround(text, position, radius = 70) {
+    if (position === undefined)
+        return text.trim() === '' ? '' : '\n  开头：' + text.slice(0, radius).replace(/\s+/g, ' ') + '...';
+    const from = Math.max(0, position - radius);
+    const to = Math.min(text.length, position + radius);
+    return '\n  ...' + text.slice(from, to).replace(/\s+/g, ' ') + '...';
+}
+
 /** Index of the first `{` or `[` outside of a fenced code block's language tag, or -1. */
 function findFirstJsonStart(text) {
     for (let i = 0; i < text.length; i++) {
