@@ -167,8 +167,10 @@ export function normalizeExecution(raw, fallback) {
         base.allowedTools = [...new Set(raw.allowedTools.map((tool) => tool.trim()).filter(Boolean))];
     }
     if (raw.maxSteps !== undefined) {
-        if (typeof raw.maxSteps !== 'number' || !Number.isFinite(raw.maxSteps) || raw.maxSteps <= 0)
-            throw new Error('execution.maxSteps 必须是正数。');
+        // 0 means unlimited: the executor stops when the plan is done or the run is
+        // aborted, and the budget guard still caps the whole run.
+        if (typeof raw.maxSteps !== 'number' || !Number.isFinite(raw.maxSteps) || raw.maxSteps < 0)
+            throw new Error('execution.maxSteps 必须是非负数（0 = 不限）。');
         base.maxSteps = Math.floor(raw.maxSteps);
     }
     return base;

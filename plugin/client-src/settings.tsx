@@ -33,7 +33,8 @@ const TOOL_CATS: { key: string; title: string; match: (name: string) => boolean 
 const TOOL_PRESETS: { key: string; label: string; hint: string; pick: (tools: string[]) => string[] }[] = [
   { key: 'ro', label: '只读', hint: '只能看，不能改', pick: (tools) => tools.filter((t) => READ_ONLY.has(t)) },
   { key: 'rw', label: '常用读写', hint: '读 + 写文件 + 终端', pick: (tools) => tools.filter((t) => READ_ONLY.has(t) || ['write', 'edit', 'pwsh', 'todo_write', 'present'].includes(t)) },
-  { key: 'all', label: '全部', hint: '勾上目录里的所有工具', pick: (tools) => [...tools] },
+  { key: 'all', label: '全部（含以后新增）', hint: '白名单写 *：现在和以后新增的工具（含新 MCP）都自动允许', pick: () => ['*'] },
+  { key: 'listed', label: '只选目录里的', hint: '把当前目录里的工具逐个勾上，不含以后新增的', pick: (tools) => [...tools] },
   { key: 'none', label: '清空', hint: '执行模型不碰任何工具', pick: () => [] },
 ];
 
@@ -245,7 +246,7 @@ export function SettingsSection() {
     return required.filter(([role]) => !seats.some((seat) => seat.role === role && seat.enabled && seat.provider && seat.model)).map(([, label]) => label);
   }, [seats]);
 
-  const customTools = allowedTools.filter((name) => !(tools.length > 0 ? tools : FALLBACK_TOOLS).includes(name));
+  const customTools = allowedTools.filter((name) => name !== '*' && !(tools.length > 0 ? tools : FALLBACK_TOOLS).includes(name));
 
   if (loading) return <div className="mmd-set"><p className="mmd-hint">正在读取当前配置…</p></div>;
 
@@ -453,6 +454,15 @@ export function SettingsSection() {
               {item.label}
             </button>
           ))}
+          {allowedTools.includes('*') ? (
+            <span
+              className="mmd-chip is-on"
+              title="白名单写 *：所有工具（含以后新增）都允许，点一下撤销"
+              onClick={() => { setAllowedTools((current) => current.filter((name) => name !== '*')); setDirty(true); }}
+            >
+              ✓ 全部工具（*）
+            </span>
+          ) : null}
           <span className="mmd-spacer" />
           <input
             className="mmd-input mmd-btn-sm"
@@ -501,15 +511,18 @@ export function SettingsSection() {
 
         <div className="mmd-seat-line" style={{ marginTop: 14 }}>
           <div className="mmd-field" style={{ maxWidth: 160 }}>
-            <span>执行步数上限</span>
+            <span>执行步数上限（0 = 不限）</span>
             <input
               className="mmd-input"
               type="number"
-              min={1}
-              max={60}
+              min={0}
+              max={100000}
               value={maxSteps}
               onChange={(event) => { setMaxSteps(Number(event.target.value)); setDirty(true); }}
             />
+            <span className="mmd-hint" style={{ fontSize: 11 }}>
+              {maxSteps === 0 ? '不限轮数：按需调用，直到计划完成' : '单次执行最多 ' + maxSteps + ' 轮工具调用'}
+            </span>
           </div>
         </div>
       </section>

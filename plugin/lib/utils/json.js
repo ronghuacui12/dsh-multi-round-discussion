@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Structured-output parsing.
  *
  * Models are asked for JSON and mostly oblige, but they wrap it in prose or a
@@ -28,13 +28,16 @@ export function extractJsonValue(text) {
     if (start === -1) {
         throw new StructuredOutputError('No JSON object or array found in the response.', text);
     }
-    // A stack, not a counter over one bracket kind: a truncated `{"a": [1, 2}`
-    // must report "unterminated" rather than "balanced but does not parse".
+    // Walk the span with a stack. A closer of the wrong kind is repaired in place
+    // instead of aborting the scan: long Chinese model output routinely answers
+    // `{"steps": [ ... ]` with a stray `]`, and losing the whole contribution is
+    // a much worse outcome than accepting the obvious intent.
+    const chars = text.slice(start).split('');
     const stack = [];
     let inString = false;
     let escaped = false;
-    for (let i = start; i < text.length; i++) {
-        const ch = text[i];
+    for (let i = 0; i < chars.length; i++) {
+        const ch = chars[i];
         if (inString) {
             if (escaped)
                 escaped = false;
@@ -44,61 +47,78 @@ export function extractJsonValue(text) {
                 inString = false;
             continue;
         }
-        if (ch === '"')
+        if (ch === '"') {
             inString = true;
-        else if (ch === '{' || ch === '[')
+            continue;
+        }
+        if (ch === '{' || ch === '[') {
             stack.push(ch);
-        else if (ch === '}' || ch === ']') {
-            const expected = stack[stack.length - 1];
-            if ((ch === '}' && expected !== '{') || (ch === ']' && expected !== '[')) {
-                throw new StructuredOutputError(`JSON is malformed: got "${ch}" while "${expected}" was open.`, text);
-            }
-            stack.pop();
-            if (stack.length === 0) {
-                const candidate = text.slice(start, i + 1);
-                try {
-                    return JSON.parse(candidate);
-                }
-                catch (cause) {
-                    // The span is balanced but not valid JSON: try the mechanical
-                    // repairs before giving up, because the alternative is losing
-                    // the whole contribution.
-                    const repaired = repairJsonText(candidate);
-                    if (repaired !== candidate) {
-                        try {
-                            return JSON.parse(repaired);
-                        }
-                        catch {
-                            // Fall through: report the original failure, which points at
-                            // the first real defect rather than at whatever the repair
-                            // shifted.
-                        }
-                    }
-                    const position = /position (\d+)/.exec(cause.message)?.[1];
-                    throw new StructuredOutputError(`Found a balanced JSON span but it does not parse: ${cause.message}` +
-                        contextAround(candidate, position === undefined ? undefined : Number(position)), text);
-                }
-            }
+            continue;
+        }
+        if (ch !== '}' && ch !== ']')
+            continue;
+        if (stack.length === 0) {
+            // A closer with nothing open: drop it and keep scanning.
+            chars[i] = '';
+            continue;
+        }
+        const top = stack[stack.length - 1];
+        const wanted = top === '{' ? '}' : ']';
+        if (ch !== wanted)
+            chars[i] = wanted;
+        stack.pop();
+        if (stack.length === 0) {
+            const span = chars.slice(0, i + 1).join('');
+            const value = tryParseJsonSpan(span);
+            if (value !== undefined)
+                return value;
+            throw new StructuredOutputError(`Found a balanced JSON span but it does not parse: ${describeJsonFailure(span)}`, text);
         }
     }
-    // Truncated at the token ceiling: recover the complete prefix rather than
-    // dropping the whole contribution.
-    const truncated = text.slice(start);
-    const closed = closeTruncatedJson(truncated);
-    if (closed !== truncated) {
-        try {
-            return JSON.parse(closeTruncatedJson(repairJsonText(truncated)));
-        }
-        catch {
-            try {
-                return JSON.parse(closed);
-            }
-            catch {
-                // Fall through to the honest failure.
-            }
-        }
+    // Unterminated: models do get truncated at the token cap, so close the open
+    // string (if any) and the open brackets, then try once more.
+    if (stack.length > 0) {
+        let candidate = chars.join('');
+        if (inString)
+            candidate += '"';
+        for (let d = stack.length - 1; d >= 0; d--)
+            candidate += stack[d] === '{' ? '}' : ']';
+        const value = tryParseJsonSpan(candidate);
+        if (value !== undefined)
+            return value;
     }
     throw new StructuredOutputError('JSON value in the response is unterminated.', text);
+}
+
+/** Parse one repaired span, or `undefined` when it still does not parse. */
+function tryParseJsonSpan(candidate) {
+    try {
+        return JSON.parse(candidate);
+    }
+    catch {
+        // Fall through to the mechanical repairs.
+    }
+    const repaired = repairJsonText(candidate);
+    if (repaired !== candidate) {
+        try {
+            return JSON.parse(repaired);
+        }
+        catch {
+            return undefined;
+        }
+    }
+    return undefined;
+}
+
+/** The first JSON.parse failure message for a span, for the error text. */
+function describeJsonFailure(candidate) {
+    try {
+        JSON.parse(candidate);
+        return 'unexpected success';
+    }
+    catch (cause) {
+        return cause instanceof Error ? cause.message : String(cause);
+    }
 }
 
 /**
@@ -158,7 +178,24 @@ export function repairJsonText(input) {
                 i++;
                 continue;
             }
-            if (ch === '"') {
+            if (ch === '”') {
+                // Chinese closing quote acting as the string delimiter: only when
+                // what follows is structural, otherwise it is ordinary text.
+                let j2 = i + 1;
+                while (j2 < input.length && /\s/.test(input[j2]))
+                    j2++;
+                const nextChar = input[j2];
+                if (nextChar === undefined || nextChar === ',' || nextChar === '}' || nextChar === ']' || nextChar === ':' || nextChar === '：' || nextChar === '，' || nextChar === '、' || nextChar === '”') {
+                    out.push('"');
+                    inString = false;
+                    lastSignificant = '"';
+                    i++;
+                    continue;
+                }
+                out.push(ch);
+                i++;
+                continue;
+            }            if (ch === '"') {
                 // A real closing quote is followed by , } ] : or end of text.
                 // Anything else means the model quoted a term inside the value.
                 let j = i + 1;
@@ -167,7 +204,7 @@ export function repairJsonText(input) {
                 const next = input[j];
                 // `next === '"'` means a new string starts right here, so this one
                 // must be closing: an inner quote is followed by content, not by a quote.
-                if (next === undefined || next === ',' || next === '}' || next === ']' || next === ':' || next === '"') {
+                if (next === undefined || next === ',' || next === '}' || next === ']' || next === ':' || next === '"' || next === '：' || next === '，' || next === '、' || next === '”') {
                     out.push('"');
                     inString = false;
                     lastSignificant = '"';
@@ -220,6 +257,34 @@ export function repairJsonText(input) {
             i++;
             continue;
         }
+        // Full-width punctuation as JSON syntax: Chinese models type these often
+        // enough that "only ASCII" instructions are not reliable. Inside a string
+        // they stay literal (the inString branch above never reaches here).
+        if (ch === '，' || ch === '、') {
+            emit(',');
+            i++;
+            continue;
+        }
+        if (ch === '：') {
+            emit(':');
+            i++;
+            continue;
+        }
+        if (ch === '“') {
+            if (lastSignificant !== '' && lastSignificant !== ',' && lastSignificant !== '{' && lastSignificant !== '[' && lastSignificant !== ':') {
+                emit(',');
+            }
+            out.push('"');
+            inString = true;
+            escaped = false;
+            i++;
+            continue;
+        }
+        if (ch === '”') {
+            // A stray closing quote outside a string has no structural meaning.
+            i++;
+            continue;
+        }
         if (ch === '"') {
             if (lastSignificant !== '' && lastSignificant !== ',' && lastSignificant !== '{' && lastSignificant !== '[' && lastSignificant !== ':') {
                 emit(',');
@@ -262,99 +327,6 @@ export function contextAround(text, position, radius = 70) {
     const from = Math.max(0, position - radius);
     const to = Math.min(text.length, position + radius);
     return '\n  ...' + text.slice(from, to).replace(/\s+/g, ' ') + '...';
-}
-
-
-/**
- * Close a JSON value that the model stopped emitting early.
- *
- * Long structured replies are frequently cut at the provider's token ceiling,
- * which used to be fatal ("JSON value ... is unterminated"). Closing the open
- * string and the open brackets recovers the complete prefix, which for reviews
- * and proposals is far more useful than nothing. Only ever applied after both
- * the strict parse and the repair pass have failed.
- *
- * @param text - the truncated candidate, starting at its opening bracket.
- * @returns the text with every open string/bracket closed.
- */
-export function closeTruncatedJson(text) {
-    const stack = [];
-    let inString = false;
-    let escaped = false;
-    for (let i = 0; i < text.length; i++) {
-        const ch = text[i];
-        if (inString) {
-            if (escaped)
-                escaped = false;
-            else if (ch === '\\')
-                escaped = true;
-            else if (ch === '"')
-                inString = false;
-            continue;
-        }
-        if (ch === '"')
-            inString = true;
-        else if (ch === '{' || ch === '[')
-            stack.push(ch);
-        else if (ch === '}' || ch === ']') {
-            if (stack.length > 0)
-                stack.pop();
-        }
-    }
-    if (!inString && stack.length === 0)
-        return text;
-    let repaired = text.replace(/\s+$/, '');
-    if (inString) {
-        if (escaped)
-            repaired += '\\';
-        repaired += '"';
-    }
-    // Cut almost always lands inside a member. Drop a dangling key (with or
-    // without its colon) so the closers below produce a valid document.
-    for (let guard = 0; guard < 6; guard++) {
-        const trimmed = repaired.replace(/\s+$/, '');
-        if (trimmed.endsWith(':')) {
-            const keyStart = stringStartBefore(trimmed, trimmed.length - 1);
-            if (keyStart === -1)
-                break;
-            repaired = trimTrailingComma(trimmed.slice(0, keyStart));
-            continue;
-        }
-        if (!trimmed.endsWith('"'))
-            break;
-        const keyStart = stringStartBefore(trimmed, trimmed.length - 1);
-        if (keyStart === -1)
-            break;
-        const before = trimmed.slice(0, keyStart).replace(/\s+$/, '');
-        if (before.endsWith(',') || before.endsWith('{')) {
-            repaired = trimTrailingComma(trimmed.slice(0, keyStart));
-            continue;
-        }
-        break;
-    }
-    repaired = trimTrailingComma(repaired);
-    for (let i = stack.length - 1; i >= 0; i--)
-        repaired += stack[i] === '{' ? '}' : ']';
-    return repaired;
-}
-
-/** Index of the quote opening the string that ends at \`end\` (exclusive), or -1. */
-function stringStartBefore(text, end) {
-    for (let i = end - 1; i >= 0; i--) {
-        if (text[i] !== '"')
-            continue;
-        let backslashes = 0;
-        for (let k = i - 1; k >= 0 && text[k] === '\\'; k--)
-            backslashes++;
-        if (backslashes % 2 === 0)
-            return i;
-    }
-    return -1;
-}
-
-/** Drop a trailing comma and surrounding whitespace. */
-function trimTrailingComma(text) {
-    return text.replace(/,\s*$/, '').replace(/\s+$/, '');
 }
 
 /** Index of the first `{` or `[` outside of a fenced code block's language tag, or -1. */

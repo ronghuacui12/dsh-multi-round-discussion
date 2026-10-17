@@ -32,6 +32,7 @@ import { DiscussionEngine } from "./discussion-engine.js";
 import { LeadModel } from "./lead-model.js";
 import { Executor } from "./executor.js";
 import { Verifier } from "./verifier.js";
+import { buildWorkspaceBrief } from "../core/workspace-brief.js";
 /** How many times a failed verification may send the run back to decision. */
 const MAX_REPLANS = 1;
 /** How many times a failed verification may re-run the same plan. */
@@ -70,9 +71,16 @@ export class Orchestrator {
         // A follow-up run carries the earlier discussion in. The prompt request is
         // the context block plus the new question, while `state.request` stays the
         // user's own words so the UI bubble shows exactly what the user typed.
-        const promptRequest = typeof options.context === 'string' && options.context.trim() !== ''
-            ? `${options.context.trim()}\n\n${options.request}`
-            : options.request;
+        // Hand every model the real layout. Without it the proposal/plan phases
+        // invented directories that did not exist and the run failed for nothing.
+        const workspaceBrief = typeof options.workspaceBrief === 'string'
+            ? options.workspaceBrief
+            : buildWorkspaceBrief();
+        const promptRequest = [
+            typeof options.context === 'string' && options.context.trim() !== '' ? options.context.trim() : '',
+            options.request,
+            workspaceBrief,
+        ].filter((part) => part !== '').join('\n\n');
         const blackboard = new SharedBlackboard(runId, promptRequest);
         const abort = new AbortController();
         const participants = [
@@ -397,9 +405,18 @@ export class Orchestrator {
                 return undefined;
             // --------------------------------------------------------------- decide
             const forced = this.takeQueued(context, 'force-adopt');
-            const outcome = forced
-                ? this.applyForcedAdoption(context, forced.proposalId, round)
-                : await parts.lead.decide(roster.lead, blackboard.sliceFor('decisionMaker'), round, signal);
+            let outcome;
+            if (forced) {
+                outcome = this.applyForcedAdoption(context, forced.proposalId, round);
+            }
+            else {
+                try {
+                    outcome = await parts.lead.decide(roster.lead, blackboard.sliceFor('decisionMaker'), round, signal);
+                }
+                catch (cause) {
+                    outcome = this.fallbackDecision(context, round, cause);
+                }
+            }
             if (!outcome) {
                 this.notice(context, 'error', `强制采纳的方案 "${forced?.proposalId}" 不存在。`);
                 return undefined;
@@ -448,6 +465,35 @@ export class Orchestrator {
             autoRejected: [],
         };
     }
+    /**
+     * Decision used when the decision maker's reply cannot be parsed.
+     *
+     * The proposals and reviews are already durable on the board; failing the run
+     * here would throw that work away over a JSON defect. The highest-confidence
+     * proposal is adopted and the degradation is reported as a notice.
+     */
+    fallbackDecision(context, round, cause) {
+        const read = context.blackboard.read();
+        const pool = read.proposals.length > 0 ? read.proposals : [];
+        const best = [...pool].sort((left, right) => (right.confidence ?? 0) - (left.confidence ?? 0))[0];
+        const chosen = best ? [best.id] : [];
+        const reason = cause instanceof Error ? cause.message : String(cause);
+        this.notice(context, 'warn', `决策模型输出无法解析，已按置信度采纳最高分方案（${reason.slice(0, 160)}）`);
+        return {
+            decision: {
+                id: `decision-fallback-${randomUUID().slice(0, 8)}`,
+                decisionMakerProfileId: context.roster.lead.id,
+                chosenProposalIds: chosen,
+                rejectedProposalIds: read.proposals
+                    .filter((proposal) => !chosen.includes(proposal.id))
+                    .map((proposal) => proposal.id),
+                rationale: `决策模型输出无法解析（${reason.slice(0, 200)}），系统按置信度采纳了最高分方案。`,
+                finalDirection: best?.summary ?? best?.plan ?? context.state.request,
+                round,
+            },
+            autoRejected: [],
+        };
+    }
     /** Re-decide after a failed verification, with the verdict in view. */
     async redecide(context, parts, verification) {
         const slice = context.blackboard.sliceFor('decisionMaker', {
@@ -462,7 +508,14 @@ export class Orchestrator {
                 `上一次执行的验证未通过。问题：${verification.issues.join('; ') || '（未说明）'}。` +
                 `建议：${verification.suggestions.join('; ') || '（无）'}。请据此调整决策方向。`,
         };
-        const outcome = await parts.lead.decide(context.roster.lead, augmented, context.blackboard.read().rounds.length + 1, context.abort.signal);
+        const round = context.blackboard.read().rounds.length + 1;
+        let outcome;
+        try {
+            outcome = await parts.lead.decide(context.roster.lead, augmented, round, context.abort.signal);
+        }
+        catch (cause) {
+            outcome = this.fallbackDecision(context, round, cause);
+        }
         context.blackboard.setDecision(outcome.decision);
         this.store.refreshCost(context.runId);
         return outcome.decision;
@@ -480,7 +533,31 @@ export class Orchestrator {
         const availableTools = typeof parts.executor.availableToolNames === 'function'
             ? parts.executor.availableToolNames()
             : [];
-        let plan = await parts.lead.buildPlan(roster.lead, context.promptRequest, decision, adopted, signal, availableTools);
+        let plan;
+        try {
+            plan = await parts.lead.buildPlan(roster.lead, context.promptRequest, decision, adopted, signal, availableTools);
+        }
+        catch (cause) {
+            // The proposals, reviews and decision are already durable. Losing them
+            // because one JSON reply could not be read is worse than degrading to a
+            // text-only plan the executor can still explain to the user.
+            const reason = cause instanceof Error ? cause.message : String(cause);
+            this.notice(context, 'warn', `计划生成失败，已降级为文字方案（${reason.slice(0, 160)}）`);
+            plan = {
+                id: `plan-fallback-${context.runId.slice(-6)}`,
+                decisionRefs: [...decision.chosenProposalIds],
+                steps: [
+                    {
+                        id: 's1',
+                        description: '按最终方向给出可执行说明（本次没有生成结构化计划，不调用任何工具）',
+                        acceptance: '说明覆盖最终方向与关键风险',
+                    },
+                ],
+                mutatesState: false,
+                planBuilderProfileId: roster.lead.id,
+                notes: `计划生成失败：${reason.slice(0, 300)}。已按文字方案继续，未执行任何改动。`,
+            };
+        }
         blackboard.setPlan(plan);
         this.store.refreshCost(context.runId);
         if (this.aborted(context))

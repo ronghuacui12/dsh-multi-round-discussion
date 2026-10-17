@@ -22,6 +22,12 @@
 import { randomUUID } from 'node:crypto';
 import { PROPOSAL_SYSTEM, REVIEW_SYSTEM, buildProposalPrompt, buildReviewPrompt, } from "../core/prompts.js";
 import { StructuredOutputError, clampConfidence, optionalStringArray, parseStructured, requireString, salvageText } from "../utils/json.js";
+/**
+ * Appended to a review prompt when the first reply could not be parsed.
+ * A lost reviewer only degrades the round, but one extra call is cheaper than a
+ * round with no cross-review at all.
+ */
+const REVIEW_REPAIR_HINT = '\n\n【上一次的输出无法解析为 JSON】\n这次请只输出一个合法的 JSON 对象：不要代码围栏、不要任何解释文字；括号成对、字符串里的引号用 \\" 转义、属性之间用逗号分隔（不要用全角逗号）。';
 /** Raised when a round produced nothing usable. */
 export class EmptyRoundError extends Error {
     round;
@@ -181,7 +187,25 @@ export class DiscussionEngine {
         if (!response.ok) {
             throw new Error(response.error ?? `model call failed (${response.errorCode ?? 'unknown'})`);
         }
-        return parseReviews(response.text, profile.id, round, index, anonymous, mapping);
+        try {
+            return parseReviews(response.text, profile.id, round, index, anonymous, mapping);
+        }
+        catch (cause) {
+            if (!(cause instanceof StructuredOutputError))
+                throw cause;
+            // One repair attempt before losing this reviewer: the notice path turns
+            // a parse failure into "no review from this model", which is a real
+            // quality loss for the round.
+            const retry = await this.registry.call(profile.id, {
+                prompt: prompt + REVIEW_REPAIR_HINT,
+                system: mergeSystem(profile.systemPrompt, REVIEW_SYSTEM),
+                signal,
+                onUsage: this.onUsage,
+            });
+            if (!retry.ok)
+                throw cause;
+            return parseReviews(retry.text, profile.id, round, index, anonymous, mapping);
+        }
     }
 }
 /** Compose a profile's own prompt with the phase instruction. */

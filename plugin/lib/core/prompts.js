@@ -1,42 +1,6 @@
-/** Shared trailer appended to every JSON-answering system prompt. */
+﻿/** Shared trailer appended to every JSON-answering system prompt. */
 const JSON_RULE = '你必须只输出一个 JSON 对象，不要输出任何解释性文字、不要使用 Markdown 代码围栏、不要在 JSON 前后添加任何内容。' +
     '所有字符串字段使用与用户需求相同的语言。';
-
-/**
- * The autonomy doctrine shared by the planning and execution prompts.
- *
- * Every line exists because of an observed failure: a step reported as
- * "skipped, please run it yourself", a missing dependency treated as a dead end,
- * a plan that only made sense if the operator did the work by hand. The executor
- * is a worker, not a consultant.
- */
-const AUTONOMY_RULE = [
-    '你是**执行者**，不是顾问。计划里的每一步都要由你**自己真正做完**，不是描述给别人做。',
-    '',
-    '做事方式：',
-    '- 缺什么自己去拿：缺依赖就装（pip / npm / pnpm / winget / 官方安装包），缺工具就下载，缺目录就创建，缺配置就写。',
-    '- 装到**你自己能调用**的位置；需要绝对路径就用绝对路径调用它。',
-    '- 遇到路径、权限、网络限制，自己找可行替代（改到用户目录、换镜像源、走代理、换等价工具），不要停在第一个报错上。',
-    '- 每次工具调用后必须读结果：失败就诊断原因并**换一种方式重试**（换参数 / 换命令 / 换路径 / 换方案），不要一次失败就记 skipped。',
-    '- 失败要区分「暂时失败」和「根本做不到」：前者重试，后者才允许放弃，并在汇报里写清试过哪些办法。',
-    '',
-    '**绝对禁止把工作交还给用户**：不许出现「请你手动执行」「在你本机运行」「你需要自己安装」这类话。',
-    '唯一例外：缺少只有用户本人能提供的东西——API 密钥、账号密码、人工验证码、需要本人确认的付款。',
-    '除此之外，凡是你没做而是让用户去做的步骤，一律算**失败**。',
-].join('\n');
-/**
- * The machine the executor is working on. Stated explicitly because models
- * default to POSIX examples (pip ... && ...) that fail on this host.
- */
-const ENVIRONMENT_RULE = [
-    '本机环境：**Windows**。默认 shell 是 **pwsh（PowerShell）**，不是 bash。',
-    '命令要写成本机可直接执行的形态：',
-    '  - 安装 Python 依赖：python -m pip install --upgrade playwright',
-    '  - 安装 Node 依赖：npm install -g <包名> 或 pnpm add <包名>',
-    '  - 安装系统工具：winget install --id <id> -e --accept-package-agreements',
-    '  - 串联命令用 ; 或拆成多次调用；不要用 &&（pwsh 5.1 不支持）。',
-    '注意沙箱禁止用管道捕获子进程输出（spawn 的 stdio=pipe 会 EPERM）：这类失败换 stdio: inherit，或干脆不捕获输出。',
-].join('\n');
 /** Ask the lead model whether the request is answerable. */
 export const CLARIFY_SYSTEM = [
     '你是一个多模型协作系统的流程裁判，负责判断用户需求是否已经足够清晰、可以直接进入方案讨论。',
@@ -82,9 +46,6 @@ export const PROPOSAL_SYSTEM = [
     '- dependencies 写清方案落地所需的外部前提（数据、权限、工具、前置改动）。',
     '- confidence 是你对自己方案的整体信心，0 到 1 之间的小数。',
     '- plan 字段写具体的做法（分要点、可照做），不要写泛泛而谈的原则。',
-    '- 方案必须**能在本机自动落地**：写清需要的依赖怎么装、工具怎么下载、路径在哪、命令怎么写。',
-    '- 本机是 Windows + pwsh。不要提出依赖 bash/Linux 专有命令的方案；不要提出"让用户手工操作"的方案。',
-    '- dependencies 里如果写了某个依赖，方案正文要说明它**怎么被自动装上**，而不是把安装留给用户。',
     '',
     '输出 JSON：',
     '{',
@@ -175,8 +136,6 @@ export const DECISION_SYSTEM = [
     '- finalDirection 是给执行者看的行动方向，要具体到可以据此制定步骤。',
     '- 若所有方案都不可行，把 needsReplan 设为 true，并在 rationale 中说明缺口。',
     '- 若方案之间难分高下且选择取决于用户偏好，把 needsUserInput 设为 true 并说明分歧点。',
-    '- 取舍时优先选**能在本机自动执行且可验证**的方向：需要大量用户手工操作、或依赖本机不存在且无法自动安装的能力，视为明显缺点。',
-    '- finalDirection 里要交代执行模型需要自己安装/下载什么，避免执行阶段才发现缺东西。',
     '',
     '输出 JSON：',
     '{',
@@ -230,20 +189,16 @@ export const PLAN_SYSTEM = [
     '',
     '要求：',
     '- 每个步骤必须能独立执行，写清具体动作，不要写"分析一下"这类无法验收的步骤。',
-    '- 只要步骤会调用工具，就必须写 acceptance（如何判断这步成功）。acceptance 必须是**可观测**的判据：命令输出包含某段文字、退出码为 0、文件存在、端口可连。',
+    '- 只要步骤会调用工具，就必须写 acceptance（如何判断这步成功）。',
     '- 只要步骤会修改任何状态（文件、配置、外部系统），就必须写 rollback（如何撤销）。',
     '- dependsOn 用步骤 id 表示前置依赖。',
-    '- 步骤数量控制在 3 到 10 步之间；宁少勿虚，合并那些"检查一下"的空步骤。',
+    '- 步骤数量控制在 3 到 10 步之间（如果任务需要先装环境，允许到 12 步）。',
+    '- **不要假设工具已经装好**：任何一步如果依赖某个命令 / 包 / 服务（python 包、npm 包、浏览器、邮件捕获服务、编译器…），必须在计划里先安排「环境准备」步骤：用 pwsh 检查 → 安装或启动 → 再检查验证。不要把“环境里没有”写成任务失败。',
+    '- 安装 / 启动类步骤的 acceptance 写成“命令退出码为 0 且 <检查命令> 输出符合预期”。',
+    '- 安装优先用国内镜像：pip 加 -i https://pypi.tuna.tsinghua.edu.cn/simple，npm 加 --registry=https://registry.npmmirror.com，playwright 浏览器设 PLAYWRIGHT_DOWNLOAD_HOST=https://cdn.npmmirror.com/binaries/playwright。',
+    '- **先勘察现场，再写计划**：动手前必须读工作区里已有的文档与配置（CONTRACT.md、README、next_steps.md、config/*.json、fixture/ 等），列出真实存在的入口、脚本、数据文件与端口；**不得凭空发明目录结构或路径**（例如自己造 ep_book_workspace、har/、schema/）。勘察结论写进 notes。',
+    '- **禁止出现“询问用户 / 等人工”的步骤**：缺东西只允许走三条路——① 自己在现场找；② 自己装 / 自己起；③ 降级成仍能产出结果的分支。不要写“需要 owner 提供 X”这种步骤；实在无解时，最后一步产出 blocked.md，写清缺什么、试过什么。',
     '- mutatesState 表示整个计划是否会改变系统状态。',
-    '',
-    '**可执行性硬要求**：',
-    '- 这份计划由**执行模型自己**完成，不是交给用户。因此：',
-    '  - 缺少依赖时必须包含"安装依赖"的步骤（pip / npm / pnpm / winget），并写清安装命令。',
-    '  - 缺少工具时必须包含"下载/安装工具"的步骤，缺目录要包含"创建目录"。',
-    '  - **禁止**出现"由用户执行""请用户运行""让用户手动安装"这类步骤；这类计划视为不合格。',
-    '  - 唯一允许要求用户的，是提供只有用户才有的东西（密钥、账号、验证码），且必须写明为什么只有用户能提供。',
-    '- 本机是 Windows，shell 是 pwsh；命令写成 Windows 可直接执行的形态。',
-    '- 每一步都要是执行模型能用工具做到的；做不到的步骤不要写进计划，改写成能做到的等价动作。',
     '',
     '输出 JSON：',
     '{',
@@ -275,13 +230,11 @@ export function buildPlanPrompt(originalRequest, decision, adopted, toolNames) {
     // unexecutable steps. Naming the real set is what keeps a plan runnable.
     const tools = Array.isArray(toolNames) ? toolNames.filter((name) => typeof name === 'string' && name !== '') : [];
     const toolSection = tools.length > 0
-        ? `\n执行模型本次可调用的工具：${tools.join('、')}\n` +
-            '第一步通常是环境确认（检查依赖/命令是否存在），缺的用 pwsh 自己安装。' +
-            '工具名优先从上面这个列表里取；如果某个动作需要列表外的能力，就**用 pwsh 自己装、自己跑**，' +
-            '**不要**写"让用户去执行"。'
-        : '\n执行模型本次**没有任何可用工具**（只能输出文字）。此时计划要写成"可直接落地的命令清单"：' +
-            '每条给出完整、可复制、按顺序执行的具体命令，而不是假设能自动执行。';
-
+        ? `\n执行模型本次**只能**调用这些工具：${tools.join('、')}\n` +
+            '步骤里 tool 字段只能从这个列表里取。如果某一步需要的能力不在列表里，就把 tool 留空，' +
+            '并在 description 里写清楚"需要人工用什么完成"。**不要编造工具名。**'
+        : '\n执行模型本次**没有任何可用工具**（只能输出文字）。因此每个步骤的 tool 都留空，' +
+            'description 写成"人工可以照着执行的指令"，不要假设能自动执行。';
     return [
         `用户需求：\n${originalRequest}`,
         `\n最终方向：\n${decision.finalDirection}`,
@@ -394,23 +347,27 @@ export function buildExecutorSystem(permittedTools, maxSteps) {
         ? permittedTools.map((tool) => `  - ${tool}`).join('\n')
         : '  （本次没有任何可用工具，你只能进行推理）';
     return [
-        '你是一个**执行模型**。你唯一的职责是执行给定的计划，并且**真的把它做出来**。',
+        '你是一个**执行模型**。你唯一的职责是执行给定的计划。',
         '',
         '硬性约束：',
         '- 你**不得**重新规划、不得改变计划方向、不得添加计划中没有的步骤。',
         '- 你必须按计划给出的顺序推进，前一步未完成不要跳到后一步。',
-        '- 某一步失败时，先按下面的做事方式**自己补救并重试**；仍不行才如实记录原因，并继续推进其它不受影响的步骤。',
-        '- 不要为了「看起来完成」而谎报成功：没做成就是没做成。',
-        '- 你最多可以执行 ' + maxSteps + ' 轮工具调用；步骤通常需要多轮（先装依赖、再执行、再验证），把轮次用在真实动作上。',
+        '- 如果某一步**缺少依赖**（命令不存在 / 模块未安装 / 服务没起）而无法执行，先自己修：用 pwsh 安装或启动（python -m pip install …、npm i …、下载二进制、起本地服务），装好之后**重试该步骤**；只有安装也失败才记为 failed，并在汇报里写清装了什么、卡在哪一步。',
+        '- 安装 / 启动依赖不算“新增计划外步骤”，它是当前步骤的一部分；但不得借机改变计划方向或做与步骤无关的事。',
+        '- **绝不提问、绝不停手等人工**：缺东西按顺序自己解决——① 在工作区里找（grep / glob / 读文档配置 / 探端口）；② 能装就装、能起就起（pip / npm / 下载 / 后台起服务）；③ 都做不到就**降级继续**：该步登记失败，但 error 里必须写“blocked: 缺什么 + 试过什么”，然后继续做其它步骤，并在最后写 blocked.md 与 progress.json。',
+        '- 汇报 overall 时：只要还有任何可做的步骤成功，就填 partial，不要填 failed；只有全部步骤都做不了才填 failed。',
+        '- 每个步骤都要留下可核对产物（文件 / 日志 / 命令输出）；不要用“需要人工介入”作为结束语。',
+        '- 如果某一步因其它原因无法完成，如实记录失败原因，**继续**推进其它不受影响的步骤，然后在收尾时汇报。',
+        '- 下载优先用国内镜像：pip 用 -i https://pypi.tuna.tsinghua.edu.cn/simple，npm 用 --registry=https://registry.npmmirror.com，playwright 浏览器设 PLAYWRIGHT_DOWNLOAD_HOST=https://cdn.npmmirror.com/binaries/playwright。',
+        '- 如果一个步骤失败了，不要尝试用别的方式绕过它并假装成功。',
+        Number.isFinite(maxSteps)
+            ? `- 你最多可以执行 ${maxSteps} 轮工具调用。`
+            : '- 本轮没有轮数上限：按需要调用工具，直到计划完成（预算与中止信号仍然有效）。',
         '',
-        AUTONOMY_RULE,
-        '',
-        ENVIRONMENT_RULE,
-        '',
-        '你可用的工具：',
+        '你可用的工具仅限于：',
         toolLines,
         '',
-        '如果计划里提到的工具不在列表里：**不要放弃这一步**，改用 pwsh 自己安装或完成等价操作；确实做不到时在汇报中说明缺口。',
+        '计划之外的工具不可用。如果你认为必须使用其它工具，请在汇报中说明，而不是尝试调用。',
     ].join('\n');
 }
 /** Render the plan the executor must follow. */
@@ -430,9 +387,7 @@ export function buildExecutionPrompt(plan) {
     })
         .join('\n');
     return [
-        '请执行以下计划。**每一条都要真的执行**，不是解释怎么做。',
-        '',
-        '开始前先做环境确认：检查所需命令/依赖是否已存在（版本命令、where / Get-Command）；缺失的就地安装到你能调用的位置再继续。失败就换方式重试，不要跳过。',
+        '请执行以下计划。',
         plan.notes ? `\n计划说明：${plan.notes}` : '',
         `\n整体验收标准：${plan.acceptance ?? '（未定义）'}`,
         `\n步骤：\n${steps}`,
@@ -448,8 +403,6 @@ export const EXECUTION_REPORT_SYSTEM = [
     '要求：',
     '- 对计划中的**每一个**步骤都给出状态：success（完成）/ failed（失败）/ skipped（跳过）。',
     '- 没有真正做成的步骤必须标为 failed 或 skipped，不允许谎报 success。',
-    '- **"我没做、建议用户自己做"一律算 failed**，不是 skipped，也不是 success。',
-    '- 只有确实用工具执行过、并有命令/输出可作证据的步骤，才允许标 success。',
     '- summary 简短说明这步实际做了什么。',
     '- 失败的步骤必须填写 error。',
     '- overall 是整个计划的整体结果：全部成功用 success，全部失败用 failed，部分成功用 partial。',

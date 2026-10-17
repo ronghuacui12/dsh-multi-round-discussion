@@ -13,6 +13,14 @@
 - 写入前检查运行锁、职责完整性及并发修改，保存失败不会显示为成功；只提交 profiles，不扩展执行工具权限。
 - 编译产物保留 DSH `window.__ModuleLoader__.load(...)` 信封；美术资源通过宿主固定白名单路由提供。
 
+## 本次修复：结构化输出容错（"运行失败：JSON is malformed"）
+
+- `extractJsonValue` 不再因为括号类型写错就抛错：`]` 关闭 `{` 就地修成 `}`、多余右括号丢弃、截断时自动闭合。
+- `decide()` / `buildPlan()` 解析失败会**重试一次**（把"上次不是合法 JSON"回传）。
+- 仍失败则**降级继续**：决策按置信度采纳最高分方案、计划退化为单步文字方案，run 不再整条失败。
+- 验证：`build/structured-json-smoke.mjs` 17/17；既有 10/10、12/12、34/34、24/24 全绿；TypeScript 诊断 0。
+- 细节见 [docs/结构化输出容错-实现说明.md](./docs/结构化输出容错-实现说明.md)。
+
 ## 本次新增：研讨续接（持续交互）
 
 - 终态研讨（completed / failed / stopped）可以**继续追问**：`POST /runs` 带 `parentRunId`，宿主把上一轮的问题（≤300 字）、结论方向（≤400 字）、最终答复（≤800 字）、计划步骤与执行状态折成上下文块交给引擎，新 run 记录 `parentRunId`。
@@ -20,6 +28,30 @@
 - 界面：终态研讨的输入框变为「继续追问」，顶部出现「↳ 续接：…」可回溯上一轮；历史下拉带图标前缀区分磁盘恢复的记录。
 - 验证：`node build/continuation-smoke.mjs`（12/12）、`build/ui-smoke.mjs`、`build/table-smoke.mjs`（24/24）全部通过；宿主改动 `node --check` 通过。
 - 细节见 [docs/持续交互-实现说明.md](./docs/持续交互-实现说明.md)。
+
+## 本次新增：现场优先 + 不停手
+
+- 新增 `lib/core/workspace-brief.js`：每次运行自动采集工作目录摘要（顶层目录/文件/项目文档标题）注入所有模型的 prompt，杜绝「凭空发明 ep_book_workspace、har/、schema/」这类计划。
+- `PLAN_SYSTEM`：先勘察现场、不得发明路径、禁止「询问用户/等人工」步骤；缺东西走「自己找 → 自己装/起 → 降级继续」。
+- `buildExecutorSystem()`：绝不提问、绝不停手；降级时写 `blocked.md` / `progress.json`，有成功步骤时 `overall=partial`。
+- 本机补齐：PowerShell 7.4.7（PATH 已加）、项目自带 mock 邮件 8787（`/api/mailboxes`）、mock 站点 8790。
+- 细节见 docs/不停手-现场优先-实现说明.md。
+## 本次新增：工具自举（缺依赖就自己装）
+
+- PLAN_SYSTEM 要求计划阶段**不得假设工具已装**：依赖命令/包/服务的步骤必须先安排「环境准备」步骤（检查 → 安装/启动 → 验证）。
+- buildExecutorSystem() 允许执行器**缺依赖时自己装**（pip / npm / 下载二进制 / 起本地服务），装好重试该步骤；安装不算计划外新增步骤，失败才记 failed。
+- 提示词内置国内镜像，避免下载卡住。
+- 已实测：pip 26.1.1、npm/npx 11.12.1、Invoke-WebRequest 200、mcp__playwright__* 25 个浏览器工具、mailpit 8787/1025 在跑。
+- 细节见 docs/工具自举-实现说明.md。
+
+## 本次新增：通配白名单与不限步数
+
+- 白名单支持通配 `*`（`allowedTools: ["*"]`）：宿主当前与**以后新增**的工具（含新挂的 MCP）全部允许，不用每次回来勾。
+- `maxSteps: 0` = **不限轮数**：执行模型按需调用工具直到计划完成；每轮可并行多个调用。预算与中止信号仍然是安全阀。
+- 设置页新增「全部（含以后新增）」预设、「✓ 全部工具（*）」标记与「0 = 不限」提示；`config-root/roster.json` 模板同步。
+- 与 `83995b9`（工具级确认与计划审批解耦）配合后，执行模型才能真正"放开用"：计划批一次，之后不再逐调用拦。
+- 验证：`node build/sandbox-permission-test.mjs`（10/10）、`build/ui-smoke.mjs`（34/34）、`build/table-smoke.mjs`（24/24）。
+- 细节见 [docs/通配白名单与不限步数-实现说明.md](./docs/通配白名单与不限步数-实现说明.md)。
 
 ## 已完成美术，但尚未接入客户端
 

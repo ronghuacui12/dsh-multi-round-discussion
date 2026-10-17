@@ -24,6 +24,8 @@ export interface OrchestratorConfig {
 }
 export interface StartRunOptions {
     request: string;
+    /** Pre-built workspace map; when absent the orchestrator reads the cwd. */
+    workspaceBrief?: string;
     preset?: PresetName;
     overrides?: RosterOverrides;
 }
@@ -76,6 +78,7 @@ export declare class Orchestrator {
     private runDiscussion;
     /** Build a decision record from a user's force-adopt instruction. */
     private applyForcedAdoption;
+    private fallbackDecision;
     /** Re-decide after a failed verification, with the verdict in view. */
     private redecide;
     /** Generate the plan, handling the optional approval park. */

@@ -548,7 +548,8 @@ window.__ModuleLoader__.load({
     var TOOL_PRESETS = [
       { key: "ro", label: "只读", hint: "只能看，不能改", pick: (tools) => tools.filter((t) => READ_ONLY.has(t)) },
       { key: "rw", label: "常用读写", hint: "读 + 写文件 + 终端", pick: (tools) => tools.filter((t) => READ_ONLY.has(t) || ["write", "edit", "pwsh", "todo_write", "present"].includes(t)) },
-      { key: "all", label: "全部", hint: "勾上目录里的所有工具", pick: (tools) => [...tools] },
+      { key: "all", label: "全部（含以后新增）", hint: "白名单写 *：现在和以后新增的工具（含新 MCP）都自动允许", pick: () => ["*"] },
+      { key: "listed", label: "只选目录里的", hint: "把当前目录里的工具逐个勾上，不含以后新增的", pick: (tools) => [...tools] },
       { key: "none", label: "清空", hint: "执行模型不碰任何工具", pick: () => [] }
     ];
     function toSeats(profiles) {
@@ -727,7 +728,7 @@ window.__ModuleLoader__.load({
         const required = [["decisionMaker", "主导模型"], ["proposer", "讨论者"], ["executor", "执行模型"]];
         return required.filter(([role]) => !seats.some((seat) => seat.role === role && seat.enabled && seat.provider && seat.model)).map(([, label]) => label);
       }, [seats]);
-      const customTools = allowedTools.filter((name2) => !(tools.length > 0 ? tools : FALLBACK_TOOLS).includes(name2));
+      const customTools = allowedTools.filter((name2) => name2 !== "*" && !(tools.length > 0 ? tools : FALLBACK_TOOLS).includes(name2));
       if (loading) return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "mmd-set", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "mmd-hint", children: "正在读取当前配置…" }) });
       return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mmd-set", children: [
         /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mmd-set-head", children: [
@@ -975,6 +976,18 @@ window.__ModuleLoader__.load({
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mmd-tool-toolbar", children: [
             TOOL_PRESETS.map((item) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("button", { type: "button", className: "mmd-btn mmd-btn-sm", title: item.hint, onClick: () => applyToolPreset(item.pick), children: item.label }, item.key)),
+            allowedTools.includes("*") ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+              "span",
+              {
+                className: "mmd-chip is-on",
+                title: "白名单写 *：所有工具（含以后新增）都允许，点一下撤销",
+                onClick: () => {
+                  setAllowedTools((current) => current.filter((name2) => name2 !== "*"));
+                  setDirty(true);
+                },
+                children: "✓ 全部工具（*）"
+              }
+            ) : null,
             /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "mmd-spacer" }),
             /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
               "input",
@@ -1019,21 +1032,22 @@ window.__ModuleLoader__.load({
             ] }) : null
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "mmd-seat-line", style: { marginTop: 14 }, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mmd-field", style: { maxWidth: 160 }, children: [
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "执行步数上限" }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "执行步数上限（0 = 不限）" }),
             /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
               "input",
               {
                 className: "mmd-input",
                 type: "number",
-                min: 1,
-                max: 60,
+                min: 0,
+                max: 1e5,
                 value: maxSteps,
                 onChange: (event) => {
                   setMaxSteps(Number(event.target.value));
                   setDirty(true);
                 }
               }
-            )
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "mmd-hint", style: { fontSize: 11 }, children: maxSteps === 0 ? "不限轮数：按需调用，直到计划完成" : "单次执行最多 " + maxSteps + " 轮工具调用" })
           ] }) })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mmd-save", children: [
