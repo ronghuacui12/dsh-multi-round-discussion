@@ -469,6 +469,27 @@ export function DiscussionView() {
                       <span className="mmd-tag">{(plan.steps?.length ?? 0) + ' 步' + (plan.mutatesState ? ' · 会改变系统状态' : ' · 只读')}</span>
                     </div>
                     <div className="mmd-bubble">
+                      {plan.script ? (
+                        <div style={{ marginBottom: 10 }}>
+                          <div className="mmd-sec-label">
+                            {'执行脚本 run.ps1（' + String(plan.script.run ?? '').split('\n').length + ' 行）'}
+                            {plan.script.check ? ' + 验收脚本 check.ps1' : '（无验收脚本）'}
+                          </div>
+                          <details>
+                            <summary style={{ cursor: 'pointer', fontSize: 12 }}>展开脚本</summary>
+                            <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: 11.5, maxHeight: 320, overflow: 'auto', background: 'rgba(127,127,127,.08)', padding: 8, borderRadius: 8 }}>
+                              {String(plan.script.run ?? '')}
+                            </pre>
+                            {plan.script.check ? (
+                              <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: 11.5, maxHeight: 200, overflow: 'auto', background: 'rgba(127,127,127,.08)', padding: 8, borderRadius: 8 }}>
+                                {String(plan.script.check)}
+                              </pre>
+                            ) : null}
+                          </details>
+                        </div>
+                      ) : (
+                        <div className="mmd-sec-label" style={{ marginBottom: 8 }}>（这个计划没有脚本，将由模型逐步执行）</div>
+                      )}
                       {(plan.steps ?? []).map((step: any, index: number) => (
                         <div key={step.id} style={{ marginBottom: 7 }}>
                           <strong>{index + 1 + '. ' + step.description}</strong>
@@ -494,13 +515,37 @@ export function DiscussionView() {
                       <span className="mmd-tag">{execution.status + (execution.stoppedReason ? ' · ' + execution.stoppedReason : '')}</span>
                     </div>
                     <div className="mmd-bubble mmd-bubble-exec">
-                      {(execution.outputs ?? []).map((output: any, index: number) => (
-                        <div key={output.stepId} style={{ marginBottom: 7 }}>
-                          <strong>{'第 ' + (index + 1) + ' 步 · ' + output.status}</strong>
-                          {output.error ? <div className="mmd-bad">{output.error}</div> : null}
-                          {output.rendered ? <div>{String(output.rendered).slice(0, 1200)}</div> : null}
+                      {execution.script ? (
+                        <div>
+                          <div className="mmd-sec-label">
+                            {'脚本退出码：' + String(execution.script.exitCode)}
+                            {execution.script.timedOut ? ' · 已超时' : ''}
+                            {execution.script.checkExitCode !== undefined ? ' · 验收退出码：' + String(execution.script.checkExitCode) : ''}
+                          </div>
+                          {execution.script.runStderr ? (
+                            <pre className="mmd-bad" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: 11.5, maxHeight: 220, overflow: 'auto', background: 'rgba(220,38,38,.08)', padding: 8, borderRadius: 8 }}>
+                              {String(execution.script.runStderr)}
+                            </pre>
+                          ) : null}
+                          {execution.script.runStdout ? (
+                            <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: 11.5, maxHeight: 220, overflow: 'auto', background: 'rgba(127,127,127,.08)', padding: 8, borderRadius: 8 }}>
+                              {String(execution.script.runStdout)}
+                            </pre>
+                          ) : null}
+                          {execution.script.checkError ? (
+                            <div className="mmd-bad" style={{ marginTop: 6 }}>{'验收失败：' + String(execution.script.checkError)}</div>
+                          ) : null}
+                          <div className="mmd-tag" style={{ marginTop: 6 }}>{'脚本目录：' + String(execution.script.dir)}</div>
                         </div>
-                      ))}
+                      ) : (
+                        (execution.outputs ?? []).map((output: any, index: number) => (
+                          <div key={output.stepId} style={{ marginBottom: 7 }}>
+                            <strong>{'第 ' + (index + 1) + ' 步 · ' + output.status}</strong>
+                            {output.error ? <div className="mmd-bad">{output.error}</div> : null}
+                            {output.rendered ? <div>{String(output.rendered).slice(0, 1200)}</div> : null}
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>

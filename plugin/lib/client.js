@@ -583,6 +583,7 @@ window.__ModuleLoader__.load({
       const [mode, setMode] = (0, import_react2.useState)("confirm");
       const [permissions, setPermissions] = (0, import_react2.useState)("full");
       const [toolConfirmation, setToolConfirmation] = (0, import_react2.useState)(false);
+      const [runner, setRunner] = (0, import_react2.useState)("script");
       const [allowedTools, setAllowedTools] = (0, import_react2.useState)([]);
       const [maxSteps, setMaxSteps] = (0, import_react2.useState)(12);
       const [avatars, setAvatars] = (0, import_react2.useState)({});
@@ -604,6 +605,7 @@ window.__ModuleLoader__.load({
           setMode(data.execution?.mode ?? "confirm");
           setPermissions(data.execution?.permissions ?? "full");
           setToolConfirmation(data.execution?.toolConfirmation === true);
+          setRunner(data.execution?.runner ?? "script");
           setAllowedTools(data.execution?.allowedTools ?? []);
           setMaxSteps(data.execution?.maxSteps ?? 12);
           setAvatars(data.avatars ?? {});
@@ -668,7 +670,7 @@ window.__ModuleLoader__.load({
             profiles,
             preset,
             peerReview,
-            execution: { mode, permissions, toolConfirmation, allowedTools, maxSteps }
+            execution: { mode, permissions, toolConfirmation, runner, allowedTools, maxSteps }
           });
           setSeats(toSeats(result.profiles));
           setAvatars(result.avatars ?? {});
@@ -914,6 +916,34 @@ window.__ModuleLoader__.load({
               /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { children: [
                 /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("b", { children: "直接执行" }),
                 /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "计划生成后不再询问，立刻交给执行模型。" })
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mmd-mode-cards", style: { marginTop: 10 }, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mmd-mode-card" + (runner === "script" ? " is-on" : ""), onClick: () => {
+              setRunner("script");
+              setDirty(true);
+            }, children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("input", { type: "radio", name: "mmd-runner", checked: runner === "script", onChange: () => {
+                setRunner("script");
+                setDirty(true);
+              }, style: { marginTop: 3 } }),
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { children: [
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("b", { children: "脚本执行（推荐）" }),
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "主导模型产出 run.ps1 + check.ps1，插件直接跑脚本并按退出码判定；失败时把 stderr 交回模型改脚本再重跑。失败能定位到具体行。" })
+              ] })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "mmd-mode-card" + (runner === "agent" ? " is-on" : ""), onClick: () => {
+              setRunner("agent");
+              setDirty(true);
+            }, children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("input", { type: "radio", name: "mmd-runner", checked: runner === "agent", onChange: () => {
+                setRunner("agent");
+                setDirty(true);
+              }, style: { marginTop: 3 } }),
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { children: [
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("b", { children: "模型逐步执行" }),
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "旧路径：执行模型逐条调用工具，灵活但不可复现，失败往往是整轮作废。" })
               ] })
             ] })
           ] }),
@@ -2630,6 +2660,17 @@ window.__ModuleLoader__.load({
                         /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "mmd-tag", children: (plan.steps?.length ?? 0) + " 步" + (plan.mutatesState ? " · 会改变系统状态" : " · 只读") })
                       ] }),
                       /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "mmd-bubble", children: [
+                        plan.script ? /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { style: { marginBottom: 10 }, children: [
+                          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "mmd-sec-label", children: [
+                            "执行脚本 run.ps1（" + String(plan.script.run ?? "").split("\n").length + " 行）",
+                            plan.script.check ? " + 验收脚本 check.ps1" : "（无验收脚本）"
+                          ] }),
+                          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("details", { children: [
+                            /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("summary", { style: { cursor: "pointer", fontSize: 12 }, children: "展开脚本" }),
+                            /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("pre", { style: { whiteSpace: "pre-wrap", wordBreak: "break-word", fontSize: 11.5, maxHeight: 320, overflow: "auto", background: "rgba(127,127,127,.08)", padding: 8, borderRadius: 8 }, children: String(plan.script.run ?? "") }),
+                            plan.script.check ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("pre", { style: { whiteSpace: "pre-wrap", wordBreak: "break-word", fontSize: 11.5, maxHeight: 200, overflow: "auto", background: "rgba(127,127,127,.08)", padding: 8, borderRadius: 8 }, children: String(plan.script.check) }) : null
+                          ] })
+                        ] }) : /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "mmd-sec-label", style: { marginBottom: 8 }, children: "（这个计划没有脚本，将由模型逐步执行）" }),
                         (plan.steps ?? []).map((step, index) => /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { style: { marginBottom: 7 }, children: [
                           /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("strong", { children: index + 1 + ". " + step.description }),
                           step.tool ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "mmd-tag", children: "（" + step.tool + "）" }) : null,
@@ -2650,7 +2691,17 @@ window.__ModuleLoader__.load({
                         /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "mmd-pill", children: "执行结果" }),
                         /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "mmd-tag", children: execution.status + (execution.stoppedReason ? " · " + execution.stoppedReason : "") })
                       ] }),
-                      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "mmd-bubble mmd-bubble-exec", children: (execution.outputs ?? []).map((output, index) => /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { style: { marginBottom: 7 }, children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "mmd-bubble mmd-bubble-exec", children: execution.script ? /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "mmd-sec-label", children: [
+                          "脚本退出码：" + String(execution.script.exitCode),
+                          execution.script.timedOut ? " · 已超时" : "",
+                          execution.script.checkExitCode !== void 0 ? " · 验收退出码：" + String(execution.script.checkExitCode) : ""
+                        ] }),
+                        execution.script.runStderr ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("pre", { className: "mmd-bad", style: { whiteSpace: "pre-wrap", wordBreak: "break-word", fontSize: 11.5, maxHeight: 220, overflow: "auto", background: "rgba(220,38,38,.08)", padding: 8, borderRadius: 8 }, children: String(execution.script.runStderr) }) : null,
+                        execution.script.runStdout ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("pre", { style: { whiteSpace: "pre-wrap", wordBreak: "break-word", fontSize: 11.5, maxHeight: 220, overflow: "auto", background: "rgba(127,127,127,.08)", padding: 8, borderRadius: 8 }, children: String(execution.script.runStdout) }) : null,
+                        execution.script.checkError ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "mmd-bad", style: { marginTop: 6 }, children: "验收失败：" + String(execution.script.checkError) }) : null,
+                        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "mmd-tag", style: { marginTop: 6 }, children: "脚本目录：" + String(execution.script.dir) })
+                      ] }) : (execution.outputs ?? []).map((output, index) => /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { style: { marginBottom: 7 }, children: [
                         /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("strong", { children: "第 " + (index + 1) + " 步 · " + output.status }),
                         output.error ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "mmd-bad", children: output.error }) : null,
                         output.rendered ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { children: String(output.rendered).slice(0, 1200) }) : null

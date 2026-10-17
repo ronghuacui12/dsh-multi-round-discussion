@@ -34,6 +34,14 @@ export const EXECUTION_MODES = ['confirm', 'auto'];
  *                inherits that session's sandbox mode and workspace root.
  */
 export const PERMISSION_MODES = ['full', 'session'];
+/**
+ * How a plan is executed.
+ *
+ * - `script` (default) -- the plan carries run.ps1/check.ps1; the plugin runs
+ *   them and reports exit codes. Deterministic and re-runnable.
+ * - `agent` -- the legacy path where a model calls tools step by step.
+ */
+export const RUNNERS = ['script', 'agent'];
 
 /** Directory holding every user-editable artifact of this plugin. */
 export function mmdHome() {
@@ -139,6 +147,7 @@ export function normalizeExecution(raw, fallback) {
         mode: fallback?.mode ?? 'confirm',
         toolConfirmation: fallback?.toolConfirmation ?? false,
         permissions: fallback?.permissions ?? 'full',
+        runner: fallback?.runner ?? 'script',
         allowedTools: Array.isArray(fallback?.allowedTools) ? [...fallback.allowedTools] : [],
         maxSteps: typeof fallback?.maxSteps === 'number' ? fallback.maxSteps : 12,
     };
@@ -155,6 +164,11 @@ export function normalizeExecution(raw, fallback) {
         if (typeof raw.toolConfirmation !== 'boolean')
             throw new Error('execution.toolConfirmation 必须是布尔值。');
         base.toolConfirmation = raw.toolConfirmation;
+    }
+    if (raw.runner !== undefined) {
+        if (!RUNNERS.includes(raw.runner))
+            throw new Error(`execution.runner 必须是 ${RUNNERS.join(' 或 ')}。`);
+        base.runner = raw.runner;
     }
     if (raw.permissions !== undefined) {
         if (!PERMISSION_MODES.includes(raw.permissions))
@@ -204,6 +218,7 @@ export class UserSettings {
                 mode: this.orchestratorConfig.executor?.planApproval === false ? 'auto' : 'confirm',
                 toolConfirmation: this.orchestratorConfig.executor?.requireConfirmationForWrites === true,
                 permissions: this.orchestratorConfig.executor?.permissions ?? 'full',
+                runner: this.orchestratorConfig.executor?.runner ?? 'script',
                 allowedTools: [...(this.orchestratorConfig.executor?.allowedTools ?? [])],
                 maxSteps: this.orchestratorConfig.executor?.maxSteps ?? 12,
             },
@@ -237,6 +252,7 @@ export class UserSettings {
             this.orchestratorConfig.executor = {
                 ...(this.orchestratorConfig.executor ?? {}),
                 permissions: execution.permissions,
+                runner: execution.runner,
                 allowedTools: execution.allowedTools,
                 maxSteps: execution.maxSteps,
                 // `mode` parks the run before executing a state-changing plan.

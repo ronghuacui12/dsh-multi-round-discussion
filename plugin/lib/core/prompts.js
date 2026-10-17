@@ -185,7 +185,7 @@ export function buildDecisionPrompt(slice) {
 }
 /** Plan-builder system prompt. The schema mirrors types/plan.ts exactly. */
 export const PLAN_SYSTEM = [
-    '你负责把已确定的方向转成**结构化执行计划**。计划会被交给一个执行模型逐步执行，它**不会**重新规划，只会照做。',
+    '你负责把已确定的方向转成**可重复执行的计划**。计划的落地形式是**两个 PowerShell 脚本**：run.ps1 真正干活，check.ps1 做验收。执行阶段不再由模型逐条即兴操作——脚本写对了，结果就可复现。',
     '',
     '要求：',
     '- 每个步骤必须能独立执行，写清具体动作，不要写"分析一下"这类无法验收的步骤。',
@@ -200,7 +200,18 @@ export const PLAN_SYSTEM = [
     '- **禁止出现“询问用户 / 等人工”的步骤**：缺东西只允许走三条路——① 自己在现场找；② 自己装 / 自己起；③ 降级成仍能产出结果的分支。不要写“需要 owner 提供 X”这种步骤；实在无解时，最后一步产出 blocked.md，写清缺什么、试过什么。',
     '- mutatesState 表示整个计划是否会改变系统状态。',
     '',
-    '输出 JSON：',
+    '**脚本要求（最重要）**：',
+    '- 必须给出 "script.run"：一份**完整、可直接执行**的 PowerShell 脚本，不是伪代码、不是命令片段。',
+    '- 脚本必须**幂等**：重复执行不产生副作用累积。已经装好的依赖跳过，已经存在的目录不重建，已经完成的步骤读状态文件跳过。',
+    '- 中间状态写到运行目录下的 state.json（用 ConvertTo-Json），重跑时先读它，实现断点续跑。',
+    '- 依赖必须由脚本自己检查并安装：Get-Command / python -m pip show 判存在，缺则装；pip 用 -i https://pypi.tuna.tsinghua.edu.cn/simple，npm 用 --registry=https://registry.npmmirror.com。',
+    '- 所有路径用 Join-Path 拼接并先 New-Item -ItemType Directory -Force 建目录；**不要凭空发明路径**，先勘察现场。',
+    '- 输出要能定位失败：每步打印 "[STEP n] …"，失败时打印 "[FAIL] 第 n 步：原因" 并让脚本以非 0 退出码结束。',
+    '- **禁止交互**：不允许 Read-Host / pause / 等待输入的写法。',
+    '- 不要写 bash 语法，不要用 && 串联；用 PowerShell。',
+    '- 建议同时给出 "script.check"：只读的验收脚本，逐条核对 acceptance；全部通过 exit 0，任何一条不通过打印 "[CHECK-FAIL] 原因" 并 exit 1。',
+    '',
+    '输出 JSON（steps 仍要写，作为给人看的摘要；执行以 script 为准）：',
     '{',
     '  "steps": [',
     '    {',
@@ -215,7 +226,13 @@ export const PLAN_SYSTEM = [
     '  ],',
     '  "acceptance": "整个计划完成的判定标准",',
     '  "mutatesState": false,',
-    '  "notes": "补充说明"',
+    '  "notes": "补充说明",',
+    '  "script": {',
+    '    "language": "pwsh",',
+    '    "run": "完整 PowerShell 脚本正文",',
+    '    "check": "验收脚本正文（可省略）",',
+    '    "timeoutMs": 900000',
+    '  }',
     '}',
     '',
     JSON_RULE,
@@ -426,4 +443,51 @@ export function buildExecutionReportPrompt(plan, transcript) {
         '\n请按 JSON 格式汇报每一步的结果。',
     ].join('\n');
 }
+
+/** System prompt for fixing a script that failed, given the real error output. */
+export const SCRIPT_REPAIR_SYSTEM = [
+    '你刚刚写的执行脚本失败了。现在请**只改脚本**，不要改方向、不要改计划步骤。',
+    '',
+    '工作要求：',
+    '- 先读错误输出，判断失败发生在哪一行、哪个命令、哪种环境假设不成立。',
+    '- 只做**最小必要修改**：修那一行的命令 / 补上缺失的安装 / 修路径 / 加超时 / 加幂等判断。',
+    '- 不要重写整个方案；不要把失败步骤删掉来“变绿”；不要注释掉报错的代码。',
+    '- 修完必须仍然满足原来的验收标准；如果验收标准本身写错了，可以在 changeSummary 里说明并同步修正 check。',
+    '- 如果错误是“命令不存在 / 模块未安装”，就在脚本里补上安装步骤（带国内镜像），而不是假设它已经存在。',
+    '- 如果错误是路径不存在，就用 Join-Path + New-Item -Force 自己创建，或先勘察现场再改路径。',
+    '- 输出里用 changeSummary 一句话说明改了什么。',
+    '',
+    '输出 JSON：',
+    '{',
+    '  "run": "修改后的完整 PowerShell 脚本",',
+    '  "check": "修改后的验收脚本（可选）",',
+    '  "changeSummary": "一句话说明改了什么"',
+    '}',
+    '',
+    JSON_RULE,
+].join('\n');
+/** Build the repair user turn: the failure evidence, verbatim. */
+export function buildScriptRepairPrompt(originalRequest, plan, failure) {
+    const f = failure ?? {};
+    const script = plan?.script ?? {};
+    return [
+        `用户需求：\n${originalRequest}`,
+        `\n计划的验收标准：\n${plan?.acceptance ?? '（未定义）'}`,
+        `\n当前脚本（run）：\n${truncate(script.run ?? '', 6000)}`,
+        script.check ? `\n当前验收脚本（check）：\n${truncate(script.check, 3000)}` : '',
+        `\n第 ${f.attempt ?? 1} 次执行结果：`,
+        `- 退出码：${f.exitCode === null || f.exitCode === undefined ? '(未取到)' : f.exitCode}`,
+        f.timedOut ? '- 已超时被终止' : '',
+        f.checkExitCode !== undefined ? `- 验收脚本退出码：${f.checkExitCode}` : '',
+        f.stderr ? `\n标准错误（stderr，末尾）：\n${truncate(f.stderr, 4000)}` : '',
+        f.stdout ? `\n标准输出（stdout，末尾）：\n${truncate(f.stdout, 3000)}` : '',
+        f.checkError ? `\n验收脚本错误：\n${truncate(f.checkError, 2000)}` : '',
+        f.checkOutput ? `\n验收脚本输出：\n${truncate(f.checkOutput, 2000)}` : '',
+        f.dir ? `\n脚本与日志目录：${f.dir}` : '',
+        '\n请给出修正后的脚本。',
+    ]
+        .filter((part) => part !== '')
+        .join('\n');
+}
+
 //# sourceMappingURL=prompts.js.map

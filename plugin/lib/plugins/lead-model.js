@@ -15,8 +15,38 @@
  */
 import { randomUUID } from 'node:crypto';
 import { isReadOnlyTool } from "../core/sandbox.js";
-import { CLARIFY_SYSTEM, DECISION_SYSTEM, FINAL_ANSWER_SYSTEM, PLAN_SYSTEM, buildClarifyPrompt, buildDecisionPrompt, buildFinalAnswerPrompt, buildPlanPrompt, } from "../core/prompts.js";
+import { CLARIFY_SYSTEM, DECISION_SYSTEM, FINAL_ANSWER_SYSTEM, PLAN_SYSTEM, SCRIPT_REPAIR_SYSTEM, buildClarifyPrompt, buildDecisionPrompt, buildFinalAnswerPrompt, buildPlanPrompt, buildScriptRepairPrompt, } from "../core/prompts.js";
 import { mergeSystem } from "./discussion-engine.js";
+
+/**
+ * Validate the plan's executable script block.
+ *
+ * The script is what the run actually executes, so it is validated strictly:
+ * a plan whose script cannot be run is not a plan. The check script stays optional so a
+ * read-only exploration can skip the acceptance script.
+ */
+function parseScript(raw, text) {
+    if (raw === undefined || raw === null)
+        return undefined;
+    if (typeof raw !== 'object' || Array.isArray(raw)) {
+        throw new PlanError('Field "script" must be an object when present.', text);
+    }
+    const o = raw;
+    const run = typeof o.run === 'string' ? o.run : '';
+    if (run.trim() === '') {
+        throw new PlanError('Field "script.run" must be a non-empty PowerShell script.', text);
+    }
+    const check = typeof o.check === 'string' && o.check.trim() !== '' ? o.check : undefined;
+    return {
+        language: 'pwsh',
+        run,
+        ...(check ? { check } : {}),
+        ...(typeof o.notes === 'string' && o.notes.trim() !== '' ? { notes: o.notes } : {}),
+        ...(o.readOnly === true ? { readOnly: true } : {}),
+        ...(typeof o.timeoutMs === 'number' && Number.isFinite(o.timeoutMs) && o.timeoutMs > 0 ? { timeoutMs: Math.floor(o.timeoutMs) } : {}),
+    };
+}
+
 import { StructuredOutputError, optionalStringArray, parseStructured, requireString, salvageText, } from "../utils/json.js";
 
 /**
@@ -228,8 +258,12 @@ export class LeadModel {
                     }
                 }
             }
-            // Derive the flag; do not trust the model's own answer.
-            const mutatesState = steps.some((step) => step.tool != null && !isReadOnlyTool(step.tool));
+            // The script is the thing that actually runs, so it decides whether the
+            // plan mutates state -- not the (now advisory) step list.
+            const script = parseScript(o.script, text);
+            const mutatesState = script !== undefined
+                ? script.readOnly !== true
+                : steps.some((step) => step.tool != null && !isReadOnlyTool(step.tool));
             return {
                 id: planId,
                 decisionRefs: decision.chosenProposalIds,
@@ -238,6 +272,7 @@ export class LeadModel {
                     ? { acceptance: o.acceptance }
                     : {}),
                 mutatesState,
+                ...(script ? { script } : {}),
                 ...(typeof o.notes === 'string' && o.notes.trim() !== '' ? { notes: o.notes } : {}),
                 planBuilderProfileId: profile.id,
             };
@@ -262,6 +297,49 @@ export class LeadModel {
             plan = parsePlan(retry.text);
         }
         return plan;
+    }
+
+    /**
+     * Ask the lead model to fix a script that failed.
+     *
+     * This is the whole point of the script-execution design: the feedback loop is
+     * "here is the exact stderr and the exit code, change the script", not "your
+     * round failed". Bounded by the orchestrator, which owns the retry budget.
+     *
+     * @param profile - the lead model.
+     * @param originalRequest - what the operator asked for.
+     * @param plan - the plan whose script failed.
+     * @param failure - captured streams, exit code and the attempt number.
+     * @param signal - run cancellation.
+     * @returns the revised script plus a one-line change summary.
+     */
+    async reviseScript(profile, originalRequest, plan, failure, signal) {
+        const response = await this.registry.call(profile.id, {
+            prompt: buildScriptRepairPrompt(originalRequest, plan, failure),
+            system: mergeSystem(profile.systemPrompt, SCRIPT_REPAIR_SYSTEM),
+            signal,
+            onUsage: this.onUsage,
+        });
+        if (!response.ok) {
+            throw new PlanError('脚本修复调用失败：' + (response.error ?? response.errorCode ?? 'unknown'), '');
+        }
+        const parsed = parseStructured(response.text, (raw) => {
+            if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {
+                throw new PlanError('Expected a JSON object for the revised script.', response.text);
+            }
+            const o = raw;
+            const run = typeof o.run === 'string' ? o.run : '';
+            if (run.trim() === '')
+                throw new PlanError('Field "run" must be a non-empty PowerShell script.', response.text);
+            return {
+                run,
+                ...(typeof o.check === 'string' && o.check.trim() !== '' ? { check: o.check } : {}),
+                ...(typeof o.changeSummary === 'string' && o.changeSummary.trim() !== ''
+                    ? { changeSummary: o.changeSummary.trim() }
+                    : {}),
+            };
+        });
+        return parsed;
     }
     /**
      * Compose the user-facing answer.

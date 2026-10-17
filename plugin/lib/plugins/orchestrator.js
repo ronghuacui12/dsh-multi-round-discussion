@@ -31,12 +31,15 @@ import { resolvePreset } from "../core/preset.js";
 import { DiscussionEngine } from "./discussion-engine.js";
 import { LeadModel } from "./lead-model.js";
 import { Executor } from "./executor.js";
+import { ScriptExecutor } from "./script-executor.js";
 import { Verifier } from "./verifier.js";
 import { buildWorkspaceBrief } from "../core/workspace-brief.js";
 /** How many times a failed verification may send the run back to decision. */
 const MAX_REPLANS = 1;
 /** How many times a failed verification may re-run the same plan. */
 const MAX_REPAIRS = 1;
+/** How many times a failed script may be handed back to the lead model to fix. */
+const MAX_SCRIPT_REPAIRS = 2;
 export class Orchestrator {
     ctx;
     registry;
@@ -169,6 +172,14 @@ export class Orchestrator {
                 onNotice: (notice) => this.store.notice(runId, notice),
                 onUsage: recordUsage,
             }),
+            // Deterministic execution: the plan's own script, not a model imitating a
+            // shell. Falls back to the agent executor when the plan carries no script
+            // or the operator explicitly selected the legacy runner.
+            scriptExecutor: new ScriptExecutor({
+                ...(this.logger ? { logger: this.logger } : {}),
+                onParticipant: (profileId, patch) => this.store.patchParticipant(runId, profileId, patch),
+                onNotice: (notice) => this.store.notice(runId, notice),
+            }),
             verifier: new Verifier(this.registry, recordUsage),
             lead: new LeadModel(this.registry, recordUsage),
         });
@@ -292,10 +303,41 @@ export class Orchestrator {
                     return;
                 }
                 plan = built;
-                const executed = await this.runExecution(context, parts, plan);
+                let executed = await this.runExecution(context, parts, plan);
                 if (!executed) {
                     this.finish(context, this.aborted(context) ? 'stopped' : 'failed');
                     return;
+                }
+                // A failed script is repaired in place: the direction and the plan stay,
+                // the lead model gets the exact stderr and returns a corrected script,
+                // and the same plan is re-run. This is what turns "this round is lost"
+                // into "line 37 was wrong, fixed, re-running".
+                let scriptRepairs = 0;
+                while (executed.status !== 'success'
+                    && plan.script !== undefined
+                    && this.config.executor?.runner !== 'agent'
+                    && scriptRepairs < MAX_SCRIPT_REPAIRS
+                    && !this.aborted(context)) {
+                    scriptRepairs++;
+                    const failure = { ...(executed.script ?? {}), attempt: scriptRepairs };
+                    this.notice(context, 'warn', `脚本执行失败（退出码 ${String(failure.exitCode ?? 'null')}），让主导模型修改脚本（第 ${scriptRepairs}/${MAX_SCRIPT_REPAIRS} 次）。`);
+                    let revised;
+                    try {
+                        revised = await parts.lead.reviseScript(context.roster.lead, context.promptRequest, plan, failure, context.abort.signal);
+                    }
+                    catch (cause) {
+                        this.notice(context, 'error', `脚本修复失败：${cause instanceof Error ? cause.message : String(cause)}`);
+                        break;
+                    }
+                    if (this.aborted(context))
+                        break;
+                    // Keep the plan id and steps; replace only the script that failed.
+                    plan = { ...plan, script: { ...plan.script, ...revised } };
+                    context.blackboard.setPlan(plan);
+                    this.notice(context, 'info', `脚本已修改：${revised.changeSummary ?? '（未说明改动）'}`);
+                    executed = await this.runExecution(context, parts, plan);
+                    if (!executed)
+                        break;
                 }
                 execution = executed;
                 verification = await this.runVerification(context, parts, plan, execution);
@@ -568,8 +610,11 @@ export class Orchestrator {
         const needsApproval = plan.mutatesState && this.config.executor?.planApproval !== false;
         if (!needsApproval)
             return plan;
+        const scriptNote = plan.script
+            ? `\n执行方式：**脚本** run.ps1（${String(plan.script.run ?? '').split('\n').length} 行）${plan.script.check ? ' + 验收脚本 check.ps1' : ''}，批准后由插件直接运行，不经模型。`
+            : '\n执行方式：模型逐步调用工具。';
         this.store.patch(context.runId, {
-            pendingQuestion: `该计划包含会改变系统状态的操作，是否批准执行？\n\n${plan.steps
+            pendingQuestion: `该计划包含会改变系统状态的操作，是否批准执行？${scriptNote}\n\n${plan.steps
                 .map((step) => `- ${step.description}${step.tool ? `（调用 ${step.tool}）` : ''}`)
                 .join('\n')}`,
         });
@@ -600,7 +645,13 @@ export class Orchestrator {
     /** Run the plan. */
     async runExecution(context, parts, plan) {
         this.goto(context, 'executing');
-        const result = await parts.executor.execute(plan, context.roster.executor, context.abort.signal);
+        const useScript = plan.script !== undefined && this.config.executor?.runner !== 'agent';
+        const result = useScript
+            ? await parts.scriptExecutor.execute(plan, context.roster.executor, context.abort.signal, context.runId)
+            : await parts.executor.execute(plan, context.roster.executor, context.abort.signal);
+        // The agent executor writes its own result; the script executor cannot, so
+        // record here for both (idempotent for the agent path).
+        context.blackboard.setExecution(result);
         this.store.refreshCost(context.runId);
         return result;
     }

@@ -29,6 +29,23 @@ export interface PlanStep {
     rollback?: string;
 }
 /** A structured, executable plan. */
+/**
+ * The plan's executable form: plain PowerShell the plugin runs itself.
+ *
+ * The step list stays as a human-readable summary; execution uses these scripts,
+ * which is what makes a run deterministic and re-runnable.
+ */
+export interface ExecutionScript {
+    language: 'pwsh';
+    /** Full body of run.ps1. */
+    run: string;
+    /** Optional body of check.ps1: exits non-zero when acceptance fails. */
+    check?: string;
+    notes?: string;
+    /** True when the script only observes state. */
+    readOnly?: boolean;
+    timeoutMs?: number;
+}
 export interface ExecutionPlan {
     /** Plan identity. */
     id: string;
@@ -44,6 +61,8 @@ export interface ExecutionPlan {
     notes?: string;
     /** Profile that produced the plan. */
     planBuilderProfileId?: string;
+    /** Executable form, when the plan builder produced one. */
+    script?: ExecutionScript;
 }
 /** Outcome of one step. */
 export interface StepOutput {
@@ -68,6 +87,19 @@ export interface ExecutionResult {
     turns: number;
     /** Why execution stopped early, when it did. */
     stoppedReason?: 'max-steps' | 'tool-denied' | 'error' | 'aborted' | 'completed';
+    /** Present when the plan ran as a script. */
+    script?: {
+        dir: string;
+        runPath: string;
+        checkPath?: string;
+        exitCode: number | null;
+        timedOut: boolean;
+        runStdout: string;
+        runStderr: string;
+        checkExitCode?: number | null;
+        checkOutput?: string;
+        checkError?: string;
+    };
     usage?: {
         inputTokens: number;
         outputTokens: number;

@@ -130,6 +130,8 @@ export const Config = Schema.object({
         // Park before executing a state-changing plan. This is the approval that
         // reaches the user; it is independent of per-tool confirmation.
         planApproval: Schema.boolean().default(true),
+        // 'script' runs the plan's own PowerShell; 'agent' is the legacy tool loop.
+        runner: Schema.union(['script', 'agent']).default('script'),
         maxSteps: Schema.natural().default(DEFAULT_SANDBOX.maxSteps),
     }),
     overrides: Schema.object({

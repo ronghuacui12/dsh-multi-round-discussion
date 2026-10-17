@@ -84,6 +84,7 @@ export function SettingsSection() {
   const [mode, setMode] = useState('confirm');
   const [permissions, setPermissions] = useState('full');
   const [toolConfirmation, setToolConfirmation] = useState(false);
+  const [runner, setRunner] = useState('script');
   const [allowedTools, setAllowedTools] = useState<string[]>([]);
   const [maxSteps, setMaxSteps] = useState(12);
   const [avatars, setAvatars] = useState<Record<string, string>>({});
@@ -106,6 +107,7 @@ export function SettingsSection() {
       setMode(data.execution?.mode ?? 'confirm');
       setPermissions(data.execution?.permissions ?? 'full');
       setToolConfirmation(data.execution?.toolConfirmation === true);
+      setRunner(data.execution?.runner ?? 'script');
       setAllowedTools(data.execution?.allowedTools ?? []);
       setMaxSteps(data.execution?.maxSteps ?? 12);
       setAvatars(data.avatars ?? {});
@@ -176,7 +178,7 @@ export function SettingsSection() {
         profiles,
         preset,
         peerReview,
-        execution: { mode, permissions, toolConfirmation, allowedTools, maxSteps },
+        execution: { mode, permissions, toolConfirmation, runner, allowedTools, maxSteps },
       });
       setSeats(toSeats(result.profiles));
       setAvatars(result.avatars ?? {});
@@ -405,6 +407,23 @@ export function SettingsSection() {
             <span>
               <b>直接执行</b>
               <span>计划生成后不再询问，立刻交给执行模型。</span>
+            </span>
+          </div>
+        </div>
+
+        <div className="mmd-mode-cards" style={{ marginTop: 10 }}>
+          <div className={'mmd-mode-card' + (runner === 'script' ? ' is-on' : '')} onClick={() => { setRunner('script'); setDirty(true); }}>
+            <input type="radio" name="mmd-runner" checked={runner === 'script'} onChange={() => { setRunner('script'); setDirty(true); }} style={{ marginTop: 3 }} />
+            <span>
+              <b>脚本执行（推荐）</b>
+              <span>主导模型产出 run.ps1 + check.ps1，插件直接跑脚本并按退出码判定；失败时把 stderr 交回模型改脚本再重跑。失败能定位到具体行。</span>
+            </span>
+          </div>
+          <div className={'mmd-mode-card' + (runner === 'agent' ? ' is-on' : '')} onClick={() => { setRunner('agent'); setDirty(true); }}>
+            <input type="radio" name="mmd-runner" checked={runner === 'agent'} onChange={() => { setRunner('agent'); setDirty(true); }} style={{ marginTop: 3 }} />
+            <span>
+              <b>模型逐步执行</b>
+              <span>旧路径：执行模型逐条调用工具，灵活但不可复现，失败往往是整轮作废。</span>
             </span>
           </div>
         </div>
