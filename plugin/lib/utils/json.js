@@ -167,7 +167,24 @@ export function repairJsonText(input) {
                 i++;
                 continue;
             }
-            if (ch === '"') {
+            if (ch === '”') {
+                // Chinese closing quote acting as the string delimiter: only when
+                // what follows is structural, otherwise it is ordinary text.
+                let j2 = i + 1;
+                while (j2 < input.length && /\s/.test(input[j2]))
+                    j2++;
+                const nextChar = input[j2];
+                if (nextChar === undefined || nextChar === ',' || nextChar === '}' || nextChar === ']' || nextChar === ':' || nextChar === '：' || nextChar === '，' || nextChar === '、' || nextChar === '”') {
+                    out.push('"');
+                    inString = false;
+                    lastSignificant = '"';
+                    i++;
+                    continue;
+                }
+                out.push(ch);
+                i++;
+                continue;
+            }            if (ch === '"') {
                 // A real closing quote is followed by , } ] : or end of text.
                 // Anything else means the model quoted a term inside the value.
                 let j = i + 1;
@@ -176,7 +193,7 @@ export function repairJsonText(input) {
                 const next = input[j];
                 // `next === '"'` means a new string starts right here, so this one
                 // must be closing: an inner quote is followed by content, not by a quote.
-                if (next === undefined || next === ',' || next === '}' || next === ']' || next === ':' || next === '"') {
+                if (next === undefined || next === ',' || next === '}' || next === ']' || next === ':' || next === '"' || next === '：' || next === '，' || next === '、' || next === '”') {
                     out.push('"');
                     inString = false;
                     lastSignificant = '"';
@@ -226,6 +243,34 @@ export function repairJsonText(input) {
                 continue;
             }
             emit(',');
+            i++;
+            continue;
+        }
+        // Full-width punctuation as JSON syntax: Chinese models type these often
+        // enough that "only ASCII" instructions are not reliable. Inside a string
+        // they stay literal (the inString branch above never reaches here).
+        if (ch === '，' || ch === '、') {
+            emit(',');
+            i++;
+            continue;
+        }
+        if (ch === '：') {
+            emit(':');
+            i++;
+            continue;
+        }
+        if (ch === '“') {
+            if (lastSignificant !== '' && lastSignificant !== ',' && lastSignificant !== '{' && lastSignificant !== '[' && lastSignificant !== ':') {
+                emit(',');
+            }
+            out.push('"');
+            inString = true;
+            escaped = false;
+            i++;
+            continue;
+        }
+        if (ch === '”') {
+            // A stray closing quote outside a string has no structural meaning.
             i++;
             continue;
         }

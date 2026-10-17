@@ -53,6 +53,14 @@ ok('parseStructured 也能修复', shaped.summary === 'x' && shaped.steps.length
 const repaired = repairJsonText('{"a":1 "b":2}');
 ok('repairJsonText 仍可单独使用', JSON.stringify(JSON.parse(repaired)) === '{"a":1,"b":2}');
 
+// 全角标点 / 缺逗号：真实中文模型输出里最常见的一类
+ok('全角逗号', JSON.stringify(extractJsonValue('{"a": 1， "b": 2}')) === '{"a":1,"b":2}', json('{"a": 1， "b": 2}'));
+ok('全角冒号', JSON.stringify(extractJsonValue('{"a"：1}')) === '{"a":1}');
+ok('中文引号当分隔符', JSON.stringify(extractJsonValue('{“a”: 1}')) === '{"a":1}');
+ok('数组元素缺逗号', JSON.stringify(extractJsonValue('["好" "快"]')) === '["好","快"]');
+const reviewShaped = extractJsonValue('{"reviews": [{"targetAnonId": "P1", "pros": ["好"]，"cons": []}]}');
+ok('评审样例（全角逗号）', reviewShaped.reviews.length === 1 && reviewShaped.reviews[0].pros[0] === '好', JSON.stringify(reviewShaped));
+ok('属性间缺逗号（原来报 Expected , or } 的那类）', JSON.stringify(extractJsonValue('{"a": "x" "b": "y"}')) === '{"a":"x","b":"y"}');
 const fails = results.filter((line) => line.startsWith('FAIL')).length;
 console.log(results.join('\n'));
 console.log('');
